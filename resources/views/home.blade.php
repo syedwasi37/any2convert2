@@ -1509,7 +1509,7 @@ if ($isToolPage) {
             <?= htmlspecialchars($currentToolName, ENT_QUOTES) ?><br>
             <em>Free online tool.</em>
             <?php else: ?>
-            Free Online PDF, Image &<br>
+            Hello aaalooooo<br>
             <em>Utility Tools.</em>
             <?php endif; ?>
         </h1>
@@ -1518,7 +1518,7 @@ if ($isToolPage) {
             <?php if ($isToolPage): ?>
             <?= htmlspecialchars($currentToolDescription !== '' ? $currentToolDescription : 'Use this focused browser-based tool on Any2Convert.', ENT_QUOTES) ?>
             <?php else: ?>
-            800+ professional-grade tools for PDF, documents, images, and more. Free forever, no account required.
+            80+ professional-grade tools for PDF, documents, images, and more. Free forever, no account required.
             <?php endif; ?>
         </p>
 
