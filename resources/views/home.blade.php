@@ -1518,7 +1518,7 @@ if ($isToolPage) {
             <?php if ($isToolPage): ?>
             <?= htmlspecialchars($currentToolDescription !== '' ? $currentToolDescription : 'Use this focused browser-based tool on Any2Convert.', ENT_QUOTES) ?>
             <?php else: ?>
-            80+ professional-grade tools for PDF, documents, images, and more. Free forever, no account required.
+            800+ professional-grade tools for PDF, documents, images, and more. Free forever, no account required.
             <?php endif; ?>
         </p>
 
