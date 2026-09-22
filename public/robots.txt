@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /tools/
+Disallow: /tools/*
+
+Sitemap: https://any2convert.com/sitemap.xml

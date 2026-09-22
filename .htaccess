@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Saari traffic ko 'public' folder ki taraf bhej do
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
