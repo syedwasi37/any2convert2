@@ -1509,7 +1509,7 @@ if ($isToolPage) {
             <?= htmlspecialchars($currentToolName, ENT_QUOTES) ?><br>
             <em>Free online tool.</em>
             <?php else: ?>
-            hello aaloo i love you<br>
+            Free Online PDF, Image &<br>
             <em>Utility Tools.</em>
             <?php endif; ?>
         </h1>
