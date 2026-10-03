@@ -177,7 +177,7 @@
                         </div>
                         <div class="field">
                             <label for="login-password">Password</label>
-                            <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Your password" required>
+                            <div class="password-control"><input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Your password" required><button type="button" class="password-toggle" aria-controls="login-password" aria-pressed="false" data-password-toggle>Show</button></div>
                             @error('password')<p class="error-text">{{ $message }}</p>@enderror
                         </div>
                         <div class="row"><label class="check"><input type="checkbox" name="remember" value="1"> Keep me signed in</label></div>
@@ -211,12 +211,12 @@
                         @include('partials.country-phone-fields', ['fieldPrefix' => 'register-password', 'countries' => $countries, 'selectedCountry' => old('country_code'), 'phoneValue' => old('phone'), 'required' => true])
                         <div class="field">
                             <label for="register-password">Create a password</label>
-                            <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required>
+                            <div class="password-control"><input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required><button type="button" class="password-toggle" aria-controls="register-password" aria-pressed="false" data-password-toggle>Show</button></div>
                             @error('password')<p class="error-text">{{ $message }}</p>@enderror
                         </div>
                         <div class="field">
                             <label for="register-password-confirmation">Confirm password</label>
-                            <input id="register-password-confirmation" name="password_confirmation" type="password" autocomplete="new-password" minlength="8" placeholder="Type it once more" required>
+                            <div class="password-control"><input id="register-password-confirmation" name="password_confirmation" type="password" autocomplete="new-password" minlength="8" placeholder="Type it once more" required><button type="button" class="password-toggle" aria-controls="register-password-confirmation" aria-pressed="false" data-password-toggle>Show</button></div>
                         </div>
                         <button class="submit" type="submit">Create my account</button>
                         <button class="switch-method" type="button" data-show="otp-form">Create an account with an email code</button>
@@ -254,5 +254,6 @@
         });
     });
 </script>
+@include('partials.password-visibility')
 </body>
 </html>

@@ -117,6 +117,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::middleware('auth')->group(function (): void {
     Route::get('/account', [ProfileController::class, 'show'])->name('account.profile');
     Route::patch('/account/profile', [ProfileController::class, 'updateProfile'])->name('account.profile.update');
+    Route::post('/account/email/code', [ProfileController::class, 'sendEmailChangeCode'])->middleware('throttle:5,1')->name('account.email.code');
+    Route::put('/account/email', [ProfileController::class, 'updateEmail'])->middleware('throttle:6,1')->name('account.email.update');
+    Route::post('/account/email/confirm', [ProfileController::class, 'confirmEmailChange'])->middleware('throttle:6,1')->name('account.email.confirm');
     Route::post('/account/password/code', [ProfileController::class, 'sendPasswordCode'])->middleware('throttle:5,1')->name('account.password.code');
     Route::put('/account/password', [ProfileController::class, 'updatePassword'])->middleware('throttle:6,1')->name('account.password.update');
     Route::post('/account/two-factor/setup', [ProfileController::class, 'startTwoFactorSetup'])->middleware('throttle:5,1')->name('account.two-factor.setup');

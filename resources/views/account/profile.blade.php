@@ -7,7 +7,7 @@
     <title>Account settings · Any2Convert</title>
     <style>
         .profile-summary{display:flex;align-items:center;gap:12px}.profile-avatar{width:46px;height:46px;flex:0 0 46px;display:grid;place-items:center;overflow:hidden;border-radius:50%;background:#edf4eb;color:#315b3d;font-size:17px;font-weight:750}.profile-avatar img{width:100%;height:100%;object-fit:cover}
-        .field select{width:100%;height:44px;padding:0 11px;border:1px solid #dfe3dc;border-radius:9px;background:#fff;color:var(--ink);font:inherit;font-size:13px}.phone-wrap{display:flex;align-items:center;min-width:0;height:44px;border:1px solid #dfe3dc;border-radius:9px;background:#fff;overflow:hidden}.phone-wrap span{padding:0 10px;border-right:1px solid var(--line);color:var(--green);font-weight:700;font-size:13px;white-space:nowrap}.phone-wrap input{height:42px!important;min-width:0;border:0!important;box-shadow:none!important}
+        .field select{width:100%;height:44px;padding:0 11px;border:1px solid #dfe3dc;border-radius:9px;background:#fff;color:var(--ink);font:inherit;font-size:13px}.phone-wrap{display:flex;align-items:center;min-width:0;height:44px;border:1px solid #dfe3dc;border-radius:9px;background:#fff;overflow:hidden}.phone-wrap span{padding:0 10px;border-right:1px solid var(--line);color:var(--green);font-weight:700;font-size:13px;white-space:nowrap}.phone-wrap input{height:42px!important;min-width:0;border:0!important;box-shadow:none!important}.email-change{margin-top:20px;padding:17px;border:1px solid var(--line);border-radius:11px;background:#fbfcfa}.email-change h3{margin:0;font-size:14px}.email-change>p{margin:5px 0 13px;color:var(--muted);font-size:12px}.email-change form{margin-top:10px}.email-change .field{margin-bottom:11px}.email-change-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.email-change .btn-light{min-height:38px}.email-change .error-text{color:var(--red)}
         :root{--ink:#252923;--muted:#747b72;--line:#e7eae4;--paper:#fff;--wash:#f6f7f4;--green:#315b3d;--green-soft:#edf4eb;--gold:#9a6b1d;--gold-soft:#fff5df;--red:#a23d32}*{box-sizing:border-box}body{margin:0;background:var(--wash);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}a{color:inherit}.top{height:66px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center}.top-inner{width:min(1060px,calc(100% - 40px));margin:auto;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:750;letter-spacing:-.02em}.brand img{width:31px;height:31px}.top-link{font-size:13px;color:var(--muted);text-decoration:none}.wrap{width:min(1060px,calc(100% - 40px));margin:42px auto 72px}.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:11px;color:var(--green);font-weight:750}.page-title{font-size:34px;line-height:1.15;letter-spacing:-.045em;margin:7px 0}.lede{color:var(--muted);margin:0 0 25px}.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.8fr);gap:18px;align-items:start}.stack{display:grid;gap:18px}.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:23px;box-shadow:0 6px 24px #28362606}.card-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px}.card h2{font-size:17px;letter-spacing:-.025em;margin:0 0 4px}.sub{font-size:13px;color:var(--muted);margin:0}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:700;color:#4f574e}.field input{width:100%;height:44px;padding:0 12px;border:1px solid #dfe3dc;border-radius:9px;background:#fff;color:var(--ink);font:inherit;font-size:14px;outline:none}.field input:focus{border-color:#6a916d;box-shadow:0 0 0 3px #315b3d15}.field input[readonly]{background:#f7f8f5;color:#777e75}.help{font-size:11px;color:#828980}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:41px;padding:0 15px;border:0;border-radius:9px;background:var(--green);color:white;font:inherit;font-weight:700;font-size:13px;text-decoration:none;cursor:pointer}.btn-light{background:white;border:1px solid var(--line);color:#424a41}.btn-danger{background:#fff;border:1px solid #f0d7d4;color:var(--red)}.actions{display:flex;justify-content:flex-end;margin-top:17px}.notice{padding:12px 14px;border-radius:10px;margin:0 0 18px;background:var(--green-soft);color:#355a3b;font-size:13px}.notice.error{background:#fff0ee;color:var(--red)}.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;background:#f1f3ef;border-radius:999px;font-size:11px;font-weight:750;color:#5c645a}.pill.gold{background:var(--gold-soft);color:var(--gold)}.security-row{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}.security-row:first-of-type{border-top:0}.security-copy{min-width:0}.security-copy strong{display:block;font-size:13px}.security-copy span{display:block;font-size:12px;color:var(--muted);margin-top:2px}.form-row{display:flex;gap:8px;align-items:end}.form-row .field{flex:1}.mono{font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere;background:#f7f8f5;padding:12px;border:1px dashed #d8ddd4;border-radius:9px}.codes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0}.codes code{padding:8px;background:#f7f8f5;border-radius:7px;text-align:center;font:12px ui-monospace,monospace}.benefits{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:10px}.benefits li{font-size:13px;color:#51584f;display:flex;gap:9px;align-items:flex-start}.check{color:var(--green);font-weight:800}.member{background:linear-gradient(140deg,#fffaf0,#fff 60%);border-color:#f0e4ca}.member .member-tier{display:flex;align-items:center;justify-content:space-between;gap:12px}.member h2{margin:0}.small{font-size:11px;color:var(--muted)}@media(max-width:760px){.wrap{margin-top:28px}.grid{grid-template-columns:1fr}.page-title{font-size:29px}}@media(max-width:500px){.top-inner,.wrap{width:calc(100% - 26px)}.card{padding:18px}.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.form-row{align-items:stretch;flex-direction:column}.form-row .btn{width:100%}.security-row{align-items:flex-start;flex-direction:column}.actions .btn{width:100%}}
     </style>
 </head>
@@ -33,10 +33,35 @@
                     <div class="field-grid">
                         <div class="field"><label for="name">Name</label><input id="name" name="name" value="{{ old('name', $user->name) }}" maxlength="120" autocomplete="name" required></div>
                         @include('partials.country-phone-fields', ['fieldPrefix' => 'profile', 'countries' => $countries, 'selectedCountry' => $selectedCountry, 'phoneValue' => $phoneLocal, 'required' => false])
-                        <div class="field full"><label for="email">Email address</label><input id="email" value="{{ $user->email }}" readonly><span class="help">Your verified email is used for sign-in and security codes.</span></div>
+                        <div class="field full"><label for="email">Email address</label><input id="email" value="{{ $user->email }}" readonly><span class="help">This address is used for sign-in and security codes.</span></div>
                     </div>
                     <div class="actions"><button class="btn" type="submit">Save details</button></div>
                 </form>
+                <div class="email-change">
+                    <h3>Change email address</h3>
+                    @if (session('email_change_pending_new_email'))
+                        <p>We sent a confirmation code to <strong>{{ session('email_change_pending_new_email') }}</strong>. Your account email will change after you confirm it.</p>
+                        <form method="POST" action="{{ route('account.email.confirm') }}">
+                            @csrf
+                            <div class="field"><label for="new_email_code">Code sent to the new email</label><input id="new_email_code" name="new_email_code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" required></div>
+                            @error('new_email_code')<p class="error-text">{{ $message }}</p>@enderror
+                            <button class="btn" type="submit">Confirm new email</button>
+                        </form>
+                        <form method="POST" action="{{ route('account.email.code') }}"><button class="btn btn-light" type="submit">Start over and send a fresh code to my current email</button></form>
+                    @elseif (session('email_change_current_code_sent'))
+                        <p>Enter the code sent to your current address <strong>{{ $user->email }}</strong>. We’ll then send a confirmation code to the new address.</p>
+                        <form method="POST" action="{{ route('account.email.update') }}">
+                            @csrf @method('PUT')
+                            <div class="field"><label for="new_email">New email address</label><input id="new_email" name="new_email" type="email" autocomplete="email" value="{{ old('new_email') }}" maxlength="255" required>@error('new_email')<p class="error-text">{{ $message }}</p>@enderror</div>
+                            <div class="field"><label for="current_email_code">Code sent to your current email</label><input id="current_email_code" name="current_email_code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" required>@error('current_email_code')<p class="error-text">{{ $message }}</p>@enderror</div>
+                            <div class="email-change-actions"><button class="btn" type="submit">Verify current email</button><button class="btn btn-light" type="submit" form="email-change-resend">Resend current-email code</button></div>
+                        </form>
+                        <form id="email-change-resend" method="POST" action="{{ route('account.email.code') }}">@csrf</form>
+                    @else
+                        <p>We’ll send a one-time code to your current email before allowing a change.</p>
+                        <form method="POST" action="{{ route('account.email.code') }}">@csrf<button class="btn btn-light" type="submit">Send code to current email</button></form>
+                    @endif
+                </div>
             </section>
 
             <section class="card">
@@ -49,8 +74,8 @@
                     @csrf @method('PUT')
                     <div class="field-grid">
                         <div class="field"><label for="password_code">Email confirmation code</label><input id="password_code" name="password_code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required></div>
-                        <div class="field"><label for="password">New password</label><input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required></div>
-                        <div class="field full"><label for="password_confirmation">Confirm new password</label><input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" minlength="8" required></div>
+                        <div class="field"><label for="password">New password</label><div class="password-control"><input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="password-toggle" aria-controls="password" aria-pressed="false" data-password-toggle>Show</button></div></div>
+                        <div class="field full"><label for="password_confirmation">Confirm new password</label><div class="password-control"><input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="password-toggle" aria-controls="password_confirmation" aria-pressed="false" data-password-toggle>Show</button></div></div>
                     </div>
                     <div class="actions"><button class="btn" type="submit">Update password</button></div>
                 </form>
@@ -112,5 +137,6 @@
         </aside>
     </div>
 </main>
+@include('partials.password-visibility')
 </body>
 </html>
