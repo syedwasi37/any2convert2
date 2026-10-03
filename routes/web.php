@@ -110,6 +110,7 @@ Route::middleware('guest')->group(function (): void {
     Route::get('/auth/google', [AuthController::class, 'googleRedirect'])->name('auth.google.redirect');
 });
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback'])->name('auth.google.callback');
+Route::get('/backend/google_login.php', [AuthController::class, 'googleCallback'])->name('auth.google.legacy-callback');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::get('/pdf-to-word', [HomeController::class, 'tool'])->name('tools.show.pdf-to-word');

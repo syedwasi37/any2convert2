@@ -168,12 +168,13 @@ class AuthController extends Controller
         $state = Str::random(48);
         $verifier = Str::random(96);
         $challenge = rtrim(strtr(base64_encode(hash('sha256', $verifier, true)), '+/', '-_'), '=');
+        $redirectUri = config('services.google.redirect_uri') ?: route('auth.google.callback');
         $request->session()->put('google_oauth_state', $state);
         $request->session()->put('google_oauth_verifier', $verifier);
 
         $query = http_build_query([
             'client_id' => $clientId,
-            'redirect_uri' => route('auth.google.callback'),
+            'redirect_uri' => $redirectUri,
             'response_type' => 'code',
             'scope' => 'openid email profile',
             'state' => $state,
@@ -199,7 +200,7 @@ class AuthController extends Controller
                 'code' => $request->query('code'),
                 'client_id' => config('services.google.client_id'),
                 'client_secret' => config('services.google.client_secret'),
-                'redirect_uri' => route('auth.google.callback'),
+                'redirect_uri' => config('services.google.redirect_uri') ?: route('auth.google.callback'),
                 'grant_type' => 'authorization_code',
                 'code_verifier' => $verifier,
             ])->throw()->json();

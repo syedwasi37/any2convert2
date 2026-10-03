@@ -132,8 +132,8 @@ Make sure your development machine has the following tools installed:
 
 4.  Configure account sign-in:
     *   Email sign-in codes use the configured Laravel mailer. Set `MAIL_MAILER=smtp`, the SMTP host, port, username, password, and a verified `MAIL_FROM_ADDRESS` in `.env` for real delivery. Codes expire after 10 minutes and are rate-limited.
-    *   For Google sign-in, create a Google OAuth web client and set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env`. Add `APP_URL/auth/google/callback` as an authorized redirect URI (for production, `https://any2convert.com/auth/google/callback`).
-    *   Run `php artisan migrate --force` to add the Google account identifier column before deploying.
+    *   For Google sign-in, set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_REDIRECT_URI` in `.env`. The existing client authorizes `https://any2convert.com/backend/google_login.php`; the app keeps that callback path working. If you register a different redirect in Google Cloud, set the matching URI in `GOOGLE_REDIRECT_URI`.
+    *   Run `php artisan config:clear` after changing environment values, then `php artisan migrate --force` before deploying. On production, rebuild cached config with `php artisan config:cache` after the values are in place.
 
 5.  Install FFmpeg (Optional but Recommended for Video Downloader):
     For tools that require server-side media processing (such as the Youtube video downloader), place the `ffmpeg` executable in the `bin/` directory or make sure it is installed globally in the system environment.
