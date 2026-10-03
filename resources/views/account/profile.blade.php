@@ -112,14 +112,5 @@
         </aside>
     </div>
 </main>
-<script>
-document.querySelectorAll('[data-country-select]').forEach((select) => {
-    const wrapper = select.closest('.field')?.parentElement;
-    const prefix = wrapper?.querySelector('[data-phone-prefix]');
-    const updatePrefix = () => { if (prefix) prefix.textContent = select.selectedOptions[0]?.dataset.dial || 'Code'; };
-    select.addEventListener('change', updatePrefix);
-    updatePrefix();
-});
-</script>
 </body>
 </html>

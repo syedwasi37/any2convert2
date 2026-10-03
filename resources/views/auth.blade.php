@@ -246,13 +246,6 @@
     </main>
 </div>
 <script>
-    document.querySelectorAll('[data-country-select]').forEach((select) => {
-        const wrapper = select.closest('.field')?.parentElement;
-        const prefix = wrapper?.querySelector('[data-phone-prefix]');
-        const updatePrefix = () => { if (prefix) prefix.textContent = select.selectedOptions[0]?.dataset.dial || 'Code'; };
-        select.addEventListener('change', updatePrefix);
-        updatePrefix();
-    });
     document.querySelectorAll('[data-show]').forEach((button) => {
         button.addEventListener('click', () => {
             document.querySelectorAll('#password-form, #otp-form').forEach((form) => { form.hidden = form.id !== button.dataset.show; });
