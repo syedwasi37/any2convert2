@@ -52,13 +52,7 @@ $blogSchema = [
     <?= json_encode($blogSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>
     </script>
 
-    <!-- Tailwind CSS v4 -->
-    <script>
-        tailwind.config = {
-            darkMode: 'class'
-        };
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

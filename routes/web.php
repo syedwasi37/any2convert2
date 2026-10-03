@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ToolController;
 use Illuminate\Http\Request;
@@ -99,23 +100,17 @@ Route::view('/terms', 'page', [
     'content' => '<p>By using this site, you agree to our rules. You can use our tools for free. We try to keep all tools online, but we offer them as-is. Please use them fairly.</p>'
 ]);
 
-Route::view('/login', 'page', [
-    'title' => 'Login to Any2Convert Online Tool Account',
-    'description' => 'Sign in to your account and access saved settings.',
-    'keywords' => 'login, sign in, account, authentication, user login',
-    'subtitle' => 'Sign in to your account.',
-    'headline' => 'Login',
-    'content' => '<p>Sign in to use your account features. A free account lets you save your settings. If you cannot sign in, please email our support team for help.</p>'
-]);
-
-Route::view('/register', 'page', [
-    'title' => 'Register for Any2Convert Online Tools',
-    'description' => 'Create a free account and save your preferences.',
-    'keywords' => 'register, sign up, account, free account, user registration',
-    'subtitle' => 'Create a free account.',
-    'headline' => 'Register',
-    'content' => '<p>Sign up for a free account today. An account lets you save your choices. It also helps you work faster with your files. Joining is quick and easy.</p>'
-]);
+Route::get('/login', fn (Request $request) => app(AuthController::class)->show($request, 'login'))->middleware('guest')->name('login');
+Route::get('/register', fn (Request $request) => app(AuthController::class)->show($request, 'register'))->middleware('guest')->name('register');
+Route::middleware('guest')->group(function (): void {
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1')->name('auth.login');
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1')->name('auth.register');
+    Route::post('/login/otp', [AuthController::class, 'sendOtp'])->middleware('throttle:10,1')->name('auth.otp.send');
+    Route::post('/login/otp/verify', [AuthController::class, 'verifyOtp'])->middleware('throttle:10,1')->name('auth.otp.verify');
+    Route::get('/auth/google', [AuthController::class, 'googleRedirect'])->name('auth.google.redirect');
+});
+Route::get('/auth/google/callback', [AuthController::class, 'googleCallback'])->name('auth.google.callback');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::get('/pdf-to-word', [HomeController::class, 'tool'])->name('tools.show.pdf-to-word');
 Route::get('/pdf-to-word/', function () {

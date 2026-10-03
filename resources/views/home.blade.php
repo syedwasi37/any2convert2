@@ -1,6 +1,5 @@
 <?php
 $isAdminUser = false;
-$dashboardHref = url('/dashboard');
 
 $trustHighlights = [
     ['slug' => 'no-file-uploads', 'label' => 'No file uploads', 'icon' => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'],
@@ -611,12 +610,7 @@ if ($isToolPage) {
     </script>
     <?php endif; ?>
 
-    <script>
-    tailwind.config = {
-        darkMode: 'class'
-    };
-</script>
-<script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1460,27 +1454,30 @@ if ($isToolPage) {
                     </svg>
                 </button>
 
-                <?php if (isset($_SESSION['user_name'])): ?>
+                <?php if (auth()->check()): ?>
                     <div class="relative dropdown-trigger" style="position:relative">
                         <button class="nav-pill">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                            <?php echo htmlspecialchars(explode(' ', $_SESSION['user_name'])[0]); ?>
+                            <?php echo htmlspecialchars(explode(' ', (string) auth()->user()->name)[0], ENT_QUOTES, 'UTF-8'); ?>
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="<?= htmlspecialchars($dashboardHref) ?>" class="dropdown-item">
+                            <a href="{{ route('home') }}" class="dropdown-item">
                                 <span style="display:flex;align-items:center;gap:8px;">
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                                    Dashboard
+                                    My tools
                                 </span>
                             </a>
                             <hr class="sep" style="margin:4px 0">
-                            <a href="/logout" class="dropdown-item danger">
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item danger" style="width:100%;border:0;background:transparent;text-align:left;cursor:pointer;">
                                 <span style="display:flex;align-items:center;gap:8px;">
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                                     Logout
                                 </span>
-                            </a>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 <?php else: ?>
