@@ -70,6 +70,15 @@ class AuthController extends Controller
         $email = Str::lower(trim($data['email']));
         $name = trim($data['name'] ?? '');
         $mode = $data['mode'] ?? 'login';
+
+        // Log/array mailers accept messages without delivering them. Avoid
+        // telling production users an OTP was sent when SMTP is not configured.
+        if (app()->environment('production') && in_array(config('mail.default'), ['log', 'array'], true)) {
+            return back()->withErrors([
+                'email' => 'Email delivery is not configured yet. Please contact the site administrator.',
+            ])->withInput();
+        }
+
         $rateKey = 'auth-otp-send:'.hash('sha256', $email.'|'.$request->ip());
 
         if (RateLimiter::tooManyAttempts($rateKey, 3)) {
