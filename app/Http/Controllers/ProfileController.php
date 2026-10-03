@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Support\Totp;
+use App\Support\CountryCatalog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Throwable;
 
@@ -19,9 +20,13 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         $pendingSecret = $request->session()->get('two_factor_setup_secret');
+        $phoneParts = CountryCatalog::splitPhone($user->phone, $user->country_code, $user->phone_country_code);
 
         return view('account.profile', [
             'user' => $user,
+            'countries' => CountryCatalog::all(),
+            'selectedCountry' => old('country_code', $phoneParts['country_code']),
+            'phoneLocal' => old('phone', $phoneParts['local_number']),
             'setupSecret' => $pendingSecret,
             'setupUri' => $pendingSecret ? Totp::provisioningUri($user->email, $pendingSecret) : null,
             'recoveryCodes' => $request->session()->get('new_recovery_codes', []),
@@ -32,12 +37,17 @@ class ProfileController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
-            'phone' => ['nullable', 'string', 'max:32', 'regex:/^\+?[1-9][0-9\s().-]{6,24}$/'],
+            'country_code' => ['nullable', 'string', 'size:2', 'required_with:phone', Rule::in(array_column(CountryCatalog::all(), 'code'))],
+            'phone' => ['nullable', 'string', 'max:32', 'regex:/^(?=(?:\D*\d){7,15}\D*$)(?![\s().-]*0+[\s().-]*$)[0-9\s().-]+$/'],
         ]);
+        $phone = CountryCatalog::normalizePhone($data['phone'] ?? null, $data['country_code'] ?? null);
 
         $request->user()->forceFill([
             'name' => trim($data['name']),
-            'phone' => filled($data['phone'] ?? null) ? trim($data['phone']) : null,
+            'phone' => $phone['phone'],
+            'country_code' => $phone['country_code'],
+            'country_name' => $phone['country_name'],
+            'phone_country_code' => $phone['phone_country_code'],
         ])->save();
 
         return back()->with('status', 'Your profile details are updated.');

@@ -10,6 +10,9 @@ return new class extends Migration
     {
         $missing = collect([
             'phone' => ! Schema::hasColumn('users', 'phone'),
+            'country_code' => ! Schema::hasColumn('users', 'country_code'),
+            'country_name' => ! Schema::hasColumn('users', 'country_name'),
+            'phone_country_code' => ! Schema::hasColumn('users', 'phone_country_code'),
             'google_avatar_url' => ! Schema::hasColumn('users', 'google_avatar_url'),
             'two_factor_secret' => ! Schema::hasColumn('users', 'two_factor_secret'),
             'two_factor_recovery_codes' => ! Schema::hasColumn('users', 'two_factor_recovery_codes'),
@@ -28,6 +31,9 @@ return new class extends Migration
             foreach ($missing as $column) {
                 match ($column) {
                     'phone' => $table->string('phone', 32)->nullable(),
+                    'country_code' => $table->char('country_code', 2)->nullable(),
+                    'country_name' => $table->string('country_name', 100)->nullable(),
+                    'phone_country_code' => $table->string('phone_country_code', 8)->nullable(),
                     'google_avatar_url', 'two_factor_secret', 'two_factor_recovery_codes' => $table->text($column)->nullable(),
                     'two_factor_confirmed_at', 'premium_expires_at' => $table->timestamp($column)->nullable(),
                     'isPremium' => $table->boolean('isPremium')->default(false),

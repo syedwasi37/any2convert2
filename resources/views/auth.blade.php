@@ -50,6 +50,7 @@
         .field input::placeholder{color:#a9ada8}
         .field input:focus{border-color:#5f9675;box-shadow:0 0 0 3px rgba(47,105,78,.11)}
         .field input[autocomplete=one-time-code]{letter-spacing:.24em;font-size:18px;font-weight:700}
+        .field select{display:block;width:100%;height:47px;padding:0 12px;border:1px solid #dedfdb;border-radius:9px;background:#fff;color:var(--ink);font:14px 'DM Sans',sans-serif;outline:none}.phone-wrap{display:flex;align-items:center;height:47px;border:1px solid #dedfdb;border-radius:9px;background:#fff;overflow:hidden}.phone-wrap>span{height:100%;display:flex;align-items:center;padding:0 11px;border-right:1px solid var(--line);color:var(--green);font-size:13px;font-weight:700;white-space:nowrap}.phone-wrap input{height:45px;border:0;border-radius:0;box-shadow:none!important;min-width:0}
         .row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:1px 0 17px}
         .check{display:flex;align-items:center;gap:8px;color:#6f766f;font-size:12px}
         .check input{accent-color:var(--green)}
@@ -127,6 +128,10 @@
                     @else
                         <input type="hidden" name="name" value="{{ session('otp_name') }}">
                     @endif
+                    @if ($otpMode === 'register')
+                        <input type="hidden" name="country_code" value="{{ old('country_code', session('otp_country_code')) }}">
+                        <input type="hidden" name="phone" value="{{ old('phone', session('otp_phone_local')) }}">
+                    @endif
                     <div class="field">
                         <label for="code">Sign-in code</label>
                         <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" placeholder="000000" required autofocus>
@@ -139,6 +144,10 @@
                     <input type="hidden" name="email" value="{{ $otpSentTo }}">
                     <input type="hidden" name="name" value="{{ session('otp_name') }}">
                     <input type="hidden" name="mode" value="{{ $otpMode }}">
+                    @if ($otpMode === 'register')
+                        <input type="hidden" name="country_code" value="{{ session('otp_country_code') }}">
+                        <input type="hidden" name="phone" value="{{ session('otp_phone_local') }}">
+                    @endif
                     <button class="switch-method" type="submit">Send a new code</button>
                 </form>
                 <a class="back-link" href="{{ route($otpMode === 'register' ? 'register' : 'login') }}">Use another sign-in method</a>
@@ -199,6 +208,7 @@
                             <input id="register-email" name="email" type="email" autocomplete="email" value="{{ old('email') }}" placeholder="you@example.com" required>
                             @error('email')<p class="error-text">{{ $message }}</p>@enderror
                         </div>
+                        @include('partials.country-phone-fields', ['fieldPrefix' => 'register-password', 'countries' => $countries, 'selectedCountry' => old('country_code'), 'phoneValue' => old('phone'), 'required' => true])
                         <div class="field">
                             <label for="register-password">Create a password</label>
                             <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required>
@@ -224,6 +234,7 @@
                             <input id="otp-email" name="email" type="email" autocomplete="email" value="{{ old('email') }}" placeholder="you@example.com" required>
                             @error('email')<p class="error-text">{{ $message }}</p>@enderror
                         </div>
+                        @include('partials.country-phone-fields', ['fieldPrefix' => 'register-otp', 'countries' => $countries, 'selectedCountry' => old('country_code'), 'phoneValue' => old('phone'), 'required' => true])
                         <button class="submit" type="submit">Email me a sign-up code</button>
                         <button class="switch-method" type="button" data-show="password-form">Use a password instead</button>
                     </form>
@@ -235,6 +246,13 @@
     </main>
 </div>
 <script>
+    document.querySelectorAll('[data-country-select]').forEach((select) => {
+        const wrapper = select.closest('.field')?.parentElement;
+        const prefix = wrapper?.querySelector('[data-phone-prefix]');
+        const updatePrefix = () => { if (prefix) prefix.textContent = select.selectedOptions[0]?.dataset.dial || 'Code'; };
+        select.addEventListener('change', updatePrefix);
+        updatePrefix();
+    });
     document.querySelectorAll('[data-show]').forEach((button) => {
         button.addEventListener('click', () => {
             document.querySelectorAll('#password-form, #otp-form').forEach((form) => { form.hidden = form.id !== button.dataset.show; });

@@ -124,6 +124,8 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/account/two-factor', [ProfileController::class, 'disableTwoFactor'])->middleware('throttle:6,1')->name('account.two-factor.disable');
 });
 Route::middleware('guest')->group(function (): void {
+    Route::get('/account/complete', [AuthController::class, 'showGoogleOnboarding'])->name('auth.google.onboarding');
+    Route::post('/account/complete', [AuthController::class, 'finishGoogleOnboarding'])->middleware('throttle:5,1')->name('auth.google.onboarding.finish');
     Route::get('/two-factor/challenge', [AuthController::class, 'showTwoFactorChallenge'])->name('auth.two-factor.challenge');
     Route::post('/two-factor/challenge', [AuthController::class, 'verifyTwoFactorChallenge'])->middleware('throttle:6,1')->name('auth.two-factor.verify');
 });

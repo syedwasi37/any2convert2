@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Support\CountryCatalog;
 use App\Support\Totp;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Throwable;
 
@@ -23,6 +25,7 @@ class AuthController extends Controller
         return view('auth', [
             'mode' => $mode === 'register' ? 'register' : 'login',
             'googleEnabled' => filled(config('services.google.client_id')) && filled(config('services.google.client_secret')),
+            'countries' => CountryCatalog::all(),
         ]);
     }
 
@@ -48,9 +51,15 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email:rfc', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'confirmed', 'min:8'],
+            'country_code' => ['required', 'string', 'size:2', Rule::in(array_column(CountryCatalog::all(), 'code'))],
+            'phone' => ['required', 'string', 'max:32', 'regex:/^(?=(?:\D*\d){7,15}\D*$)(?![\s().-]*0+[\s().-]*$)[0-9\s().-]+$/'],
         ]);
         $data['name'] = trim($data['name']);
         $data['email'] = Str::lower(trim($data['email']));
+        $phone = CountryCatalog::normalizePhone($data['phone'], $data['country_code']);
+        $data['phone'] = $phone['phone'];
+        $data['country_name'] = $phone['country_name'];
+        $data['phone_country_code'] = $phone['phone_country_code'];
 
         $user = User::create($data);
         return $this->finishAuthentication($user, $request);
@@ -62,11 +71,12 @@ class AuthController extends Controller
             'email' => ['required', 'email:rfc', 'max:255'],
             'name' => ['nullable', 'string', 'max:120'],
             'mode' => ['nullable', 'in:login,register'],
+            'country_code' => ['nullable', 'string', 'size:2', 'required_if:mode,register', Rule::in(array_column(CountryCatalog::all(), 'code'))],
+            'phone' => ['nullable', 'string', 'max:32', 'regex:/^(?=(?:\D*\d){7,15}\D*$)(?![\s().-]*0+[\s().-]*$)[0-9\s().-]+$/', 'required_if:mode,register'],
         ]);
         $email = Str::lower(trim($data['email']));
         $name = trim($data['name'] ?? '');
         $mode = $data['mode'] ?? 'login';
-
         // Log/array mailers accept messages without delivering them. Avoid
         // telling production users an OTP was sent when SMTP is not configured.
         if (app()->environment('production') && in_array(config('mail.default'), ['log', 'array'], true)) {
@@ -79,7 +89,8 @@ class AuthController extends Controller
 
         if (RateLimiter::tooManyAttempts($rateKey, 3)) {
             return back()->withErrors(['email' => 'Too many codes requested. Please wait a few minutes and try again.'])
-                ->withInput()->with('otp_sent_to', $email)->with('otp_name', $name)->with('otp_mode', $mode);
+                ->withInput()->with('otp_sent_to', $email)->with('otp_name', $name)->with('otp_mode', $mode)
+                ->with('otp_country_code', $data['country_code'] ?? null)->with('otp_phone_local', $data['phone'] ?? null);
         }
         RateLimiter::hit($rateKey, 600);
 
@@ -104,6 +115,8 @@ class AuthController extends Controller
             ->with('otp_sent_to', $email)
             ->with('otp_name', $name)
             ->with('otp_mode', $mode)
+            ->with('otp_country_code', $data['country_code'] ?? null)
+            ->with('otp_phone_local', $data['phone'] ?? null)
             ->with('status', 'If this email can receive sign-in codes, one is on its way. It is valid for 10 minutes.');
     }
 
@@ -114,6 +127,8 @@ class AuthController extends Controller
             'code' => ['required', 'digits:6'],
             'name' => ['nullable', 'string', 'max:120'],
             'mode' => ['nullable', 'in:login,register'],
+            'country_code' => ['nullable', 'string', 'size:2', 'required_if:mode,register', Rule::in(array_column(CountryCatalog::all(), 'code'))],
+            'phone' => ['nullable', 'string', 'max:32', 'regex:/^(?=(?:\D*\d){7,15}\D*$)(?![\s().-]*0+[\s().-]*$)[0-9\s().-]+$/', 'required_if:mode,register'],
         ]);
         $email = Str::lower(trim($data['email']));
         $cacheKey = 'auth-otp:'.hash('sha256', $email);
@@ -122,7 +137,8 @@ class AuthController extends Controller
 
         if (RateLimiter::tooManyAttempts($rateKey, 5)) {
             return back()->withErrors(['code' => 'Too many incorrect attempts. Request a new code and try again.'])
-                ->withInput()->with('otp_sent_to', $email)->with('otp_name', $data['name'] ?? '')->with('otp_mode', $route);
+                ->withInput()->with('otp_sent_to', $email)->with('otp_name', $data['name'] ?? '')->with('otp_mode', $route)
+                ->with('otp_country_code', $data['country_code'] ?? null)->with('otp_phone_local', $data['phone'] ?? null);
         }
 
         $hashedCode = Cache::get($cacheKey);
@@ -130,7 +146,8 @@ class AuthController extends Controller
             RateLimiter::hit($rateKey, 600);
 
             return back()->withErrors(['code' => 'That code is incorrect or has expired. Request a new one to continue.'])
-                ->withInput()->with('otp_sent_to', $email)->with('otp_name', $data['name'] ?? '')->with('otp_mode', $route);
+                ->withInput()->with('otp_sent_to', $email)->with('otp_name', $data['name'] ?? '')->with('otp_mode', $route)
+                ->with('otp_country_code', $data['country_code'] ?? null)->with('otp_phone_local', $data['phone'] ?? null);
         }
 
         $user = User::where('email', $email)->first();
@@ -138,6 +155,8 @@ class AuthController extends Controller
             return redirect()->route($route)->with('otp_sent_to', $email)
                 ->with('otp_name', '')
                 ->with('otp_mode', $route)
+                ->with('otp_country_code', $data['country_code'] ?? null)
+                ->with('otp_phone_local', $data['phone'] ?? null)
                 ->withErrors(['name' => 'Add your name to finish creating your account.']);
         }
 
@@ -145,11 +164,16 @@ class AuthController extends Controller
         RateLimiter::clear($rateKey);
 
         if (! $user) {
+            $phone = CountryCatalog::normalizePhone($data['phone'] ?? null, $data['country_code'] ?? null);
             $user = User::create([
                 'name' => trim($data['name']),
                 'email' => $email,
                 'password' => Str::random(48),
                 'email_verified_at' => now(),
+                'phone' => $phone['phone'],
+                'country_code' => $phone['country_code'],
+                'country_name' => $phone['country_name'],
+                'phone_country_code' => $phone['phone_country_code'],
             ]);
         } elseif (! $user->email_verified_at) {
             $user->forceFill(['email_verified_at' => now()])->save();
@@ -228,14 +252,15 @@ class AuthController extends Controller
             }
 
             if (! $user) {
-                $user = User::create([
-                    'name' => trim((string) ($profile['name'] ?? Str::before($email, '@'))),
+                $request->session()->put('google_signup_profile', [
+                    'google_id' => (string) $profile['sub'],
                     'email' => $email,
-                    'password' => Str::random(48),
-                    'email_verified_at' => now(),
-                    'google_id' => $profile['sub'],
+                    'google_name' => trim((string) ($profile['name'] ?? Str::before($email, '@'))),
                     'google_avatar_url' => $googleAvatarUrl,
                 ]);
+                $request->session()->put('google_signup_expires_at', now()->addMinutes(20)->timestamp);
+
+                return redirect()->route('auth.google.onboarding');
             } else {
                 $user->forceFill([
                     'google_id' => $profile['sub'],
@@ -250,6 +275,71 @@ class AuthController extends Controller
 
             return redirect()->route('login')->withErrors(['google' => 'Google sign-in could not be completed. Please try again.']);
         }
+    }
+
+    public function showGoogleOnboarding(Request $request): View|RedirectResponse
+    {
+        $profile = $request->session()->get('google_signup_profile');
+        $expiresAt = (int) $request->session()->get('google_signup_expires_at', 0);
+        if (! is_array($profile) || $expiresAt < now()->timestamp) {
+            $request->session()->forget(['google_signup_profile', 'google_signup_expires_at']);
+
+            return redirect()->route('login')->withErrors(['google' => 'Your Google sign-up session expired. Please start again.']);
+        }
+
+        return view('auth.google-onboarding', [
+            'googleProfile' => $profile,
+            'countries' => CountryCatalog::all(),
+        ]);
+    }
+
+    public function finishGoogleOnboarding(Request $request): RedirectResponse
+    {
+        $profile = $request->session()->get('google_signup_profile');
+        $expiresAt = (int) $request->session()->get('google_signup_expires_at', 0);
+        if (! is_array($profile) || $expiresAt < now()->timestamp) {
+            $request->session()->forget(['google_signup_profile', 'google_signup_expires_at']);
+
+            return redirect()->route('login')->withErrors(['google' => 'Your Google sign-up session expired. Please start again.']);
+        }
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120'],
+            'country_code' => ['required', 'string', 'size:2', Rule::in(array_column(CountryCatalog::all(), 'code'))],
+            'phone' => ['required', 'string', 'max:32', 'regex:/^(?=(?:\D*\d){7,15}\D*$)(?![\s().-]*0+[\s().-]*$)[0-9\s().-]+$/'],
+        ]);
+        $phone = CountryCatalog::normalizePhone($data['phone'], $data['country_code']);
+
+        $user = User::where('google_id', $profile['google_id'])->first()
+            ?? User::where('email', $profile['email'])->first();
+
+        if ($user && filled($user->google_id) && ! hash_equals((string) $user->google_id, (string) $profile['google_id'])) {
+            return redirect()->route('login')->withErrors(['google' => 'This email is linked to a different Google account. Please sign in with email.']);
+        }
+
+        $attributes = [
+            'name' => trim($data['name']),
+            'google_id' => $profile['google_id'],
+            'google_avatar_url' => $profile['google_avatar_url'] ?? null,
+            'email_verified_at' => now(),
+            'phone' => $phone['phone'],
+            'country_code' => $phone['country_code'],
+            'country_name' => $phone['country_name'],
+            'phone_country_code' => $phone['phone_country_code'],
+        ];
+
+        if ($user) {
+            $user->forceFill($attributes)->save();
+        } else {
+            $user = User::create($attributes + [
+                'email' => $profile['email'],
+                'password' => Str::random(48),
+            ]);
+        }
+
+        $request->session()->forget(['google_signup_profile', 'google_signup_expires_at']);
+
+        return $this->finishAuthentication($user, $request);
     }
 
     public function logout(Request $request): RedirectResponse
