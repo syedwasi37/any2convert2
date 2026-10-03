@@ -52,7 +52,7 @@ $blogSchema = [
     <?= json_encode($blogSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>
     </script>
 
-    @vite('resources/css/app.css')
+    @include('partials.tailwind-assets')
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

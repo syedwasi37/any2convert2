@@ -26,7 +26,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
     <meta property="og:url" content="<?= $canonicalUrl ?>">
     <meta name="theme-color" content="#3B82F6">
 
-    @vite('resources/css/app.css')
+    @include('partials.tailwind-assets')
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
