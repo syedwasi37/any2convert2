@@ -16,7 +16,7 @@ $blogSchema = [
         'name' => 'Any2Convert',
         'logo' => [
             '@type' => 'ImageObject',
-            'url' => 'https://any2convert.com/mylogo.png'
+            'url' => 'https://any2convert.com/any2convertlogo.png'
         ]
     ]
 ];
@@ -37,7 +37,8 @@ $blogSchema = [
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="en">
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="x-default">
     <title>{{ $title }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('mylogo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('any2convertlogo.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <meta name="description" content="{{ $description }}">
     <meta name="keywords" content="{{ $keywords }}">
     <meta property="og:title" content="{{ $title }}">

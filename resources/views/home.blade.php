@@ -246,7 +246,7 @@ $organizationSchema = [
     '@type' => 'Organization',
     'name' => 'Any2Convert',
     'url' => $siteUrl . '/',
-    'logo' => $siteUrl . '/mylogo.png',
+    'logo' => $siteUrl . '/any2convertlogo.png',
 ];
 $collectionPageSchema = [
     '@context' => 'https://schema.org',
@@ -580,7 +580,8 @@ if ($isToolPage) {
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="en">
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="x-default">
     <title><?= htmlspecialchars($seoTitle, ENT_QUOTES) ?></title>
-    <link rel="icon" type="image/png" href="mylogo.png">
+    <link rel="icon" type="image/png" href="<?= asset('any2convertlogo.png') ?>">
+    <link rel="icon" type="image/x-icon" href="<?= asset('favicon.ico') ?>">
     <meta name="description" content="<?= htmlspecialchars($seoDescription, ENT_QUOTES) ?>">
     <meta name="keywords" content="<?= htmlspecialchars($seoKeywords ?? '', ENT_QUOTES) ?>">
     <meta property="og:title" content="<?= htmlspecialchars($seoTitle, ENT_QUOTES) ?>">

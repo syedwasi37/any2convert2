@@ -19,7 +19,8 @@ $canonicalUrl = 'https://any2convert.com' . rtrim(request()->getPathInfo(), '/')
     <title>{{ $title }}</title>
     <meta name="description" content="{{ $description ?? '' }}">
     <meta name="keywords" content="{{ $keywords ?? '' }}">
-    <link rel="icon" type="image/png" href="/mylogo.png">
+    <link rel="icon" type="image/png" href="{{ asset('any2convertlogo.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <style>
         html { font-family: 'DM Sans', sans-serif; background:#f8f8fc; color:#111118; }
         body { margin:0; padding:0; }
