@@ -568,8 +568,10 @@ if ($isToolPage) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php if (!auth()->check() || !auth()->user()->hasPremiumFeature('ad_free')): ?>
     <meta name="google-adsense-account" content="ca-pub-4031884874698168">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4031884874698168" crossorigin="anonymous"></script>
+    <?php endif; ?>
     <?php if (request()->has('topic') || request()->has('noindex')): ?>
     <meta name="robots" content="noindex, follow">
     <?php else: ?>
@@ -1466,6 +1468,13 @@ if ($isToolPage) {
                                 <span style="display:flex;align-items:center;gap:8px;">
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                                     My tools
+                                </span>
+                            </a>
+                            <a href="{{ route('account.profile') }}" class="dropdown-item">
+                                <span style="display:flex;align-items:center;gap:8px;">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>
+                                    Profile & security
+                                    <?php if (auth()->user()->hasPremiumAccess()): ?><span style="color:#9a6b1d">✦ Premium</span><?php endif; ?>
                                 </span>
                             </a>
                             <hr class="sep" style="margin:4px 0">

@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ToolController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -112,6 +113,20 @@ Route::middleware('guest')->group(function (): void {
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback'])->name('auth.google.callback');
 Route::get('/backend/google_login.php', [AuthController::class, 'googleCallback'])->name('auth.google.legacy-callback');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+
+Route::middleware('auth')->group(function (): void {
+    Route::get('/account', [ProfileController::class, 'show'])->name('account.profile');
+    Route::patch('/account/profile', [ProfileController::class, 'updateProfile'])->name('account.profile.update');
+    Route::post('/account/password/code', [ProfileController::class, 'sendPasswordCode'])->middleware('throttle:5,1')->name('account.password.code');
+    Route::put('/account/password', [ProfileController::class, 'updatePassword'])->middleware('throttle:6,1')->name('account.password.update');
+    Route::post('/account/two-factor/setup', [ProfileController::class, 'startTwoFactorSetup'])->middleware('throttle:5,1')->name('account.two-factor.setup');
+    Route::post('/account/two-factor/confirm', [ProfileController::class, 'confirmTwoFactorSetup'])->middleware('throttle:6,1')->name('account.two-factor.confirm');
+    Route::delete('/account/two-factor', [ProfileController::class, 'disableTwoFactor'])->middleware('throttle:6,1')->name('account.two-factor.disable');
+});
+Route::middleware('guest')->group(function (): void {
+    Route::get('/two-factor/challenge', [AuthController::class, 'showTwoFactorChallenge'])->name('auth.two-factor.challenge');
+    Route::post('/two-factor/challenge', [AuthController::class, 'verifyTwoFactorChallenge'])->middleware('throttle:6,1')->name('auth.two-factor.verify');
+});
 
 Route::get('/pdf-to-word', [HomeController::class, 'tool'])->name('tools.show.pdf-to-word');
 Route::get('/pdf-to-word/', function () {

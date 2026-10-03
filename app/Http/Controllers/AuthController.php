@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Support\Totp;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,9 +38,7 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Those details don’t match an account. Please try again.'])->onlyInput('email');
         }
 
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('home'));
+        return $this->finishAuthentication(Auth::user(), $request);
     }
 
     public function register(Request $request): RedirectResponse
@@ -54,10 +53,7 @@ class AuthController extends Controller
         $data['email'] = Str::lower(trim($data['email']));
 
         $user = User::create($data);
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('home'));
+        return $this->finishAuthentication($user, $request);
     }
 
     public function sendOtp(Request $request): RedirectResponse
@@ -159,10 +155,7 @@ class AuthController extends Controller
             $user->forceFill(['email_verified_at' => now()])->save();
         }
 
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('home'));
+        return $this->finishAuthentication($user, $request);
     }
 
     public function googleRedirect(Request $request): RedirectResponse
@@ -248,10 +241,7 @@ class AuthController extends Controller
                 ])->save();
             }
 
-            Auth::login($user);
-            $request->session()->regenerate();
-
-            return redirect()->intended(route('home'));
+            return $this->finishAuthentication($user, $request);
         } catch (Throwable $exception) {
             report($exception);
 
@@ -266,5 +256,91 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('home');
+    }
+
+    public function showTwoFactorChallenge(Request $request): View|RedirectResponse
+    {
+        $user = $this->pendingTwoFactorUser($request);
+        if (! $user) {
+            return redirect()->route('login')->withErrors(['google' => 'Your sign-in session expired. Please try again.']);
+        }
+
+        return view('auth.two-factor', ['email' => $user->email]);
+    }
+
+    public function verifyTwoFactorChallenge(Request $request): RedirectResponse
+    {
+        $data = $request->validate(['code' => ['required', 'string', 'max:32']]);
+        $user = $this->pendingTwoFactorUser($request);
+        if (! $user) {
+            return redirect()->route('login')->withErrors(['google' => 'Your sign-in session expired. Please try again.']);
+        }
+
+        $code = trim($data['code']);
+        $valid = Totp::verify((string) $user->two_factor_secret, $code);
+        if (! $valid) {
+            $normalized = strtoupper(str_replace(['-', ' '], '', $code));
+            $recoveryCodes = $user->two_factor_recovery_codes ?? [];
+            foreach ($recoveryCodes as $index => $hash) {
+                if (Hash::check($normalized, $hash)) {
+                    unset($recoveryCodes[$index]);
+                    $user->forceFill(['two_factor_recovery_codes' => array_values($recoveryCodes)])->save();
+                    $valid = true;
+                    break;
+                }
+            }
+        }
+
+        if (! $valid) {
+            return back()->withErrors(['code' => 'That code is not valid. Try the current code in your authenticator app.']);
+        }
+
+        $request->session()->forget(['pending_two_factor_user_id', 'pending_two_factor_expires_at']);
+        if (! Auth::check() || (string) Auth::id() !== (string) $user->getKey()) {
+            Auth::login($user);
+        }
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('home'));
+    }
+
+    private function finishAuthentication(User $user, Request $request): RedirectResponse
+    {
+        if ($user->hasTwoFactorEnabled()) {
+            Auth::logout();
+            $request->session()->regenerate();
+            $request->session()->put([
+                'pending_two_factor_user_id' => $user->getKey(),
+                'pending_two_factor_expires_at' => now()->addMinutes(10)->timestamp,
+            ]);
+
+            return redirect()->route('auth.two-factor.challenge');
+        }
+
+        if (! Auth::check() || (string) Auth::id() !== (string) $user->getKey()) {
+            Auth::login($user);
+        }
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('home'));
+    }
+
+    private function pendingTwoFactorUser(Request $request): ?User
+    {
+        $expiresAt = (int) $request->session()->get('pending_two_factor_expires_at', 0);
+        if ($expiresAt < now()->timestamp) {
+            $request->session()->forget(['pending_two_factor_user_id', 'pending_two_factor_expires_at']);
+
+            return null;
+        }
+
+        $user = User::find($request->session()->get('pending_two_factor_user_id'));
+        if (! $user?->hasTwoFactorEnabled()) {
+            $request->session()->forget(['pending_two_factor_user_id', 'pending_two_factor_expires_at']);
+
+            return null;
+        }
+
+        return $user;
     }
 }
