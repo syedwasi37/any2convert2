@@ -217,6 +217,7 @@ class AuthController extends Controller
             }
 
             $email = Str::lower(trim($profile['email']));
+            $googleAvatarUrl = $this->googleAvatarUrl($profile['picture'] ?? null);
             $user = User::where('google_id', $profile['sub'])->first();
 
             if (! $user) {
@@ -233,11 +234,13 @@ class AuthController extends Controller
                     'password' => Str::random(48),
                     'email_verified_at' => now(),
                     'google_id' => $profile['sub'],
+                    'google_avatar_url' => $googleAvatarUrl,
                 ]);
             } else {
                 $user->forceFill([
                     'google_id' => $profile['sub'],
                     'email_verified_at' => $user->email_verified_at ?? now(),
+                    'google_avatar_url' => $googleAvatarUrl ?? $user->google_avatar_url,
                 ])->save();
             }
 
@@ -342,5 +345,18 @@ class AuthController extends Controller
         }
 
         return $user;
+    }
+
+    private function googleAvatarUrl(mixed $picture): ?string
+    {
+        if (! is_string($picture) || strlen($picture) > 2048) {
+            return null;
+        }
+
+        $parts = parse_url($picture);
+        $host = strtolower((string) ($parts['host'] ?? ''));
+        $isGoogleHost = $host === 'googleusercontent.com' || str_ends_with($host, '.googleusercontent.com');
+
+        return ($parts['scheme'] ?? null) === 'https' && $isGoogleHost ? $picture : null;
     }
 }
