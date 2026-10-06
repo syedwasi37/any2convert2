@@ -953,6 +953,7 @@ function getInvoiceGeneratorHTML() {
             const preview = document.getElementById("invoicePreview");
             const status = document.getElementById("invoiceStatus");
             const inputs = ["invoiceBusiness","invoiceClient","invoiceNumber","invoiceCurrency","invoiceIssueDate","invoiceDueDate","invoiceBusinessMeta","invoiceTax","invoiceNotes","invoiceColor"].map((id) => document.getElementById(id));
+            const escapeHtml = (value) => String(value ?? "").replace(/[&<>\"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
             
             let logoDataUrl = "";
             const logoFileInput = document.getElementById("invoiceLogoFile");
@@ -982,7 +983,7 @@ function getInvoiceGeneratorHTML() {
                 const row = document.createElement("div");
                 row.className = "grid md:grid-cols-[1.6fr_120px_140px_52px] gap-3";
                 row.innerHTML = `
-                    <input class="item-desc rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-slate-900 dark:text-white" placeholder="Design package" value="${data.desc || ""}">
+                    <input class="item-desc rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-slate-900 dark:text-white" placeholder="Design package" value="${escapeHtml(data.desc || "")}">
                     <input class="item-qty rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-slate-900 dark:text-white" type="number" min="1" step="1" value="${data.qty || 1}">
                     <input class="item-price rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-slate-900 dark:text-white" type="number" min="0" step="0.01" value="${data.price || 0}">
                     <button class="remove-item rounded-2xl bg-rose-500/12 text-rose-500 font-bold">✕</button>
@@ -993,13 +994,13 @@ function getInvoiceGeneratorHTML() {
             }
             
             function money(value) { 
-                const symbol = document.getElementById("invoiceCurrency").value || "$"; 
+                const symbol = escapeHtml(document.getElementById("invoiceCurrency").value || "$");
                 return `${symbol} ${Number(value || 0).toFixed(2)}`; 
             }
             
             function renderInvoice() {
                 const rows = Array.from(itemsWrap.children).map((row) => {
-                    const desc = row.querySelector(".item-desc").value || "Service item";
+                    const desc = escapeHtml(row.querySelector(".item-desc").value || "Service item");
                     const qty = parseFloat(row.querySelector(".item-qty").value) || 0;
                     const price = parseFloat(row.querySelector(".item-price").value) || 0;
                     return { desc, qty, price, total: qty * price };
@@ -1010,13 +1011,13 @@ function getInvoiceGeneratorHTML() {
                 const taxValue = subtotal * (taxRate / 100);
                 const total = subtotal + taxValue;
                 
-                const businessName = document.getElementById("invoiceBusiness").value || "Your Business";
-                const businessMeta = document.getElementById("invoiceBusinessMeta").value || "Business details will appear here.";
-                const invoiceNumber = document.getElementById("invoiceNumber").value || "INV-001";
-                const issueDate = document.getElementById("invoiceIssueDate").value || "--";
-                const dueDate = document.getElementById("invoiceDueDate").value || "--";
-                const clientName = document.getElementById("invoiceClient").value || "Client Name";
-                const notes = document.getElementById("invoiceNotes").value || "Thanks for your business.";
+                const businessName = escapeHtml(document.getElementById("invoiceBusiness").value || "Your Business");
+                const businessMeta = escapeHtml(document.getElementById("invoiceBusinessMeta").value || "Business details will appear here.");
+                const invoiceNumber = escapeHtml(document.getElementById("invoiceNumber").value || "INV-001");
+                const issueDate = escapeHtml(document.getElementById("invoiceIssueDate").value || "--");
+                const dueDate = escapeHtml(document.getElementById("invoiceDueDate").value || "--");
+                const clientName = escapeHtml(document.getElementById("invoiceClient").value || "Client Name");
+                const notes = escapeHtml(document.getElementById("invoiceNotes").value || "Thanks for your business.");
                 
                 const themeColors = {
                     slate: { primary: '#0f172a', light: '#f8fafc', border: '#e2e8f0', text: '#334155' },
@@ -1230,6 +1231,7 @@ function getAtsResumeCheckerHTML() {
     <script>
         (() => {
             const resumeInput = document.getElementById("atsResume"), jobInput = document.getElementById("atsJob"), scoreEl = document.getElementById("atsScore"), barEl = document.getElementById("atsBar"), summaryEl = document.getElementById("atsSummary"), keywordsEl = document.getElementById("atsKeywords"), tipsEl = document.getElementById("atsTips"), statusEl = document.getElementById("atsStatus");
+            const escapeHtml = (value) => String(value ?? "").replace(/[&<>\"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
             function tokenize(text) { return (text.toLowerCase().match(/[a-z][a-z0-9+#.-]{2,}/g) || []).filter((word) => !["with","from","that","this","have","your","will","into","their","about","using","years","year"].includes(word)); }
             function analyze() {
                 const resume = resumeInput.value.trim(), job = jobInput.value.trim();
@@ -1244,9 +1246,9 @@ function getAtsResumeCheckerHTML() {
                 const total = Math.round(Math.min(100, keywordScore + (foundSections.length / sections.length) * 25 + (/\d/.test(resume) ? 10 : 0) + (/(built|led|managed|launched|improved|optimized|delivered|designed)/i.test(resume) ? 10 : 0)));
                 scoreEl.textContent = total; barEl.style.width = total + "%";
                 summaryEl.textContent = total >= 80 ? "Strong match. Fine-tune the missing keywords and measurable impact." : total >= 60 ? "Decent match. Add missing terms and sharpen role-specific experience." : "Low match. Rework your summary, skills, and impact bullets around the job description.";
-                keywordsEl.innerHTML = missing.length ? missing.map((word) => `<span class="px-3 py-2 rounded-full bg-rose-500/10 text-rose-500 text-sm font-semibold">${word}</span>`).join("") : '<span class="px-3 py-2 rounded-full bg-emerald-500/10 text-emerald-500 text-sm font-semibold">No major keyword gaps found</span>';
+                keywordsEl.innerHTML = missing.length ? missing.map((word) => `<span class="px-3 py-2 rounded-full bg-rose-500/10 text-rose-500 text-sm font-semibold">${escapeHtml(word)}</span>`).join("") : '<span class="px-3 py-2 rounded-full bg-emerald-500/10 text-emerald-500 text-sm font-semibold">No major keyword gaps found</span>';
                 const tips = [foundSections.length < sections.length ? `Add missing sections: ${sections.filter((section) => !foundSections.includes(section)).join(", ")}.` : "Core resume sections are present.", missing.length ? `Work these terms naturally into your resume: ${missing.slice(0, 5).join(", ")}.` : "Keyword alignment looks strong for the top terms.", /\d/.test(resume) ? "You already use measurable numbers. Keep that impact language." : "Add numbers like revenue, response time, users, or conversion gains.", /(built|led|managed|launched|improved|optimized|delivered|designed)/i.test(resume) ? "Action verbs are present. Nice." : "Start bullets with action verbs like built, led, improved, or optimized."];
-                tipsEl.innerHTML = tips.map((tip) => `<li class="rounded-2xl bg-slate-100 dark:bg-slate-900 px-4 py-3">${tip}</li>`).join("");
+                tipsEl.innerHTML = tips.map((tip) => `<li class="rounded-2xl bg-slate-100 dark:bg-slate-900 px-4 py-3">${escapeHtml(tip)}</li>`).join("");
                 statusEl.textContent = `Checked ${topKeywords.length} key terms and ${foundSections.length}/${sections.length} major sections.`;
             }
             document.getElementById("atsAnalyze").addEventListener("click", analyze);
@@ -1594,6 +1596,7 @@ function getBankStatementToExcelHTML() {
             const rowsWrap = document.getElementById("statementRows");
             const countEl = document.getElementById("statementCount");
             const previewContainer = document.getElementById("statementPreviewContainer");
+            const escapeHtml = (value) => String(value ?? "").replace(/[&<>\"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
             
             let rows = [];
 
@@ -1689,9 +1692,9 @@ function getBankStatementToExcelHTML() {
                     if (rows.length > 0) {
                         rowsWrap.innerHTML = rows.map((row) => `
                             <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                                <td class="px-4 py-3 font-mono">${row.date}</td>
-                                <td class="px-4 py-3 max-w-sm truncate" title="${row.description}">${row.description}</td>
-                                <td class="px-4 py-3 font-mono text-emerald-600 dark:text-emerald-400">${row.amounts}</td>
+                                <td class="px-4 py-3 font-mono">${escapeHtml(row.date)}</td>
+                                <td class="px-4 py-3 max-w-sm truncate" title="${escapeHtml(row.description)}">${escapeHtml(row.description)}</td>
+                                <td class="px-4 py-3 font-mono text-emerald-600 dark:text-emerald-400">${escapeHtml(row.amounts)}</td>
                             </tr>
                         `).join("");
                         countEl.textContent = `${rows.length} rows`;
@@ -1756,7 +1759,7 @@ function getGrammarCheckerHTML() {
                 if (/\b(dont|cant|wont|im|ive|doesnt|isnt)\b/gi.test(text)) { text = text.replace(/\bdont\b/gi, "don't").replace(/\bcant\b/gi, "can't").replace(/\bwont\b/gi, "won't").replace(/\bim\b/gi, "I'm").replace(/\bive\b/gi, "I've").replace(/\bdoesnt\b/gi, "doesn't").replace(/\bisnt\b/gi, "isn't"); notes.push("Normalized common contractions."); }
                 if (text && !/[.!?]$/.test(text.trim())) { text = text.trim() + "."; notes.push("Added ending punctuation."); }
                 output.value = text;
-                suggestions.innerHTML = notes.length ? notes.map((note) => `<li class="rounded-2xl bg-slate-100 dark:bg-slate-900 px-4 py-3">${note}</li>`).join("") : '<li class="rounded-2xl bg-emerald-500/10 text-emerald-500 px-4 py-3">No obvious quick-fix issues found.</li>';
+                suggestions.innerHTML = notes.length ? notes.map((note) => `<li class="rounded-2xl bg-slate-100 dark:bg-slate-900 px-4 py-3">${note.replace(/[&<>\"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]))}</li>`).join("") : '<li class="rounded-2xl bg-emerald-500/10 text-emerald-500 px-4 py-3">No obvious quick-fix issues found.</li>';
                 status.textContent = notes.length ? `${notes.length} quick grammar improvements applied.` : "Text already looks clean.";
             }
             document.getElementById("grammarCheckBtn").addEventListener("click", runCheck);
@@ -2562,7 +2565,15 @@ function getGamerTagGeneratorHTML() {
                 const style = document.getElementById("tagStyle").value;
                 const keyword = (document.getElementById("tagKeyword").value || "Shadow").replace(/\s+/g, "");
                 const list = Array.from({ length: 8 }, (_, i) => `${keyword}${styles[style][i % styles[style].length]}${endings[i % endings.length]}`);
-                results.innerHTML = list.map((tag) => `<button class="rounded-[24px] border border-slate-200 dark:border-white/10 bg-slate-50 hover:bg-slate-100 dark:bg-white/5 dark:hover:bg-white/10 px-4 py-4 text-left font-semibold text-slate-900 dark:text-white transition" data-tag="${tag}">${tag}</button>`).join("");
+                results.replaceChildren();
+                list.forEach((tag) => {
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.className = "rounded-[24px] border border-slate-200 dark:border-white/10 bg-slate-50 hover:bg-slate-100 dark:bg-white/5 dark:hover:bg-white/10 px-4 py-4 text-left font-semibold text-slate-900 dark:text-white transition";
+                    btn.dataset.tag = tag;
+                    btn.textContent = tag;
+                    results.appendChild(btn);
+                });
                 results.querySelectorAll("[data-tag]").forEach((btn) => btn.addEventListener("click", async () => {
                     try { await navigator.clipboard.writeText(btn.dataset.tag); btn.textContent = `${btn.dataset.tag} - Copied`; } catch (e) {}
                 }));
@@ -4003,7 +4014,7 @@ function getImageToPdfHTML() {
 
             if(this.files[0]) {
 
-                pdfPreview.innerHTML = "Selected: " + this.files[0].name + " (" + (this.files[0].size / 1024).toFixed(2) + " KB)";
+                pdfPreview.textContent = "Selected: " + this.files[0].name + " (" + (this.files[0].size / 1024).toFixed(2) + " KB)";
 
                 pdfPreview.classList.remove("hidden");
 
@@ -4079,7 +4090,7 @@ function getImageToPdfHTML() {
 
             } catch(e) {
 
-                resultDiv.innerHTML = \'<div class="col-span-2 text-center text-red-500 py-4">Error: \' + e.message + \'</div>\';
+                resultDiv.textContent = "Error: " + e.message;
 
             }
 
@@ -4842,10 +4853,13 @@ function getPdfToExcelHTML() {
                 }
                 
                 if (csvContent) {
-                    resultDiv.innerHTML += `<pre class="text-xs mt-2 overflow-x-auto bg-gray-50 dark:bg-gray-800 p-2 rounded">${csvContent.slice(0, 500)}${csvContent.length > 500 ? "..." : ""}</pre>`;
+                    const csvPreview = document.createElement("pre");
+                    csvPreview.className = "text-xs mt-2 overflow-x-auto bg-gray-50 dark:bg-gray-800 p-2 rounded";
+                    csvPreview.textContent = `${csvContent.slice(0, 500)}${csvContent.length > 500 ? "..." : ""}`;
+                    resultDiv.appendChild(csvPreview);
                 }
             } catch(e) {
-                resultDiv.innerHTML = "<div class=\"text-red-500 text-center py-4\">Error: " + e.message + "</div>";
+                resultDiv.textContent = "Error: " + e.message;
             }
             progress.classList.add("hidden");
         });
@@ -4964,7 +4978,7 @@ function getCompressPdfHTML() {
         compressInput.addEventListener("change", function() {
             if(this.files[0]) {
                 const sizeKB = (this.files[0].size / 1024).toFixed(2);
-                compressPreview.innerHTML = "Selected: " + this.files[0].name + " (" + sizeKB + " KB)";
+                compressPreview.textContent = "Selected: " + this.files[0].name + " (" + sizeKB + " KB)";
                 compressPreview.classList.remove("hidden");
             }
         });
@@ -5128,7 +5142,7 @@ function getProtectPdfHTML() {
         
         protectInput.addEventListener("change", function() {
             if(this.files[0]) {
-                protectPreview.innerHTML = "Selected: " + this.files[0].name;
+                protectPreview.textContent = "Selected: " + this.files[0].name;
                 protectPreview.classList.remove("hidden");
             }
         });
@@ -5208,10 +5222,25 @@ function getWordToPdfHTML() {
     <script>
         const wordInput = document.getElementById("wordToPdfInput");
         const wordPreview = document.getElementById("wordPreview");
+        function sanitizeDocumentHtml(html) {
+            const allowed = new Set(["P", "BR", "DIV", "SPAN", "H1", "H2", "H3", "H4", "H5", "H6", "STRONG", "B", "EM", "I", "U", "UL", "OL", "LI", "TABLE", "THEAD", "TBODY", "TFOOT", "TR", "TH", "TD", "BLOCKQUOTE", "PRE"]);
+            const source = new DOMParser().parseFromString(String(html || ""), "text/html");
+            const clean = document.createElement("div");
+            function copy(node, parent) {
+                if (node.nodeType === Node.TEXT_NODE) { parent.appendChild(document.createTextNode(node.nodeValue || "")); return; }
+                if (node.nodeType !== Node.ELEMENT_NODE) return;
+                if (!allowed.has(node.tagName)) { Array.from(node.childNodes).forEach(child => copy(child, parent)); return; }
+                const safe = document.createElement(node.tagName.toLowerCase());
+                Array.from(node.childNodes).forEach(child => copy(child, safe));
+                parent.appendChild(safe);
+            }
+            Array.from(source.body.childNodes).forEach(node => copy(node, clean));
+            return clean.innerHTML;
+        }
         
         wordInput.addEventListener("change", function() {
             if(this.files[0]) {
-                wordPreview.innerHTML = "Selected: " + this.files[0].name;
+                wordPreview.textContent = "Selected: " + this.files[0].name;
                 wordPreview.classList.remove("hidden");
             }
         });
@@ -5232,7 +5261,7 @@ function getWordToPdfHTML() {
                 
                 if (file.name.endsWith(".docx")) {
                     const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
-                    htmlContent = result.value;
+                    htmlContent = sanitizeDocumentHtml(result.value);
                 } else {
                     // For .doc files, use a simpler approach
                     const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
@@ -5526,7 +5555,7 @@ function getPptToPdfHTML() {
         
         pptInput.addEventListener("change", function() {
             if(this.files[0]) {
-                pptPreview.innerHTML = "Selected: " + this.files[0].name;
+                pptPreview.textContent = "Selected: " + this.files[0].name;
                 pptPreview.classList.remove("hidden");
             }
         });
@@ -5820,7 +5849,7 @@ function getCsvToJsonHTML() {
                 downloadBtn.classList.remove("hidden");
                 copyBtn.classList.remove("hidden");
             } catch(e) {
-                jsonPreview.innerHTML = '<span class="text-red-500">Error parsing CSV: ' + e.message + '</span>';
+                jsonPreview.textContent = 'Error parsing CSV: ' + e.message;
             }
         });
         
@@ -9991,7 +10020,7 @@ function getPdfToWordPureJS() {
         document.getElementById("pdfToWordInput").addEventListener("change", function() {
             if(this.files[0]) {
                 const p = document.getElementById("pdfPreview");
-                p.innerHTML = "Selected: " + this.files[0].name;
+                p.textContent = "Selected: " + this.files[0].name;
                 p.classList.remove("hidden");
             }
         });
@@ -10043,7 +10072,7 @@ function getPdfToWordPureJS() {
                 URL.revokeObjectURL(a.href);
                 progress.innerHTML = "Conversion Complete! Word file downloaded.";
             } catch(e) {
-                progress.innerHTML = "Error: " + e.message;
+                progress.textContent = "Error: " + e.message;
                 progress.classList.add("text-red-500");
             }
         });
@@ -10093,7 +10122,7 @@ function getPdfToPptPureJS() {
         document.getElementById("pdfToPptInput").addEventListener("change", function() {
             if(this.files[0]) {
                 const p = document.getElementById("pptPreview");
-                p.innerHTML = "Selected: " + this.files[0].name;
+                p.textContent = "Selected: " + this.files[0].name;
                 p.classList.remove("hidden");
             }
         });
@@ -10131,7 +10160,7 @@ function getPdfToPptPureJS() {
                 await pptx.writeFile({ fileName: file.name.replace(".pdf", ".pptx") });
                 progress.innerHTML = "Complete! PowerPoint .pptx Downloaded.";
             } catch(e) {
-                progress.innerHTML = "Error: " + e.message;
+                progress.textContent = "Error: " + e.message;
                 progress.classList.add("text-red-500");
             }
         });
@@ -10158,7 +10187,7 @@ function getPdfToExcelPureJS() {
         document.getElementById("pdfToExcelInput").addEventListener("change", function() {
             if(this.files[0]) {
                 const p = document.getElementById("excelPreview");
-                p.innerHTML = "Selected: " + this.files[0].name;
+                p.textContent = "Selected: " + this.files[0].name;
                 p.classList.remove("hidden");
             }
         });
@@ -10201,7 +10230,7 @@ function getPdfToExcelPureJS() {
                 XLSX.writeFile(wb, file.name.replace(".pdf", ".xlsx"));
                 progress.innerHTML = "Complete! Excel .xlsx grid downloaded.";
             } catch(e) {
-                progress.innerHTML = "Error: " + e.message;
+                progress.textContent = "Error: " + e.message;
                 progress.classList.add("text-red-500");
             }
         });
@@ -10227,10 +10256,25 @@ function getWordToPdfPureJS() {
         document.getElementById("wordToPdfInput").addEventListener("change", function() {
             if(this.files[0]) {
                 const p = document.getElementById("wordPreview");
-                p.innerHTML = "Selected: " + this.files[0].name;
+                p.textContent = "Selected: " + this.files[0].name;
                 p.classList.remove("hidden");
             }
         });
+        function sanitizeDocumentHtml(html) {
+            const allowed = new Set(["P", "BR", "DIV", "SPAN", "H1", "H2", "H3", "H4", "H5", "H6", "STRONG", "B", "EM", "I", "U", "UL", "OL", "LI", "TABLE", "THEAD", "TBODY", "TFOOT", "TR", "TH", "TD", "BLOCKQUOTE", "PRE"]);
+            const source = new DOMParser().parseFromString(String(html || ""), "text/html");
+            const clean = document.createElement("div");
+            function copy(node, parent) {
+                if (node.nodeType === Node.TEXT_NODE) { parent.appendChild(document.createTextNode(node.nodeValue || "")); return; }
+                if (node.nodeType !== Node.ELEMENT_NODE) return;
+                if (!allowed.has(node.tagName)) { Array.from(node.childNodes).forEach(child => copy(child, parent)); return; }
+                const safe = document.createElement(node.tagName.toLowerCase());
+                Array.from(node.childNodes).forEach(child => copy(child, safe));
+                parent.appendChild(safe);
+            }
+            Array.from(source.body.childNodes).forEach(node => copy(node, clean));
+            return clean.innerHTML;
+        }
         document.getElementById("wordToPdfBtn").addEventListener("click", async function() {
             const file = document.getElementById("wordToPdfInput").files[0];
             if (!file) return alert("Select Word file");
@@ -10245,7 +10289,7 @@ function getWordToPdfPureJS() {
                 progress.innerHTML = "Writing to headless Canvas... (Visual conversion)";
                 
                 const wrapper = document.createElement("div");
-                wrapper.innerHTML = `<div style="padding:40px; font-family: Arial, serif; font-size: 14pt; color: #000; line-height: 1.6; background: #FFF; width: 800px;">${result.value}</div>`;
+                wrapper.innerHTML = `<div style="padding:40px; font-family: Arial, serif; font-size: 14pt; color: #000; line-height: 1.6; background: #FFF; width: 800px;">${sanitizeDocumentHtml(result.value)}</div>`;
                 document.body.appendChild(wrapper);
                 
                 const opt = { 
@@ -10260,7 +10304,7 @@ function getWordToPdfPureJS() {
                 wrapper.remove();
                 progress.innerHTML = "Complete! Read-Only PDF emitted successfully.";
             } catch(e) {
-                progress.innerHTML = "Error: " + e.message;
+                progress.textContent = "Error: " + e.message;
                 progress.classList.add("text-red-500");
             }
         });
@@ -10297,7 +10341,7 @@ function getProtectPdfPureJS() {
         document.getElementById("protectPdfInput").addEventListener("change", function() {
             if(this.files[0]) {
                 const p = document.getElementById("protectPreview");
-                p.innerHTML = "Selected: " + this.files[0].name;
+                p.textContent = "Selected: " + this.files[0].name;
                 p.classList.remove("hidden");
             }
         });
@@ -10346,7 +10390,7 @@ function getProtectPdfPureJS() {
                 doc.save(file.name.replace(".pdf", "_secured.pdf"));
                 progress.innerHTML = "Success! Hardware encrypted PDF generated.";
             } catch(e) {
-                progress.innerHTML = "Error: " + e.message;
+                progress.textContent = "Error: " + e.message;
                 progress.classList.add("text-red-500");
             }
         });
@@ -14083,6 +14127,7 @@ function getRepairMediaHTML() {
             const filesCount = document.getElementById("filesCount");
             const filesListWrapper = document.getElementById("filesListWrapper");
             const filesListBody = document.getElementById("filesListBody");
+            const escapeHtml = (value) => String(value ?? "").replace(/[&<>\"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
             
             const repairAllBtn = document.getElementById("repairAllBtn");
             const downloadZipBtn = document.getElementById("downloadZipBtn");
@@ -14198,11 +14243,11 @@ function getRepairMediaHTML() {
 
                     return `
                         <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition border-b border-slate-100 dark:border-slate-900">
-                            <td class="p-4 font-semibold text-slate-800 dark:text-slate-200 max-w-[200px] truncate" title="${item.file.name}">${item.file.name}</td>
+                            <td class="p-4 font-semibold text-slate-800 dark:text-slate-200 max-w-[200px] truncate" title="${escapeHtml(item.file.name)}">${escapeHtml(item.file.name)}</td>
                             <td class="p-4 text-slate-500 dark:text-slate-400 font-medium">${sizeMB}</td>
                             <td class="p-4 font-semibold text-slate-600 dark:text-slate-400">${format}</td>
-                            <td class="p-4 text-xs font-semibold text-slate-400 dark:text-slate-500 italic max-w-[300px] truncate" title="${lastLog}">
-                                ${lastLog}
+                            <td class="p-4 text-xs font-semibold text-slate-400 dark:text-slate-500 italic max-w-[300px] truncate" title="${escapeHtml(lastLog)}">
+                                ${escapeHtml(lastLog)}
                             </td>
                             <td class="p-4">
                                 <span class="px-2.5 py-1 text-xs font-bold rounded-lg border ${statusClass}">
