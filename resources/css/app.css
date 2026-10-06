@@ -818,3 +818,63 @@
         body::before { display:none; }
         .hero-glow { filter:none; opacity:.35; }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; } }
+
+/* Shared site navigation, used by every public page. */
+.nav-pill.active {
+    color: var(--accent);
+    background: var(--accent-light);
+    border-color: rgba(108, 99, 255, .16);
+}
+@media (max-width: 520px) {
+    .navbar .nav-pill { padding-right: 9px; padding-left: 9px; }
+    .navbar .btn-primary { display: none; }
+}
+@media (max-width: 390px) {
+    .navbar [data-site-sign-in] { display: none; }
+}
+
+/* The shared theme control stays useful on every page, including standalone flows. */
+html.dark .contact-page { background: #0a0a0f; color: #f0f0f8; }
+html.dark .contact-page .panel,
+html.dark .info-page .page-card,
+html.dark .admin-page .admin-panel { background: #16161f; border-color: rgba(255,255,255,.1); color: #f0f0f8; }
+html.dark .contact-page .panel h2,
+html.dark .contact-page .info-value,
+html.dark .info-page .page-title,
+html.dark .info-page .page-seo h3 { color: #f0f0f8; }
+html.dark .contact-page .panel-copy,
+html.dark .contact-page .intro-copy,
+html.dark .contact-page .privacy-note,
+html.dark .contact-page .form-help,
+html.dark .info-page .page-subtitle,
+html.dark .info-page .page-content p,
+html.dark .info-page .page-seo p { color: #a4a4bb; }
+html.dark .contact-page .info-item { background: #111118; border-color: rgba(255,255,255,.1); }
+html.dark .contact-page .field input,
+html.dark .contact-page .field select,
+html.dark .contact-page .field textarea,
+html.dark .admin-page .admin-control { background: #0a0a0f; border-color: rgba(255,255,255,.15); color: #f0f0f8; }
+html.dark .info-page { background: #0a0a0f; color: #f0f0f8; }
+html.dark .profile-page {
+    --ink: #f0f0f8; --muted: #a4a4bb; --line: rgba(255,255,255,.1);
+    --paper: #16161f; --wash: #0a0a0f; --green: #8bb99a; --green-soft: #1b2a20;
+    background: var(--wash); color: var(--ink);
+}
+html.dark .profile-page .member { background: linear-gradient(140deg,#211e17,#16161f 60%); border-color: #4b4028; }
+html.dark .profile-page .field input,
+html.dark .profile-page .field select { background: #0a0a0f; border-color: rgba(255,255,255,.15); color: #f0f0f8; }
+html.dark .profile-page .field label,
+html.dark .profile-page .benefits li { color: #c1c1d2; }
+html.dark .profile-page .mono,
+html.dark .profile-page .codes code { background: #111118; border-color: rgba(255,255,255,.15); }
+html.dark .auth-page { background: #0a0a0f; color: #f0f0f8; }
+html.dark .auth-page .story { background: #111811; }
+html.dark .auth-page .panel { background: #111118; }
+html.dark .auth-page .story-copy > p,
+html.dark .auth-page .proof,
+html.dark .auth-page .story-foot { color: #a4a4bb; }
+html.dark .onboarding-page,
+html.dark .two-factor-page { background: #0a0a0f; }
+html.dark .admin-page { background: #0a0a0f; color: #f0f0f8; }
+html.dark .admin-page .admin-top { background: #111118; border-color: rgba(255,255,255,.1); }
+html.dark .admin-page .admin-heading h1 { color: #f0f0f8; }

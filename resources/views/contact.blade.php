@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    @include('partials.site-theme')
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Contact Any2Convert</title>
@@ -11,17 +12,14 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    @include('partials.tailwind-assets')
     <style>
         * { box-sizing: border-box; }
         body { margin: 0; background: #f6f8fb; color: #172033; font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
         a { color: inherit; }
         .contact-wrap { width: min(100% - 32px, 1060px); margin: 0 auto; padding: 24px 0 56px; }
-        .contact-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 48px; }
         .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-size: 17px; font-weight: 700; }
         .brand img { width: 34px; height: 34px; object-fit: contain; }
-        .nav-links { display: flex; gap: 20px; color: #475569; font-size: 14px; }
-        .nav-links a { text-decoration: none; }
-        .nav-links a:hover { color: #2563eb; }
         .contact-intro { max-width: 660px; margin: 0 auto 32px; text-align: center; }
         .eyebrow { margin: 0 0 8px; color: #2563eb; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
         h1 { margin: 0; color: #101828; font-size: clamp(30px, 5vw, 42px); line-height: 1.15; letter-spacing: -.035em; }
@@ -50,16 +48,13 @@
         .submit-button:hover { background: #1d4ed8; }
         .notice { margin-bottom: 18px; padding: 12px 14px; border: 1px solid #a7f3d0; border-radius: 9px; background: #ecfdf5; color: #047857; font-size: 14px; }
         .honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
-        @media (max-width: 720px) { .contact-nav { margin-bottom: 34px; } .contact-grid { grid-template-columns: 1fr; } .contact-info { order: 2; } }
-        @media (max-width: 480px) { .contact-wrap { width: min(100% - 24px, 1060px); padding-top: 14px; } .nav-links { gap: 12px; font-size: 13px; } .panel { padding: 18px; } .form-grid { grid-template-columns: 1fr; } .field-full { grid-column: auto; } .form-footer { align-items: stretch; flex-direction: column; } .submit-button { width: 100%; } }
+        @media (max-width: 720px) { .contact-grid { grid-template-columns: 1fr; } .contact-info { order: 2; } }
+        @media (max-width: 480px) { .contact-wrap { width: min(100% - 24px, 1060px); padding-top: 14px; } .panel { padding: 18px; } .form-grid { grid-template-columns: 1fr; } .field-full { grid-column: auto; } .form-footer { align-items: stretch; flex-direction: column; } .submit-button { width: 100%; } }
     </style>
 </head>
-<body>
+<body class="contact-page">
+@include('partials.site-navbar')
 <main class="contact-wrap">
-    <header class="contact-nav">
-        <a class="brand" href="/"><img src="{{ asset('any2convertlogo.png') }}" alt=""><span>Any2Convert</span></a>
-        <nav class="nav-links" aria-label="Main navigation"><a href="/">Home</a><a href="/blog">Blog</a></nav>
-    </header>
 
     <section class="contact-intro">
         <p class="eyebrow">We’re here to help</p>
@@ -129,5 +124,6 @@
         </section>
     </div>
 </main>
+@include('partials.site-footer')
 </body>
 </html>

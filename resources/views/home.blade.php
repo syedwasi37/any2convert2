@@ -566,6 +566,7 @@ if ($isToolPage) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    @include('partials.site-theme')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php if (!auth()->check() || !auth()->user()->hasPremiumFeature('ad_free')): ?>
     <meta name="google-adsense-account" content="ca-pub-4031884874698168">
@@ -632,80 +633,7 @@ if ($isToolPage) {
 </head>
 <body>
 
-<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
-<nav class="navbar sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-15 py-3">
-
-            <!-- Logo -->
-            <a href="{{ route('home') }}" style="text-decoration:none" class="flex items-center gap-2" aria-label="Any2Convert home">
-                <div style="width:30px;height:30px;background:white;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                       <img src="{{ asset('any2trans.webp') }}" alt="Any2Convert logo" width="30" height="30">
-                </div>
-                <span style="font-weight:700;color:var(--text-primary);font-size:0.95rem;">Any2Convert</span>
-            </a>
-
-            <!-- Right side -->
-            <div class="flex items-center gap-2">
-                <a href="/blog" class="nav-pill">Blog</a>
-
-                <!-- Dark / Light mode toggle -->
-                <button id="themeToggle" onclick="toggleDarkMode()" title="Toggle dark mode" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;transition:all 0.2s ease;flex-shrink:0;">
-                    <!-- Moon (visible in light mode) -->
-                    <svg id="iconMoon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                    </svg>
-                    <!-- Sun (visible in dark mode) -->
-                    <svg id="iconSun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-                        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                    </svg>
-                </button>
-
-                <?php if (auth()->check()): ?>
-                    <div class="relative dropdown-trigger" style="position:relative">
-                        <button class="nav-pill">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                            <?php echo htmlspecialchars(explode(' ', (string) auth()->user()->name)[0], ENT_QUOTES, 'UTF-8'); ?>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a href="{{ route('home') }}" class="dropdown-item">
-                                <span style="display:flex;align-items:center;gap:8px;">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                                    My tools
-                                </span>
-                            </a>
-                            <a href="{{ route('account.profile') }}" class="dropdown-item">
-                                <span style="display:flex;align-items:center;gap:8px;">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>
-                                    Profile & security
-                                    <?php if (auth()->user()->hasPremiumAccess()): ?><span style="color:#9a6b1d">✦ Premium</span><?php endif; ?>
-                                </span>
-                            </a>
-                            <hr class="sep" style="margin:4px 0">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="dropdown-item danger" style="width:100%;border:0;background:transparent;text-align:left;cursor:pointer;">
-                                <span style="display:flex;align-items:center;gap:8px;">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                                    Logout
-                                </span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                <?php else: ?>
-                    <a href="/login" class="nav-pill">Sign in</a>
-                    <a href="/register" class="btn-primary" style="text-decoration:none;font-size:0.84rem;padding:8px 18px;">
-                        Get started free
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                    </a>
-                <?php endif; ?>
-            </div>
-
-        </div>
-    </div>
-</nav>
+@include('partials.site-navbar')
 
 
 <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
@@ -1067,62 +995,7 @@ if ($isToolPage) {
 </main>
 
 
-<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
-<footer style="border-top:1px solid var(--border);background:var(--bg-surface);">
-    <div style="max-width:1280px;margin:0 auto;padding:48px 20px 32px;">
-
-        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;" class="footer-grid">
-            <div>
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-                    <div style="width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    </div>
-                    <span style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Any2Convert</span>
-                </div>
-                <p style="font-size:0.8rem;color:var(--text-muted);line-height:1.7;max-width:220px;">Practical online tools for files, documents, and everyday tasks.</p>
-            </div>
-
-            <div>
-                <div style="font-size:0.75rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;">Tools</div>
-                <div style="display:flex;flex-direction:column;gap:9px;">
-                    <a href="/image-to-pdf" class="footer-link">Image to PDF</a>
-                    <a href="/pdf-to-word" class="footer-link">PDF to Word</a>
-                    <a href="/merge-pdf" class="footer-link">Merge PDF</a>
-                    <a href="/ocr-image-to-text" class="footer-link">OCR Tool</a>
-                </div>
-            </div>
-
-            <div>
-                <div style="font-size:0.75rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;">Company</div>
-                <div style="display:flex;flex-direction:column;gap:9px;">
-                    <a href="/about" class="footer-link">About</a>
-                    <a href="/contact" class="footer-link">Contact</a>
-                    <a href="/privacy" class="footer-link">Privacy Policy</a>
-                    <a href="/terms" class="footer-link">Terms</a>
-                    @if (auth()->check() && auth()->user()->isAdmin())
-                    <a href="{{ route('admin.contact.index') }}" class="footer-link">Admin inbox</a>
-                    @endif
-                </div>
-            </div>
-
-            <div>
-                <div style="font-size:0.75rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;">Resources</div>
-                <div style="display:flex;flex-direction:column;gap:9px;">
-                    <a href="/blog" class="footer-link">Blog</a>
-                </div>
-            </div>
-        </div>
-
-        <div style="border-top:1px solid var(--border);padding-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-            <span style="font-size:0.78rem;color:var(--text-muted);">&copy; <?= date('Y') ?> Any2Convert. All rights reserved. Made with love in Karachi, Pakistan.</span>
-            <div style="display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--text-muted);">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                Processing depends on the tool: in your browser or on our server
-            </div>
-        </div>
-
-    </div>
-</footer>
+@include('partials.site-footer')
 
 <!-- ═══════════════════════════════ TOOL MODAL ═══════════════════════════════ -->
 <div id="toolModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1" onclick="closeToolModal(event)">
@@ -1290,23 +1163,6 @@ function redirectToToolPage(toolId) {
 function isKnownToolId(toolId) {
     return Object.prototype.hasOwnProperty.call(toolSlugMap, toolId);
 }
-
-// ── Theme (light default, dark optional, persisted) ──
-function toggleDarkMode() {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    document.getElementById('iconMoon').style.display = isDark ? 'none'  : '';
-    document.getElementById('iconSun').style.display  = isDark ? ''      : 'none';
-}
-// Init theme on load
-(function(){
-    const saved = localStorage.getItem('theme');
-    if (saved === 'dark') {
-        document.documentElement.classList.add('dark');
-        document.getElementById('iconMoon').style.display = 'none';
-        document.getElementById('iconSun').style.display  = '';
-    }
-})();
 
 // ── Execute scripts in dynamically loaded HTML ──
 async function executeScripts(container) {

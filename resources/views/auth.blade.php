@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    @include('partials.site-theme')
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#f6f5f1">
@@ -11,6 +12,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    @include('partials.tailwind-assets')
     <style>
         :root{color-scheme:light;--ink:#202321;--muted:#777d78;--line:#e8e9e4;--paper:#fff;--canvas:#f6f5f1;--green:#2f694e;--green-dark:#24553e;--soft:#edf4ef;--red:#a83d38}
         *{box-sizing:border-box}
@@ -65,13 +67,14 @@
         .terms a,.back-link{color:#607268;text-decoration:underline;text-underline-offset:2px}
         .back-link{display:block;width:max-content;margin:18px auto 0;font-size:12px;font-weight:600}
         [hidden]{display:none!important}
-        @media(max-width:900px){.shell{grid-template-columns:minmax(0,1fr) minmax(390px,.95fr)}.story{padding:34px 34px}.story-copy{margin:70px 0 90px}.panel{padding:38px 30px}h1{font-size:48px}}
-        @media(max-width:700px){.shell{display:flex;min-height:100vh;flex-direction:column}.story{display:none}.panel{min-height:100vh;align-items:flex-start;padding:28px 22px 38px}.auth{max-width:440px;margin:auto}.mobile-brand{display:inline-flex;margin-bottom:43px}.auth h2{font-size:27px}.intro{margin-bottom:23px}}
+        .shell{min-height:calc(100vh - 150px)}.story{min-height:calc(100vh - 150px)}@media(max-width:900px){.shell{grid-template-columns:minmax(0,1fr) minmax(390px,.95fr)}.story{padding:34px 34px}.story-copy{margin:70px 0 90px}.panel{padding:38px 30px}h1{font-size:48px}}
+        @media(max-width:700px){.shell{display:flex;min-height:calc(100vh - 150px);flex-direction:column}.story{display:none}.panel{min-height:calc(100vh - 150px);align-items:flex-start;padding:28px 22px 38px}.auth{max-width:440px;margin:auto}.mobile-brand{display:inline-flex;margin-bottom:43px}.auth h2{font-size:27px}.intro{margin-bottom:23px}}
         @media(max-width:390px){.panel{padding-right:18px;padding-left:18px}.mobile-brand{margin-bottom:34px}}
         @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
     </style>
 </head>
-<body>
+<body class="auth-page">
+@include('partials.site-navbar')
 @php
     $otpSentTo = session('otp_sent_to');
     $otpMode = session('otp_mode', $mode);
@@ -255,5 +258,6 @@
     });
 </script>
 @include('partials.password-visibility')
+@include('partials.site-footer')
 </body>
 </html>

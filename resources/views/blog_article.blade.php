@@ -25,6 +25,7 @@ $blogSchema = [
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    @include('partials.site-theme')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-4031884874698168">
     <?php if (request()->has('topic') || request()->has('noindex')): ?>
@@ -55,7 +56,7 @@ $blogSchema = [
     </script>
 
     @include('partials.tailwind-assets')
-    
+
     <!-- Google Fonts -->
 
     <!-- Styles matching Any2Convert premium design system -->
@@ -119,29 +120,6 @@ $blogSchema = [
             z-index: 0;
             opacity: 0.35;
         }
-
-        .navbar {
-            background: rgba(248,248,252,0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-        }
-        html.dark .navbar {
-            background: rgba(10,10,15,0.85);
-        }
-
-        .nav-pill {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 7px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-            cursor: pointer; text-decoration: none;
-        }
-        .nav-pill:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); border-color: var(--border); }
 
         .btn-primary {
             display: inline-flex; align-items: center; gap: 8px;
@@ -238,7 +216,7 @@ $blogSchema = [
         .blog-steps li strong {
             color: var(--text-primary);
         }
-        
+
         .faq-item {
             border-bottom: 1px solid var(--border);
             padding: 1.25rem 0;
@@ -299,47 +277,11 @@ $blogSchema = [
 <body class="relative min-h-screen pb-20">
 
     <!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
-    <nav class="navbar sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16 py-3">
-
-                <!-- Logo -->
-                <a href="{{ route('home') }}" class="flex items-center gap-2" style="text-decoration:none" aria-label="Any2Convert home">
-                    <div class="w-[30px] h-[30px] bg-white rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm border border-black/5">
-                        <img src="{{ asset('any2trans.webp') }}" alt="Any2Convert logo" width="30" height="30">
-                    </div>
-                    <span class="font-bold text-sm tracking-tight text-[var(--text-primary)]">Any2Convert</span>
-                </a>
-
-                <!-- Right Menu -->
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('home') }}" class="nav-pill">Home</a>
-                    <a href="/blog" class="nav-pill active">Blog</a>
-                    
-                    <!-- Dark/Light Mode toggle -->
-                    <button id="themeToggle" onclick="toggleDarkMode()" title="Toggle dark mode" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;transition:all 0.2s ease;flex-shrink:0;">
-                        <!-- Moon Icon -->
-                        <svg id="iconMoon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                        </svg>
-                        <!-- Sun Icon -->
-                        <svg id="iconSun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-                            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                        </svg>
-                    </button>
-                    
-                    <a href="/register" class="btn-primary hidden sm:inline-flex" style="font-size:0.84rem;padding:7px 16px;">
-                        Get started free
-                    </a>
-                </div>
-
-            </div>
-        </div>
-    </nav>
+    @include('partials.site-navbar')
 
     <!-- ═══════════════════════════════ MAIN CONTENT ═══════════════════════════════ -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 relative z-10">
-        
+
         <!-- Back Button -->
         <div class="mb-6">
             <a href="/blog" class="inline-flex items-center gap-2 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors no-underline">
@@ -351,17 +293,17 @@ $blogSchema = [
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            
+
             <!-- Left Column: Article content (8 cols) -->
             <article class="lg:col-span-8">
-                
+
                 <!-- Article Header -->
                 <header class="mb-8">
                     <span class="cat-badge cat-{{ $article['category_slug'] }} mb-4">{{ $article['category'] }}</span>
                     <h1 class="text-3xl md:text-4xl font-extrabold text-[var(--text-primary)] leading-tight mb-4 tracking-tight">
                         {{ $article['title'] }}
                     </h1>
-                    
+
                     <!-- Metadata info -->
                     <div class="flex flex-wrap items-center gap-4 text-xs text-[var(--text-muted)] border-b border-[var(--border)] pb-5">
                         <div class="flex items-center gap-2">
@@ -417,7 +359,7 @@ $blogSchema = [
 
             <!-- Right Column: Sidebar (4 cols) -->
             <aside class="lg:col-span-4 space-y-8">
-                
+
                 <!-- Useful links -->
                 <div class="sidebar-card p-6 shadow-sm">
                     <h3 class="text-sm font-bold text-[var(--text-primary)] tracking-wide uppercase mb-3 border-b border-[var(--border)] pb-2">Need a hand?</h3>
@@ -467,33 +409,11 @@ $blogSchema = [
     </main>
 
     <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
-    <footer class="max-w-7xl mx-auto px-4 text-center mt-24 pt-8 border-t border-[var(--border)] text-xs text-[var(--text-muted)]">
-        <p>&copy; {{ date('Y') }} Any2Convert. Processing method varies by tool; review its details before use.</p>
-        <p class="mt-2">
-            <a href="/" class="hover:text-[var(--text-secondary)]">Home</a> &middot;
-            <a href="/privacy" class="hover:text-[var(--text-secondary)] ml-2">Privacy</a> &middot;
-            <a href="/terms" class="hover:text-[var(--text-secondary)] ml-2">Terms</a>
-        </p>
-    </footer>
+    @include('partials.site-footer')
 
     <!-- ═══════════════════════════════ JS LOGIC ═══════════════════════════════ -->
     <script>
-        // Theme toggler
-        function toggleDarkMode() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            document.getElementById('iconMoon').style.display = isDark ? 'none'  : '';
-            document.getElementById('iconSun').style.display  = isDark ? ''      : 'none';
-        }
-        // Init theme
-        (function(){
-            const saved = localStorage.getItem('theme');
-            if (saved === 'dark') {
-                document.documentElement.classList.add('dark');
-                document.getElementById('iconMoon').style.display = 'none';
-                document.getElementById('iconSun').style.display  = '';
-            }
-        })();
+
     </script>
 </body>
 </html>

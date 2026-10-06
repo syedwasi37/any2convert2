@@ -5,6 +5,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    @include('partials.site-theme')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-4031884874698168">
     <?php if (request()->has('topic') || request()->has('noindex')): ?>
@@ -29,7 +30,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
     <meta name="theme-color" content="#3B82F6">
 
     @include('partials.tailwind-assets')
-    
+
     <!-- CSS custom properties mapping home style -->
     <style>
         :root {
@@ -92,30 +93,6 @@ $canonicalUrl = 'https://any2convert.com/blog';
             opacity: 0.35;
         }
 
-        .navbar {
-            background: rgba(248,248,252,0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-        }
-        html.dark .navbar {
-            background: rgba(10,10,15,0.85);
-        }
-
-        .nav-pill {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 7px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-            cursor: pointer; text-decoration: none;
-        }
-        .nav-pill:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); border-color: var(--border); }
-        .nav-pill.active { color: var(--accent); background: var(--accent-light); border-color: rgba(108,99,255,0.15); }
-
         .btn-primary {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 9px 20px;
@@ -172,7 +149,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
             letter-spacing: 0.05em;
             border-radius: 6px;
         }
-        
+
         .cat-pdf { background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid rgba(239,68,68,0.15); }
         .cat-convert { background: rgba(59,130,246,0.1); color: #3B82F6; border: 1px solid rgba(59,130,246,0.15); }
         .cat-utility { background: rgba(139,92,246,0.1); color: #8B5CF6; border: 1px solid rgba(139,92,246,0.15); }
@@ -218,7 +195,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
             background: var(--accent);
             box-shadow: 0 8px 20px rgba(108,99,255,0.25);
         }
-        
+
         #themeToggle:hover {
             background: var(--accent-light) !important;
             border-color: rgba(108,99,255,0.3) !important;
@@ -233,43 +210,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
 <body class="relative min-h-screen pb-20">
 
     <!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
-    <nav class="navbar sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16 py-3">
-
-                <!-- Logo -->
-                <a href="{{ route('home') }}" class="flex items-center gap-2" style="text-decoration:none" aria-label="Any2Convert home">
-                    <div class="w-[30px] h-[30px] bg-white rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm border border-black/5">
-                        <img src="{{ asset('any2trans.webp') }}" alt="Any2Convert logo" width="30" height="30">
-                    </div>
-                    <span class="font-bold text-sm tracking-tight text-[var(--text-primary)]">Any2Convert</span>
-                </a>
-
-                <!-- Right Menu -->
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('home') }}" class="nav-pill">Home</a>
-                    <a href="/blog" class="nav-pill active">Blog</a>
-                    
-                    <!-- Dark/Light Mode toggle -->
-                    <button id="themeToggle" onclick="toggleDarkMode()" title="Toggle dark mode" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;transition:all 0.2s ease;flex-shrink:0;">
-                        <!-- Moon Icon -->
-                        <svg id="iconMoon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                        </svg>
-                        <!-- Sun Icon -->
-                        <svg id="iconSun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-                            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                        </svg>
-                    </button>
-                    
-                    <a href="/register" class="btn-primary hidden sm:inline-flex" style="font-size:0.84rem;padding:7px 16px;">
-                        Get started free
-                    </a>
-                </div>
-
-            </div>
-        </div>
-    </nav>
+    @include('partials.site-navbar')
 
     <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
     <header class="relative overflow-hidden py-16 px-4 text-center">
@@ -291,7 +232,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
 
     <!-- ═══════════════════════════════ MAIN CONTENT ═══════════════════════════════ -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
+
         <!-- Search & Filter Controls -->
         <div class="mb-10 max-w-4xl mx-auto">
             <div class="search-wrap rounded-2xl p-4 mb-6 shadow-sm">
@@ -335,7 +276,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
         <div id="articlesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach($posts as $post)
             <article class="card-wp flex flex-col h-full" data-title="{{ strtolower($post['title']) }}" data-excerpt="{{ strtolower($post['excerpt']) }}" data-category="{{ $post['category_slug'] }}">
-                
+
                 <!-- Card Cover Image -->
                 <a href="/blog/{{ $post['slug'] }}" class="block relative aspect-video overflow-hidden border-b border-[var(--border)] group">
                     <img src="{{ asset($post['image']) }}" alt="{{ $post['title'] }}" width="1024" height="1024" decoding="async" class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" loading="lazy">
@@ -344,7 +285,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
 
                 <!-- Card Content -->
                 <div class="p-6 flex flex-col flex-grow">
-                    
+
                     <!-- Metadata Header -->
                     <div class="flex items-center justify-between mb-4">
                         <span class="cat-badge cat-{{ $post['category_slug'] }}">{{ $post['category'] }}</span>
@@ -380,7 +321,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
                                 <p class="text-[var(--text-muted)] m-0 leading-none">{{ $post['date'] }}</p>
                             </div>
                         </div>
-                        
+
                         <a href="/blog/{{ $post['slug'] }}" class="inline-flex items-center gap-1 text-xs font-semibold text-[var(--accent)] hover:underline">
                             Read Guide
                             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -397,33 +338,11 @@ $canonicalUrl = 'https://any2convert.com/blog';
     </main>
 
     <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
-    <footer class="max-w-7xl mx-auto px-4 text-center mt-24 pt-8 border-t border-[var(--border)] text-xs text-[var(--text-muted)]">
-        <p>&copy; {{ date('Y') }} Any2Convert. Processing method varies by tool; review its details before use.</p>
-        <p class="mt-2">
-            <a href="/" class="hover:text-[var(--text-secondary)]">Home</a> &middot;
-            <a href="/privacy" class="hover:text-[var(--text-secondary)] ml-2">Privacy</a> &middot;
-            <a href="/terms" class="hover:text-[var(--text-secondary)] ml-2">Terms</a>
-        </p>
-    </footer>
+    @include('partials.site-footer')
 
     <!-- ═══════════════════════════════ JS LOGIC ═══════════════════════════════ -->
     <script>
-        // Theme toggler
-        function toggleDarkMode() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            document.getElementById('iconMoon').style.display = isDark ? 'none'  : '';
-            document.getElementById('iconSun').style.display  = isDark ? ''      : 'none';
-        }
-        // Init theme
-        (function(){
-            const saved = localStorage.getItem('theme');
-            if (saved === 'dark') {
-                document.documentElement.classList.add('dark');
-                document.getElementById('iconMoon').style.display = 'none';
-                document.getElementById('iconSun').style.display  = '';
-            }
-        })();
+
 
         // Live Search & Category Filtering
         (function() {
@@ -432,7 +351,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
             const filterChips = Array.from(document.querySelectorAll('.filter-chip'));
             const articles = Array.from(document.querySelectorAll('#articlesGrid article'));
             const noResults = document.getElementById('noResults');
-            
+
             let activeFilter = 'all';
 
             function applyFilters() {

@@ -5,6 +5,7 @@ $canonicalUrl = 'https://any2convert.com' . rtrim(request()->getPathInfo(), '/')
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    @include('partials.site-theme')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-4031884874698168">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4031884874698168" crossorigin="anonymous"></script>
@@ -24,6 +25,7 @@ $canonicalUrl = 'https://any2convert.com' . rtrim(request()->getPathInfo(), '/')
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    @include('partials.tailwind-assets')
     <style>
         html { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#f8f8fc; color:#111118; }
         body { margin:0; padding:0; }
@@ -36,7 +38,6 @@ $canonicalUrl = 'https://any2convert.com' . rtrim(request()->getPathInfo(), '/')
         .page-seo { margin-top:24px; border-top:1px solid rgba(15,23,42,0.08); padding-top:22px; }
         .page-seo h3 { margin:0 0 12px; font-size:1.25rem; line-height:1.25; color:#111118; }
         .page-seo p { margin:0 0 14px; line-height:1.8; color:#475569; }
-        .page-footer { margin-top:24px; font-size:0.92rem; color:#64748b; }
     </style>
     <!-- Microsoft Clarity -->
     <script type="text/javascript">
@@ -47,17 +48,9 @@ $canonicalUrl = 'https://any2convert.com' . rtrim(request()->getPathInfo(), '/')
         })(window, document, "clarity", "script", "xymcprs44h");
     </script>
 </head>
-<body>
+<body class="info-page">
+    @include('partials.site-navbar')
     <div class="page-shell">
-        <header style="margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
-            <a href="/" style="font-weight:700; color:#111118; font-size:1rem;">Any2Convert</a>
-            <nav style="display:flex; gap:14px; font-size:0.95rem; color:#475569;">
-                <a href="/">Home</a>
-                <a href="/blog">Blog</a>
-                <a href="/privacy">Privacy</a>
-                <a href="/terms">Terms</a>
-            </nav>
-        </header>
 
         <article class="page-card">
             <h1 class="page-title">{{ $headline ?? $title }}</h1>
@@ -71,10 +64,8 @@ $canonicalUrl = 'https://any2convert.com' . rtrim(request()->getPathInfo(), '/')
                 <p>Use this page as a quick reference for how Any2Convert approaches free access, privacy-aware workflows, browser compatibility, and practical file handling. The goal is to keep each page understandable for visitors while giving search engines enough context to identify the purpose of the page.</p>
                 <p>For related work, return to the homepage to browse PDF tools, document converters, image utilities, calculators, writing helpers, developer utilities, and everyday productivity tools. Each tool page includes a focused description, expected use cases, and notes about how the browser-based workflow fits into the wider Any2Convert toolkit.</p>
             </section>
-            <div class="page-footer">
-                <p>Return to the <a href="/">Any2Convert homepage</a> anytime.</p>
-            </div>
         </article>
     </div>
+    @include('partials.site-footer')
 </body>
 </html>

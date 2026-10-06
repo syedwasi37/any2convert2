@@ -1,13 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    @include('partials.site-theme')
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Contact inbox') · Any2Convert Admin</title>
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16.png') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    @include('partials.tailwind-assets')
     <style>
         * { box-sizing: border-box; }
         body { margin: 0; background: #f5f7fa; color: #172033; font: 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -44,7 +47,8 @@
         @media (max-width: 640px) { .admin-top { padding: 0 14px; } .admin-main { width: min(100% - 20px, 1160px); margin-top: 20px; } .admin-panel { padding: 15px; } .admin-heading { align-items: flex-start; flex-direction: column; } }
     </style>
 </head>
-<body>
+<body class="admin-page">
+@include('partials.site-navbar')
 <header class="admin-top">
     <a href="{{ route('admin.contact.index') }}" class="admin-brand"><img src="{{ asset('any2convertlogo.png') }}" alt=""><span>Any2Convert <span class="admin-muted">/ Admin</span></span></a>
     <nav class="admin-top-nav" aria-label="Admin navigation"><a href="{{ route('admin.contact.index') }}">Inbox</a><a href="/" target="_blank" rel="noopener">View site</a></nav>
@@ -55,5 +59,6 @@
     @if ($errors->any())<div class="admin-flash error" role="alert">Please check the highlighted details and try again.</div>@endif
     @yield('content')
 </main>
+@include('partials.site-footer')
 </body>
 </html>
