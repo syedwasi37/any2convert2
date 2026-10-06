@@ -7,6 +7,7 @@ use App\Http\Controllers\ToolController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Admin\ContactAdminController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -131,6 +132,9 @@ Route::prefix('admin/contact')->name('admin.contact.')->middleware(['auth', 'adm
     Route::post('/{contactMessage}/replies/{reply}/resend', [ContactAdminController::class, 'resend'])->name('resend');
     Route::delete('/{contactMessage}', [ContactAdminController::class, 'destroy'])->name('destroy');
 });
+Route::get('/admin', [AdminDashboardController::class, 'index'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.dashboard');
 Route::middleware('guest')->group(function (): void {
     Route::get('/account/complete', [AuthController::class, 'showGoogleOnboarding'])->name('auth.google.onboarding');
     Route::post('/account/complete', [AuthController::class, 'finishGoogleOnboarding'])->middleware('throttle:5,1')->name('auth.google.onboarding.finish');

@@ -50,8 +50,8 @@
 <body class="admin-page">
 @include('partials.site-navbar')
 <header class="admin-top">
-    <a href="{{ route('admin.contact.index') }}" class="admin-brand"><img src="{{ asset('any2convertlogo.png') }}" alt=""><span>Any2Convert <span class="admin-muted">/ Admin</span></span></a>
-    <nav class="admin-top-nav" aria-label="Admin navigation"><a href="{{ route('admin.contact.index') }}">Inbox</a><a href="/" target="_blank" rel="noopener">View site</a></nav>
+    <a href="{{ route('admin.dashboard') }}" class="admin-brand"><img src="{{ asset('any2convertlogo.png') }}" alt=""><span>Any2Convert <span class="admin-muted">/ Admin</span></span></a>
+    <nav class="admin-top-nav" aria-label="Admin navigation"><a href="{{ route('admin.dashboard') }}" @if(request()->routeIs('admin.dashboard')) aria-current="page" @endif>Overview</a><a href="{{ route('admin.contact.index') }}" @if(request()->routeIs('admin.contact.*')) aria-current="page" @endif>Contact messages</a><a href="/" target="_blank" rel="noopener">View site</a></nav>
 </header>
 <main class="admin-main">
     @if (session('status'))<div class="admin-flash" role="status">{{ session('status') }}</div>@endif

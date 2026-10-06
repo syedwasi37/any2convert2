@@ -48,6 +48,14 @@
                                     <?php if (auth()->user()->hasPremiumAccess()): ?><span style="color:#9a6b1d">✦ Premium</span><?php endif; ?>
                                 </span>
                             </a>
+                            <?php if (auth()->user()->isAdmin()): ?>
+                                <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
+                                    <span style="display:flex;align-items:center;gap:8px;">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/></svg>
+                                        Admin panel
+                                    </span>
+                                </a>
+                            <?php endif; ?>
                             <hr class="sep" style="margin:4px 0">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
