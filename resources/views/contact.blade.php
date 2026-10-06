@@ -6,14 +6,14 @@
     <meta name="robots" content="index, follow">
     <title>Contact Any2Convert</title>
     <meta name="description" content="Contact Any2Convert support, report a tool issue, or share feedback.">
-    <link rel="icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     <style>
         * { box-sizing: border-box; }
-        body { margin: 0; background: #f6f8fb; color: #172033; font: 15px/1.5 'DM Sans', system-ui, sans-serif; }
+        body { margin: 0; background: #f6f8fb; color: #172033; font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
         a { color: inherit; }
         .contact-wrap { width: min(100% - 32px, 1060px); margin: 0 auto; padding: 24px 0 56px; }
         .contact-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 48px; }

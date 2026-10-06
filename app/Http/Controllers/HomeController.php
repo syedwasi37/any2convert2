@@ -36,43 +36,43 @@ class HomeController extends Controller
     {
         $topics = [
             'instant-processing' => [
-                'label' => 'Instant Processing',
-                'desc' => 'At Any2Convert, we understand that your time is valuable. That\'s why we\'ve engineered our tools to provide instant processing for all your file conversion and utility needs. Our platform is optimized for speed, ensuring that you can get your tasks done quickly and efficiently, without any unnecessary delays. We believe that you shouldn\'t have to wait to get the results you need, and our commitment to instant processing is a testament to that belief.',
+                'label' => 'Quick online tools',
+                'desc' => 'Use focused tools for common file and everyday tasks. Processing time depends on the tool, your file, your device, and your connection. Check the tool page for supported formats and file limits before you begin.',
                 'keywords' => 'instant processing, fast file conversion, quick tools, efficient processing, speed optimization',
             ],
             'files-never-leave-your-device' => [
-                'label' => 'Files Never Leave Your Device',
-                'desc' => 'Your privacy is our top priority at Any2Convert. We\'ve designed our platform to keep your files secure and private by processing them directly on your device whenever possible. This means that sensitive documents, personal photos, and important data never leave your computer or mobile device. Our local-first approach ensures that you have full control over your files, reducing the risk of data breaches or unauthorized access. With Any2Convert, you can work with confidence, knowing that your information stays exactly where it belongs - on your device.',
+                'label' => 'How file handling works',
+                'desc' => 'Processing depends on the tool: some tasks run in your browser, while others send files to the site server to complete the work. Review the details on the tool page and our Privacy Policy before selecting sensitive files.',
                 'keywords' => 'privacy, local processing, file security, no uploads, data protection',
             ],
             'no-file-uploads' => [
-                'label' => 'No File Uploads',
-                'desc' => 'Experience the convenience of processing files without the hassle of uploads. At Any2Convert, many of our tools work directly in your browser, eliminating the need to send your files to remote servers. This approach not only saves time but also enhances your privacy by keeping your data local. Whether you\'re converting documents, compressing images, or performing other tasks, you can complete your work instantly without waiting for uploads or downloads. Our no-upload philosophy makes file processing faster, safer, and more efficient for everyday users.',
+                'label' => 'Browser-based tools',
+                'desc' => 'Some Any2Convert tools work directly in your browser, while other tasks use server processing. Each tool explains its supported formats and processing method so you can choose the right workflow for your file.',
                 'keywords' => 'no uploads, local processing, browser tools, privacy, fast processing',
             ],
             'free-forever' => [
-                'label' => 'Free Forever',
-                'desc' => 'Any2Convert is committed to providing free access to our comprehensive suite of online tools. We believe that essential file processing and conversion utilities should be available to everyone without cost barriers. Our free-forever model means you can use our platform for all your document, image, and data needs without worrying about subscriptions, hidden fees, or premium upgrades. We\'re dedicated to keeping our tools accessible and useful for individuals, small businesses, and organizations of all sizes, ensuring that quality file processing remains within reach for everyone.',
+                'label' => 'Free online tools',
+                'desc' => 'Many tools are available without an account. Some features require an account or a paid plan; check the tool page and plan details to see what is included before you start.',
                 'keywords' => 'free tools, no cost, free forever, accessible tools, no subscriptions',
             ],
             'works-in-browser' => [
-                'label' => 'Works in Browser',
-                'desc' => 'Our browser-based tools offer unparalleled convenience and accessibility. With Any2Convert, you can perform complex file operations directly in your web browser without installing any software or applications. This approach works seamlessly across all modern browsers and operating systems, giving you the freedom to work from any device with an internet connection. Whether you\'re using Chrome, Firefox, Safari, or Edge, our tools deliver consistent performance and functionality. The browser-based design also means automatic updates and compatibility, so you always have access to the latest features and improvements.',
+                'label' => 'Tools in your browser',
+                'desc' => 'Open Any2Convert in a modern web browser without installing a desktop app. Tool support and performance can vary by browser and device; each page lists the formats and options available for that task.',
                 'keywords' => 'browser tools, web based, no installation, cross browser, online tools',
             ],
             'works-on-any-device' => [
-                'label' => 'Works on Any Device',
-                'desc' => 'Any2Convert is designed to work flawlessly across all your devices. Our responsive web platform adapts to desktops, laptops, tablets, and smartphones, providing a consistent and optimized experience regardless of screen size or operating system. Whether you\'re working on a Windows PC, Mac, iPhone, Android device, or any other modern platform, our tools deliver the same powerful functionality and user-friendly interface. This cross-device compatibility ensures that you can continue your work seamlessly, whether you\'re at your desk, on the go, or switching between devices throughout your day.',
+                'label' => 'Use tools across devices',
+                'desc' => 'Any2Convert is a responsive website for desktop, tablet, and mobile browsers. Some tasks may work differently on smaller screens or devices with limited memory, so check each tool’s requirements for larger files.',
                 'keywords' => 'cross device, responsive, mobile friendly, desktop tools, any device',
             ],
             'always-free-no-watermarks' => [
-                'label' => 'Always Free, No Watermarks',
-                'desc' => 'We provide our tools completely free of charge and without any watermarks or branding on your processed files. At Any2Convert, we believe that your work should remain yours, unmarred by promotional marks or restrictions. Our commitment to watermark-free processing means you can use our tools for professional projects, personal documents, or any other purpose without compromise. This policy extends to all our tools and features, ensuring that you receive clean, professional results every time you use our platform.',
+                'label' => 'Clear output options',
+                'desc' => 'Output options vary by tool and plan. Review the tool page before starting to see its formats, available features, and any account requirements.',
                 'keywords' => 'no watermarks, free tools, clean output, professional results, no branding',
             ],
             'instant-results' => [
-                'label' => 'Instant Results',
-                'desc' => 'Get immediate results with Any2Convert\'s optimized processing engine. Our tools are designed to deliver fast, reliable performance for all your file conversion and processing needs. Whether you\'re converting documents, compressing images, or performing data transformations, you can expect quick turnaround times that keep your workflow moving. The instant results approach eliminates waiting and allows you to complete tasks efficiently, making Any2Convert the ideal choice for users who value speed and productivity in their daily file processing activities.',
+                'label' => 'Straightforward workflows',
+                'desc' => 'Each tool is built around a specific task, with the available options shown before you begin. Processing time depends on your device, file size, connection, and the tool you choose.',
                 'keywords' => 'instant results, fast processing, quick conversion, efficient tools, productivity',
             ],
         ];
@@ -98,7 +98,7 @@ class HomeController extends Controller
         return view('blog', [
             'posts' => $posts,
             'title' => 'Any2Convert Blog - Free Online Tools & Conversion Tutorials',
-            'description' => 'Discover step-by-step guides, privacy tips, and tutorials for 80+ PDF, image, document, and utility tools on Any2Convert.',
+            'description' => 'Browse practical guides, privacy information, and tutorials for file, document, image, and everyday tools on Any2Convert.',
             'keywords' => 'file conversion, digital tools, PDF guides, image compressor tutorials, formatting guides',
         ]);
     }

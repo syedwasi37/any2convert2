@@ -26,7 +26,7 @@ class BlogContent
                 'slug' => $slug,
                 'tool_id' => $toolId,
                 'title' => self::getBlogTitle($toolId, $tool['name']),
-                'excerpt' => $tool['desc'] . '. Learn how to use this free online tool to optimize your workflow with privacy-focused, browser-based processing.',
+                'excerpt' => $tool['desc'] . '. Learn what it supports and how to get started.',
                 'category' => self::getCategoryLabel($category),
                 'category_slug' => $category,
                 'read_time' => self::calculateReadTime($toolId),
@@ -52,7 +52,7 @@ class BlogContent
             'category_slug' => 'pdf',
             'read_time' => '3 min read',
             'date' => 'May 12, 2026',
-            'image' => '/images/blog/pdf_blog.jpg',
+            'image' => '/images/blog/pdf_blog.webp',
             'author' => 'Security Analyst',
             'gradient_class' => $pdfGradients['gradient'],
             'glow_class' => $pdfGradients['glow'],
@@ -70,7 +70,7 @@ class BlogContent
             'category_slug' => 'business',
             'read_time' => '4 min read',
             'date' => 'June 05, 2026',
-            'image' => '/images/blog/utility_blog.jpg',
+            'image' => '/images/blog/utility_blog.webp',
             'author' => 'Marketing Team',
             'gradient_class' => $bizGradients['gradient'],
             'glow_class' => $bizGradients['glow'],
@@ -127,15 +127,15 @@ class BlogContent
     {
         switch ($category) {
             case 'pdf':
-                return '/images/blog/pdf_blog.jpg';
+                return '/images/blog/pdf_blog.webp';
             case 'convert':
             case 'conversion':
-                return '/images/blog/converter_blog.jpg';
+                return '/images/blog/converter_blog.webp';
             case 'gaming':
             case 'fun':
-                return '/images/blog/gaming_blog.jpg';
+                return '/images/blog/gaming_blog.webp';
             default:
-                return '/images/blog/utility_blog.jpg';
+                return '/images/blog/utility_blog.webp';
         }
     }
 
@@ -298,7 +298,7 @@ class BlogContent
                 </div>
 
                 <h2>3. Removal of Hidden Metadata (EXIF Data)</h2>
-                <p>Raw photos captured on smartphones contain extensive EXIF metadata, including the exact GPS coordinates of where the photo was taken, the device model, camera settings, and timestamps. Uploading these images directly online exposes your personal privacy. A PDF conversion strips away this hidden camera metadata, making your files safe for public transmission.</p>
+                <p>Photos may contain EXIF metadata such as device details, camera settings, or location. Converting an image to PDF does not automatically guarantee that all metadata is removed. Check the file handling notes for the tool you use, and avoid sharing sensitive location details when they are not needed.</p>
                 ';
             }
             if ($post['slug'] === 'qr-guide') {
@@ -324,14 +324,14 @@ class BlogContent
                 <p class="lead">Converting images to PDF is one of the most frequent document management tasks. Whether you are compiling receipts, submitting scanned assignments, or sharing design portfolios, combining JPG or PNG images into a single PDF ensures formatting consistency across all devices.</p>
                 <h2>Why Convert JPG and PNG Images to PDF?</h2>
                 <p>Raw image files can vary dramatically in dimensions, orientation, and resolution. When sending multiple photos via email or chat, recipients must open each file individually. Merging them into a single PDF standardizes page sizes, prevents accidental editing, and reduces overall attachment friction.</p>
-                <h2>Key Benefits of Browser-Based Image-to-PDF Conversion</h2>
+                <h2>What to Check Before Converting</h2>
                 <ul>
-                    <li><strong>100% On-Device Processing:</strong> Your personal photos and documents never upload to remote servers. All rendering happens inside WebAssembly and browser canvas APIs.</li>
+                    <li><strong>File handling:</strong> Processing depends on the selected tool. Review its notes before choosing sensitive photos or documents.</li>
                     <li><strong>Batch Combination:</strong> Select dozens of images at once and arrange them in any order before exporting.</li>
-                    <li><strong>No File Size Restrictions:</strong> Since processing utilizes your computer\'s local memory, you aren\'t bound by server upload caps.</li>
+                    <li><strong>File limits:</strong> Size and batch limits vary by tool and device.</li>
                 </ul>
                 <div class="blog-note">
-                    <strong>Privacy First:</strong> Identity cards, medical bills, and financial receipts should never be uploaded to unverified online converters. On Any2Convert, processing stays completely on your local device.
+                    <strong>Privacy:</strong> Check the tool’s processing method before using identity cards, medical bills, financial receipts, or other sensitive files.
                 </div>
                 <h2>How to Use Image to PDF on Any2Convert</h2>
                 <ol class="blog-steps">
@@ -346,7 +346,7 @@ class BlogContent
                 return '
                 <p class="lead">Need to modify text inside a read-only PDF? Converting PDF files to editable Word (DOCX) documents allows you to tweak contracts, update resumes, and reuse existing document layouts without starting from scratch.</p>
                 <h2>Overcoming the PDF Editing Challenge</h2>
-                <p>The PDF format was created to freeze visual layouts, not for editing. Extracting editable text while retaining paragraphs, font styling, and line spacing requires intelligent layout parsing. Any2Convert\'s PDF to Word tool analyzes text structures in your browser and maps them directly into standard Microsoft Word blocks.</p>
+                <p>The PDF format preserves a page layout, so converting it to an editable document can change spacing, fonts, or page breaks. Results depend on the source PDF, especially when it contains scans or complex layouts. Review the output before relying on it.</p>
                 <h2>When Should You Convert PDF to DOCX?</h2>
                 <ul>
                     <li>Updating existing resumes or employment cover letters.</li>
@@ -360,8 +360,8 @@ class BlogContent
                 <p class="lead">Large PDF files can trigger email attachment bounces and slow down website uploads. Compressing your PDF files reduces file size while preserving document clarity and readable typography.</p>
                 <h2>How PDF Compression Works</h2>
                 <p>PDF documents often accumulate uncompressed embedded streams, high-resolution background assets, and redundant font subsets. Compression optimizes internal stream structures and downsamples high-DPI images to standard web resolution (150 DPI), trimming MBs of unnecessary weight.</p>
-                <h2>Benefits of Local Browser PDF Compression</h2>
-                <p>Traditional cloud compressors upload your sensitive documents to distant servers. Any2Convert performs all vector stream optimization directly inside your browser sandbox, delivering immediate speed and total privacy.</p>
+                <h2>What to Expect</h2>
+                <p>Compression results depend on the images, fonts, and other content in the PDF. Some files shrink substantially while others change very little. Review the tool’s file handling notes before selecting sensitive documents.</p>
                 ';
 
             case 'image_compressor':
@@ -392,20 +392,20 @@ class BlogContent
         $categoryLabel = self::getCategoryLabel($category);
 
         return '
-        <p class="lead">The <strong>' . $name . '</strong> utility on Any2Convert provides a streamlined, browser-native solution designed to help you ' . lcfirst($desc) . ' with ease, speed, and privacy.</p>
+        <p class="lead">Use <strong>' . $name . '</strong> to ' . lcfirst($desc) . '.</p>
 
-        <h2>Why Choose Any2Convert\'s ' . $name . '?</h2>
-        <p>Unlike conventional web services that upload your assets to third-party cloud infrastructure, Any2Convert prioritizes on-device computation. By leveraging modern web standards, your operations run locally on your device hardware.</p>
+        <h2>Before you start</h2>
+        <p>Accepted inputs, output options, and processing methods vary by tool. Review the instructions on the tool page before selecting a file. For details about browser and server processing, see our <a href="/privacy">Privacy Policy</a>.</p>
 
         <h2>Quick Usage Guide for ' . $name . '</h2>
         <ol class="blog-steps">
             <li><strong>Navigate to the Tool:</strong> Open the <a href="/' . $post['slug'] . '">Any2Convert ' . $name . '</a> page.</li>
-            <li><strong>Input Data or Files:</strong> Upload your source file or type your input directly into the interactive workspace.</li>
-            <li><strong>Process & Download:</strong> Click the process action to immediately receive your result without server delay.</li>
+            <li><strong>Provide an input:</strong> Follow the page instructions to choose a file or enter your text.</li>
+            <li><strong>Review the result:</strong> Start the task and save the output if the tool provides a download.</li>
         </ol>
 
         <div class="blog-note">
-            <strong>Security Guarantee:</strong> Your data remains inside your browser environment throughout the process.
+            <strong>File handling:</strong> Check the tool and privacy details before using sensitive material. Some tasks run in your browser; others use the site server.
         </div>
         ';
     }

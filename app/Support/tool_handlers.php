@@ -1805,16 +1805,14 @@ function getInvoiceGeneratorHTML() {
                         <meta charset="UTF-8">
                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
                         <title>Print Invoice</title>
-                        <script src="https://cdn.tailwindcss.com"><\/script>
                         <style>
-                            body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
-                            @media print {
-                                body { margin: 0; padding: 0; background: white; }
-                            }
+                            body { margin: 0; padding: 32px; background: #f8fafc; color: #0f172a; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+                            .invoice-print-sheet { width: 100%; max-width: 768px; margin: 0 auto; background: white; }
+                            @media print { body { padding: 0; background: white; } }
                         </style>
                     </head>
-                    <body class="bg-white text-slate-900 p-8 flex justify-center">
-                        <div class="w-full max-w-3xl">
+                    <body>
+                        <div class="invoice-print-sheet">
                             ${preview.innerHTML}
                         </div>
                         <script>

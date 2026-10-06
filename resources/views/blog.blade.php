@@ -7,7 +7,6 @@ $canonicalUrl = 'https://any2convert.com/blog';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-4031884874698168">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4031884874698168" crossorigin="anonymous"></script>
     <?php if (request()->has('topic') || request()->has('noindex')): ?>
     <meta name="robots" content="noindex, follow">
     <?php else: ?>
@@ -17,8 +16,11 @@ $canonicalUrl = 'https://any2convert.com/blog';
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="en">
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="x-default">
     <title>{{ $title }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('any2convertlogo.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16.png') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     <meta name="description" content="{{ $description }}">
     <meta name="keywords" content="{{ $keywords }}">
     <meta property="og:title" content="{{ $title }}">
@@ -28,11 +30,6 @@ $canonicalUrl = 'https://any2convert.com/blog';
 
     @include('partials.tailwind-assets')
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
     <!-- CSS custom properties mapping home style -->
     <style>
         :root {
@@ -69,14 +66,14 @@ $canonicalUrl = 'https://any2convert.com/blog';
             --accent-glow:    rgba(108,99,255,0.4);
         }
 
-        * { font-family: 'DM Sans', sans-serif; box-sizing: border-box; }
+        * { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; box-sizing: border-box; }
         body {
             background-color: var(--bg-base);
             color: var(--text-primary);
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
-            animation: homeFadeIn 0.6s cubic-bezier(.22,1,.36,1);
+            animation: none;
         }
 
         @keyframes homeFadeIn {
@@ -147,38 +144,24 @@ $canonicalUrl = 'https://any2convert.com/blog';
             filter: blur(40px);
         }
 
-        /* Modern card hover animations */
+        /* Keep article cards steady so the listing stays easy to scan. */
         .card-wp {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 20px;
+            border-radius: 12px;
             overflow: hidden;
-            transition: transform 0.35s cubic-bezier(.22,1,.36,1), border-color 0.28s ease, box-shadow 0.32s ease, background 0.28s ease;
+            transition: border-color 0.16s ease, box-shadow 0.16s ease;
             position: relative;
         }
         .card-wp:hover {
-            transform: translateY(-6px) scale(1.015);
+            transform: translateY(-2px);
             border-color: var(--border-hover);
-            box-shadow: 0 24px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(108,99,255,0.12);
+            box-shadow: 0 5px 14px rgba(15,23,42,0.08);
         }
-        .card-wp::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: -50px;
-            width: 240px;
-            height: 140px;
-            border-radius: 999px;
-            background: radial-gradient(circle, rgba(108,99,255,0.12), transparent 70%);
-            opacity: 0;
-            transform: translateX(-50%) scale(.8);
-            transition: opacity 0.35s ease, transform 0.38s cubic-bezier(.22,1,.36,1);
-            pointer-events: none;
-        }
-        .card-wp:hover::after {
-            opacity: 1;
-            transform: translateX(-50%) scale(1.05);
-        }
+        .card-wp::after { display:none; }
+        body::before { display:none; }
+        .hero-glow { filter:none; opacity:.3; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; } }
 
         .cat-badge {
             display: inline-flex;
@@ -242,14 +225,10 @@ $canonicalUrl = 'https://any2convert.com/blog';
             color: var(--accent) !important;
         }
     </style>
-    <!-- Microsoft Clarity -->
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "xymcprs44h");
-    </script>
+    @include('partials.defer-external-scripts', ['sources' => [
+        ['src' => 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4031884874698168', 'crossorigin' => 'anonymous'],
+        ['src' => 'https://www.clarity.ms/tag/xymcprs44h'],
+    ]])
 </head>
 <body class="relative min-h-screen pb-20">
 
@@ -305,7 +284,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
                 <span class="text-[var(--accent)]">Productivity Guides</span>
             </h1>
             <p class="text-sm md:text-base text-[var(--text-secondary)] max-w-xl mx-auto leading-relaxed mb-8">
-                Explore comprehensive tutorials, optimization tips, and privacy guides for all 80+ document, PDF, image, and dynamic gaming utilities.
+                Practical guides for PDFs, images, conversions, and the other tools on the site.
             </p>
         </div>
     </header>
@@ -359,7 +338,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
                 
                 <!-- Card Cover Image -->
                 <a href="/blog/{{ $post['slug'] }}" class="block relative aspect-video overflow-hidden border-b border-[var(--border)] group">
-                    <img src="{{ asset($post['image']) }}" alt="{{ $post['title'] }}" class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" loading="lazy">
+                    <img src="{{ asset($post['image']) }}" alt="{{ $post['title'] }}" width="1024" height="1024" decoding="async" class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </a>
 
@@ -419,7 +398,7 @@ $canonicalUrl = 'https://any2convert.com/blog';
 
     <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
     <footer class="max-w-7xl mx-auto px-4 text-center mt-24 pt-8 border-t border-[var(--border)] text-xs text-[var(--text-muted)]">
-        <p>&copy; {{ date('Y') }} Any2Convert. All rights reserved. Locally processed files never leave your device.</p>
+        <p>&copy; {{ date('Y') }} Any2Convert. Processing method varies by tool; review its details before use.</p>
         <p class="mt-2">
             <a href="/" class="hover:text-[var(--text-secondary)]">Home</a> &middot;
             <a href="/privacy" class="hover:text-[var(--text-secondary)] ml-2">Privacy</a> &middot;

@@ -19,10 +19,13 @@ $canonicalUrl = 'https://any2convert.com' . rtrim(request()->getPathInfo(), '/')
     <title>{{ $title }}</title>
     <meta name="description" content="{{ $description ?? '' }}">
     <meta name="keywords" content="{{ $keywords ?? '' }}">
-    <link rel="icon" type="image/png" href="{{ asset('any2convertlogo.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16.png') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     <style>
-        html { font-family: 'DM Sans', sans-serif; background:#f8f8fc; color:#111118; }
+        html { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#f8f8fc; color:#111118; }
         body { margin:0; padding:0; }
         a { color:#6C63FF; text-decoration:none; }
         .page-shell { max-width:900px; margin:0 auto; padding:36px 20px; }

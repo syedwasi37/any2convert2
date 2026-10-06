@@ -6,26 +6,26 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#f6f5f1">
     <title>{{ $mode === 'register' ? 'Create your account' : 'Welcome back' }} · Any2Convert</title>
-    <link rel="icon" type="image/png" href="{{ asset('any2convertlogo.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16.png') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     <style>
         :root{color-scheme:light;--ink:#202321;--muted:#777d78;--line:#e8e9e4;--paper:#fff;--canvas:#f6f5f1;--green:#2f694e;--green-dark:#24553e;--soft:#edf4ef;--red:#a83d38}
         *{box-sizing:border-box}
-        body{margin:0;min-height:100vh;background:var(--canvas);color:var(--ink);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+        body{margin:0;min-height:100vh;background:var(--canvas);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
         a{color:inherit}
         .shell{min-height:100vh;display:grid;grid-template-columns:minmax(0,1.04fr) minmax(430px,.96fr);max-width:1440px;margin:auto}
         .story{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh;padding:38px clamp(32px,6vw,88px);overflow:hidden;background:#eef1eb}
         .story:before{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(47,105,78,.12);border-radius:50%;left:-170px;bottom:-220px;box-shadow:0 0 0 44px rgba(47,105,78,.025),0 0 0 94px rgba(47,105,78,.02)}
-        .brand{position:relative;z-index:1;display:inline-flex;align-items:center;gap:11px;width:max-content;text-decoration:none;font:800 17px Manrope,sans-serif;letter-spacing:-.5px}
+        .brand{position:relative;z-index:1;display:inline-flex;align-items:center;gap:11px;width:max-content;text-decoration:none;font:800 17px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:-.5px}
         .brand img{width:36px;height:36px;object-fit:contain;border-radius:11px}
         .brand span{color:var(--green)}
         .story-copy{position:relative;z-index:1;max-width:500px;margin:90px 0 110px}
         .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid rgba(47,105,78,.14);border-radius:999px;color:var(--green);background:rgba(255,255,255,.46);font-size:12px;font-weight:700;letter-spacing:.025em}
         .eyebrow i{width:7px;height:7px;border-radius:50%;background:#64a37b;box-shadow:0 0 0 4px rgba(100,163,123,.13)}
-        h1{max-width:480px;margin:24px 0 16px;font:600 clamp(38px,5vw,64px)/1.08 Manrope,sans-serif;letter-spacing:-2.8px}
+        h1{max-width:480px;margin:24px 0 16px;font:600 clamp(38px,5vw,64px)/1.08 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:-2.8px}
         .story-copy>p{max-width:430px;margin:0;color:#6d756e;font-size:16px;line-height:1.75}
         .proof{display:flex;align-items:center;gap:13px;margin-top:36px;color:#747c75;font-size:13px}
         .proof-mark{display:flex;align-items:center;justify-content:center;width:35px;height:35px;border-radius:50%;background:#fff;color:var(--green);box-shadow:0 2px 8px #1c382210}
@@ -33,7 +33,7 @@
         .panel{display:flex;align-items:center;justify-content:center;padding:48px clamp(24px,5vw,72px);background:var(--paper)}
         .auth{width:100%;max-width:430px}
         .mobile-brand{display:none}
-        .auth h2{margin:0;font:700 29px/1.2 Manrope,sans-serif;letter-spacing:-1.1px}
+        .auth h2{margin:0;font:700 29px/1.2 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:-1.1px}
         .intro{margin:9px 0 27px;color:var(--muted);font-size:14px;line-height:1.6}
         .tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:22px;padding:4px;border-radius:11px;background:#f3f4f1}
         .tabs a{padding:10px 12px;border-radius:8px;text-align:center;text-decoration:none;color:#777d78;font-size:13px;font-weight:700;transition:background .16s,color .16s,box-shadow .16s}
@@ -46,17 +46,17 @@
         .divider:before,.divider:after{content:"";height:1px;flex:1;background:var(--line)}
         .field{margin:0 0 15px}
         .field label{display:block;margin-bottom:7px;color:#4e554f;font-size:12px;font-weight:700}
-        .field input{display:block;width:100%;height:47px;padding:0 13px;border:1px solid #dedfdb;border-radius:9px;background:#fff;color:var(--ink);font:14px 'DM Sans',sans-serif;outline:none;transition:border .16s,box-shadow .16s}
+        .field input{display:block;width:100%;height:47px;padding:0 13px;border:1px solid #dedfdb;border-radius:9px;background:#fff;color:var(--ink);font:14px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;outline:none;transition:border .16s,box-shadow .16s}
         .field input::placeholder{color:#a9ada8}
         .field input:focus{border-color:#5f9675;box-shadow:0 0 0 3px rgba(47,105,78,.11)}
         .field input[autocomplete=one-time-code]{letter-spacing:.24em;font-size:18px;font-weight:700}
-        .field select{display:block;width:100%;height:47px;padding:0 12px;border:1px solid #dedfdb;border-radius:9px;background:#fff;color:var(--ink);font:14px 'DM Sans',sans-serif;outline:none}.phone-wrap{display:flex;align-items:center;height:47px;border:1px solid #dedfdb;border-radius:9px;background:#fff;overflow:hidden}.phone-wrap>span{height:100%;display:flex;align-items:center;padding:0 11px;border-right:1px solid var(--line);color:var(--green);font-size:13px;font-weight:700;white-space:nowrap}.phone-wrap input{height:45px;border:0;border-radius:0;box-shadow:none!important;min-width:0}
+        .field select{display:block;width:100%;height:47px;padding:0 12px;border:1px solid #dedfdb;border-radius:9px;background:#fff;color:var(--ink);font:14px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;outline:none}.phone-wrap{display:flex;align-items:center;height:47px;border:1px solid #dedfdb;border-radius:9px;background:#fff;overflow:hidden}.phone-wrap>span{height:100%;display:flex;align-items:center;padding:0 11px;border-right:1px solid var(--line);color:var(--green);font-size:13px;font-weight:700;white-space:nowrap}.phone-wrap input{height:45px;border:0;border-radius:0;box-shadow:none!important;min-width:0}
         .row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:1px 0 17px}
         .check{display:flex;align-items:center;gap:8px;color:#6f766f;font-size:12px}
         .check input{accent-color:var(--green)}
-        .submit{width:100%;min-height:48px;border:0;border-radius:9px;background:var(--green);color:#fff;font:700 14px 'DM Sans',sans-serif;cursor:pointer;transition:background .16s,transform .16s,box-shadow .16s}
+        .submit{width:100%;min-height:48px;border:0;border-radius:9px;background:var(--green);color:#fff;font:700 14px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;cursor:pointer;transition:background .16s,transform .16s,box-shadow .16s}
         .submit:hover{background:var(--green-dark);transform:translateY(-1px);box-shadow:0 6px 14px #24553e24}
-        .switch-method{display:block;margin:16px auto 0;padding:5px;border:0;background:none;color:var(--green);font:700 12px 'DM Sans',sans-serif;cursor:pointer}
+        .switch-method{display:block;margin:16px auto 0;padding:5px;border:0;background:none;color:var(--green);font:700 12px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;cursor:pointer}
         .switch-method:hover{text-decoration:underline}
         .notice{margin:0 0 16px;padding:11px 13px;border:1px solid #cfe2d3;border-radius:9px;background:#f1f8f2;color:#2e6748;font-size:12px;line-height:1.55}
         .notice.error{border-color:#f0d2ce;background:#fff6f4;color:var(--red)}

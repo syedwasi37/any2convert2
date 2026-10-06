@@ -27,7 +27,6 @@ $blogSchema = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-4031884874698168">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4031884874698168" crossorigin="anonymous"></script>
     <?php if (request()->has('topic') || request()->has('noindex')): ?>
     <meta name="robots" content="noindex, follow">
     <?php else: ?>
@@ -37,8 +36,11 @@ $blogSchema = [
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="en">
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="x-default">
     <title>{{ $title }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('any2convertlogo.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16.png') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     <meta name="description" content="{{ $description }}">
     <meta name="keywords" content="{{ $keywords }}">
     <meta property="og:title" content="{{ $title }}">
@@ -55,9 +57,6 @@ $blogSchema = [
     @include('partials.tailwind-assets')
     
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <!-- Styles matching Any2Convert premium design system -->
     <style>
@@ -95,7 +94,7 @@ $blogSchema = [
             --accent-glow:    rgba(108,99,255,0.4);
         }
 
-        * { font-family: 'DM Sans', sans-serif; box-sizing: border-box; }
+        * { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; box-sizing: border-box; }
         body {
             background-color: var(--bg-base);
             color: var(--text-primary);
@@ -292,14 +291,10 @@ $blogSchema = [
             color: var(--accent) !important;
         }
     </style>
-    <!-- Microsoft Clarity -->
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "xymcprs44h");
-    </script>
+    @include('partials.defer-external-scripts', ['sources' => [
+        ['src' => 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4031884874698168', 'crossorigin' => 'anonymous'],
+        ['src' => 'https://www.clarity.ms/tag/xymcprs44h'],
+    ]])
 </head>
 <body class="relative min-h-screen pb-20">
 
@@ -394,7 +389,7 @@ $blogSchema = [
 
                 <!-- Featured Image -->
                 <div class="aspect-video w-full rounded-2xl overflow-hidden mb-8 shadow-sm border border-[var(--border)] bg-zinc-800">
-                    <img src="{{ asset($article['image']) }}" alt="{{ $article['title'] }}" class="w-full h-full object-cover">
+                    <img src="{{ asset($article['image']) }}" alt="{{ $article['title'] }}" width="1024" height="1024" fetchpriority="high" decoding="async" class="w-full h-full object-cover">
                 </div>
 
                 <!-- Reading content -->
@@ -407,7 +402,7 @@ $blogSchema = [
                 <div class="mt-12 p-8 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
                     <div>
                         <h3 class="text-base font-bold text-[var(--text-primary)] m-0 mb-1">Try the Free Online Tool Now</h3>
-                        <p class="text-xs text-[var(--text-secondary)] m-0">No registration, no limits, and absolute privacy on your device.</p>
+                        <p class="text-xs text-[var(--text-secondary)] m-0">Most tools are available without an account. Processing depends on the tool.</p>
                     </div>
                     <a href="/{{ $article['slug'] }}" class="btn-primary shrink-0">
                         Launch {{ explode(':', $article['title'])[0] }}
@@ -423,41 +418,11 @@ $blogSchema = [
             <!-- Right Column: Sidebar (4 cols) -->
             <aside class="lg:col-span-4 space-y-8">
                 
-                <!-- Table of Contents / Quick links -->
+                <!-- Useful links -->
                 <div class="sidebar-card p-6 shadow-sm">
-                    <h3 class="text-sm font-bold text-[var(--text-primary)] tracking-wide uppercase mb-4 border-b border-[var(--border)] pb-2">Guide Outline</h3>
-                    <ul class="space-y-3 text-xs text-[var(--text-secondary)] list-none p-0 m-0">
-                        <li>
-                            <a href="#" class="hover:text-[var(--accent)] no-underline flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
-                                Introduction & Purpose
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="hover:text-[var(--accent)] no-underline flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
-                                Why Choose Any2Convert
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="hover:text-[var(--accent)] no-underline flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
-                                Step-by-Step Walkthrough
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="hover:text-[var(--accent)] no-underline flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
-                                Privacy & Local Security
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="hover:text-[var(--accent)] no-underline flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
-                                Frequently Asked Questions
-                            </a>
-                        </li>
-                    </ul>
+                    <h3 class="text-sm font-bold text-[var(--text-primary)] tracking-wide uppercase mb-3 border-b border-[var(--border)] pb-2">Need a hand?</h3>
+                    <p class="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">If this guide misses something, send a question or tell us what went wrong.</p>
+                    <a href="/contact" class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)] no-underline hover:underline">Contact support <span aria-hidden="true">→</span></a>
                 </div>
 
                 <!-- Recent Guides Widget -->
@@ -467,7 +432,7 @@ $blogSchema = [
                         @foreach($recentPosts as $post)
                         <div class="flex gap-3">
                             <a href="/blog/{{ $post['slug'] }}" class="w-20 h-14 rounded-lg overflow-hidden shrink-0 bg-zinc-800 border border-[var(--border)] block">
-                                <img src="{{ asset($post['image']) }}" alt="{{ $post['title'] }}" width="80" height="56" loading="lazy" decoding="async" class="w-full h-full object-cover">
+                                <img src="{{ asset($post['image']) }}" alt="{{ $post['title'] }}" width="1024" height="1024" loading="lazy" decoding="async" class="w-full h-full object-cover">
                             </a>
                             <div>
                                 <h4 class="text-xs font-bold text-[var(--text-primary)] leading-snug m-0 mb-1 hover:text-[var(--accent)] transition-colors">
@@ -484,8 +449,8 @@ $blogSchema = [
                 <div class="p-6 rounded-2xl bg-gradient-to-tr from-[#6C63FF]/90 to-[#A78BFA]/90 text-white shadow-sm relative overflow-hidden">
                     <div class="absolute inset-0 bg-black/10 z-0"></div>
                     <div class="relative z-10">
-                        <h3 class="text-base font-extrabold m-0 mb-2">Over 80+ Free Utilities</h3>
-                        <p class="text-xs text-white/80 leading-relaxed mb-4">Discover the full scope of our local-first document processors, converter suites, currency checkers, and writing assistants.</p>
+                        <h3 class="text-base font-bold m-0 mb-2">Looking for a tool?</h3>
+                        <p class="text-xs text-white/80 leading-relaxed mb-4">Browse file converters, PDF helpers, calculators, and everyday utilities.</p>
                         <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-[var(--accent)] rounded-lg text-xs font-bold shadow-md hover:bg-zinc-50 transition-colors no-underline">
                             Browse All Tools
                             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -503,7 +468,7 @@ $blogSchema = [
 
     <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
     <footer class="max-w-7xl mx-auto px-4 text-center mt-24 pt-8 border-t border-[var(--border)] text-xs text-[var(--text-muted)]">
-        <p>&copy; {{ date('Y') }} Any2Convert. All rights reserved. Locally processed files never leave your device.</p>
+        <p>&copy; {{ date('Y') }} Any2Convert. Processing method varies by tool; review its details before use.</p>
         <p class="mt-2">
             <a href="/" class="hover:text-[var(--text-secondary)]">Home</a> &middot;
             <a href="/privacy" class="hover:text-[var(--text-secondary)] ml-2">Privacy</a> &middot;

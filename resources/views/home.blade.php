@@ -2,10 +2,9 @@
 $isAdminUser = false;
 
 $trustHighlights = [
-    ['slug' => 'no-file-uploads', 'label' => 'No file uploads', 'icon' => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'],
-    ['slug' => 'instant-processing', 'label' => 'Instant processing', 'icon' => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'],
-    ['slug' => 'free-forever', 'label' => 'Free forever', 'icon' => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'],
-    ['slug' => 'works-in-browser', 'label' => 'Runs on your device', 'icon' => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'],
+    ['href' => '#tools', 'label' => 'Browse all tools', 'icon' => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>'],
+    ['href' => '/privacy', 'label' => 'How files are handled', 'icon' => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'],
+    ['href' => '/contact', 'label' => 'Contact support', 'icon' => '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.5a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3h.5a8.5 8.5 0 0 1 8 8z"/></svg>'],
 ];
 
 // Lookup table for slugs
@@ -232,7 +231,7 @@ $websiteSchema = [
     '@type' => 'WebSite',
     'name' => 'Any2Convert',
     'url' => $siteUrl . '/',
-    'description' => 'Free online PDF, image, calculator, converter, OCR, and utility tools with privacy-first local processing on your device.',
+    'description' => 'Free online tools for PDFs, images, file conversion, calculators, OCR, and everyday tasks. Processing depends on the tool.',
     'inLanguage' => 'en',
     'potentialAction' => [
         '@type' => 'SearchAction',
@@ -275,7 +274,7 @@ foreach ($tools as $category) {
 }
 
 $defaultTitle = 'Any2Convert | Free All-in-One PDF & Document Converter Suite';
-$defaultDescription = 'Free online PDF, document, image, and utility tools. Process files locally on your device with privacy-focused conversions.';
+$defaultDescription = 'Free online tools for PDFs, documents, images, and everyday tasks. Most tools are available without an account.';
 $defaultKeywords = 'free online tools, file converter, PDF tools, image tools, calculators, converters, generators, utilities';
 
 $seoTitle = $defaultTitle;
@@ -570,7 +569,6 @@ if ($isToolPage) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php if (!auth()->check() || !auth()->user()->hasPremiumFeature('ad_free')): ?>
     <meta name="google-adsense-account" content="ca-pub-4031884874698168">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4031884874698168" crossorigin="anonymous"></script>
     <?php endif; ?>
     <?php if (request()->has('topic') || request()->has('noindex')): ?>
     <meta name="robots" content="noindex, follow">
@@ -581,7 +579,6 @@ if ($isToolPage) {
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="en">
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="x-default">
     <title><?= htmlspecialchars($seoTitle, ENT_QUOTES) ?></title>
-    <link rel="icon" type="image/svg+xml" href="<?= asset('favicon.svg') ?>">
     <link rel="icon" type="image/png" sizes="32x32" href="<?= asset('favicon-32.png') ?>">
     <link rel="icon" type="image/png" sizes="16x16" href="<?= asset('favicon-16.png') ?>">
     <link rel="icon" type="image/x-icon" href="<?= asset('favicon.ico') ?>">
@@ -619,876 +616,19 @@ if ($isToolPage) {
     <?php endif; ?>
 
     @include('partials.tailwind-assets')
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
     <!-- Google tag -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GNWNK7QZTD"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-GNWNK7QZTD');
     </script>
-    <style>
-        /* ── LIGHT MODE (default) ── */
-        :root {
-            --bg-base:        #F8F8FC;
-            --bg-surface:     #FFFFFF;
-            --bg-card:        #FFFFFF;
-            --bg-card-hover:  #F3F3FA;
-            --border:         rgba(0,0,0,0.08);
-            --border-hover:   rgba(108,99,255,0.35);
-            --text-primary:   #111118;
-            --text-secondary: #464666;
-            --text-muted:     #707096;
-            --accent:         #6C63FF;
-            --accent-light:   rgba(108,99,255,0.08);
-            --accent-glow:    rgba(108,99,255,0.3);
-            --red:            #EF4444;
-            --blue:           #3B82F6;
-            --violet:         #8B5CF6;
-            --green:          #10B981;
-            --amber:          #F59E0B;
-        }
 
-        /* ── DARK MODE ── */
-        html.dark {
-            --bg-base:        #0A0A0F;
-            --bg-surface:     #111118;
-            --bg-card:        #16161F;
-            --bg-card-hover:  #1C1C28;
-            --border:         rgba(255,255,255,0.07);
-            --border-hover:   rgba(255,255,255,0.15);
-            --text-primary:   #F0F0F8;
-            --text-secondary: #8B8BA7;
-            --text-muted:     #4A4A62;
-            --accent-light:   rgba(108,99,255,0.15);
-            --accent-glow:    rgba(108,99,255,0.4);
-        }
-
-        * { font-family: 'DM Sans', sans-serif; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-
-        body {
-            background-color: var(--bg-base);
-            color: var(--text-primary);
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* ── Noise texture overlay ── */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.35;
-        }
-
-        /* ── Hero ambient glow ── */
-        .hero-glow {
-            position: absolute;
-            width: 800px; height: 500px;
-            background: radial-gradient(ellipse, rgba(108,99,255,0.18) 0%, transparent 70%);
-            top: -120px; left: 50%; transform: translateX(-50%);
-            pointer-events: none;
-            filter: blur(40px);
-        }
-
-        /* ── Navbar ── */
-        .navbar {
-            background: rgba(248,248,252,0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-        }
-        html.dark .navbar {
-            background: rgba(10,10,15,0.85);
-        }
-
-        /* ── Logo ── */
-        .logo-text {
-            font-weight: 700;
-            font-size: 1.1rem;
-            letter-spacing: -0.02em;
-            color: var(--text-primary);
-        }
-        .logo-dot { color: var(--accent); }
-
-        /* ── Nav pill ── */
-        .nav-pill {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 7px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-            cursor: pointer; text-decoration: none;
-        }
-        .nav-pill:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); border-color: var(--border); }
-
-        /* ── Primary button ── */
-        .btn-primary {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 9px 20px;
-            background: var(--accent);
-            color: #fff;
-            border-radius: 9px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-            border: none; cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative; overflow: hidden;
-            box-shadow: 0 0 0 0 var(--accent-glow);
-        }
-        .btn-primary::after {
-            content: '';
-            position: absolute; inset: 0;
-            background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%);
-            pointer-events: none;
-        }
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 25px var(--accent-glow);
-            background: #7B73FF;
-        }
-        .btn-primary:active { transform: translateY(0); }
-
-        /* ── Ghost button ── */
-        .btn-ghost {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 9px 20px;
-            background: transparent;
-            color: var(--text-secondary);
-            border-radius: 9px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-        .btn-ghost:hover { color: var(--text-primary); border-color: var(--border-hover); background: rgba(255,255,255,0.04); }
-
-        /* ── Hero ── */
-        .hero-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 6px 14px;
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            font-size: 0.78rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            background: var(--bg-card);
-            margin-bottom: 28px;
-        }
-        .hero-badge span { width: 6px; height: 6px; background: var(--green); border-radius: 50%; display: inline-block; box-shadow: 0 0 8px var(--green); }
-
-        .hero-title {
-            font-size: clamp(2.4rem, 5vw, 4rem);
-            font-weight: 700;
-            letter-spacing: -0.04em;
-            line-height: 1.08;
-            color: var(--text-primary);
-        }
-        .hero-title em {
-            font-style: normal;
-            background: linear-gradient(135deg, #6C63FF 0%, #A78BFA 50%, #818CF8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-sub {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            line-height: 1.65;
-            font-weight: 400;
-            max-width: 520px;
-            margin: 0 auto;
-        }
-
-        /* ── Stats row ── */
-        .stat-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 18px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: var(--bg-card);
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            text-decoration: none;
-            transition: transform 0.28s cubic-bezier(.22,1,.36,1), border-color 0.24s ease, background 0.24s ease, box-shadow 0.24s ease, color 0.24s ease;
-        }
-        .stat-item svg { flex-shrink: 0; }
-        .stat-item:hover {
-            transform: translateY(-3px);
-            border-color: rgba(108,99,255,0.28);
-            background: color-mix(in srgb, var(--bg-card) 85%, rgba(108,99,255,0.08));
-            color: var(--text-primary);
-            box-shadow: 0 18px 32px rgba(15,23,42,0.10);
-        }
-        .detail-card {
-            display: block;
-            text-decoration: none;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            transition: transform 0.3s cubic-bezier(.22,1,.36,1), border-color 0.24s ease, box-shadow 0.28s ease, background 0.24s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .detail-card::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: -36px;
-            width: 180px;
-            height: 120px;
-            border-radius: 999px;
-            background: radial-gradient(circle, rgba(108,99,255,0.14), transparent 68%);
-            opacity: 0;
-            transform: translateX(-50%) scale(.84);
-            transition: opacity 0.28s ease, transform 0.32s cubic-bezier(.22,1,.36,1);
-        }
-        .detail-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(108,99,255,0.28);
-            box-shadow: 0 22px 44px rgba(15,23,42,0.12);
-        }
-        .detail-card:hover::after {
-            opacity: 1;
-            transform: translateX(-50%) scale(1.03);
-        }
-        .detail-card > * { position: relative; z-index: 1; }
-        .detail-card-arrow {
-            position: absolute;
-            top: 18px;
-            right: 18px;
-            color: var(--text-muted);
-            opacity: 0;
-            transform: translate(-4px, 4px);
-            transition: opacity 0.24s ease, transform 0.28s cubic-bezier(.22,1,.36,1), color 0.24s ease;
-        }
-        .detail-card:hover .detail-card-arrow {
-            opacity: 1;
-            transform: translate(0, 0);
-            color: var(--accent);
-        }
-
-        /* ── Section label ── */
-        .section-label {
-            display: inline-flex; align-items: center; gap: 8px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-        }
-        .section-label::before, .section-label::after {
-            content: '';
-            display: block;
-            height: 1px;
-            width: 24px;
-            background: var(--border);
-        }
-        .section-heading {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            color: var(--text-primary);
-        }
-
-        /* ── Tool Card ── */
-        .tool-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 22px;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
-            position: relative;
-            overflow: hidden;
-        }
-        .tool-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .tool-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(108,99,255,0.1);
-        }
-        .tool-card:hover::before { opacity: 1; }
-        .tool-card:active { transform: translateY(-1px); }
-        .hidden-by-filter { display: none !important; }
-        .tool-search-wrap {
-            margin-bottom: 22px;
-            padding: 14px;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            background: var(--bg-card);
-        }
-        .tool-search-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .tool-search-input {
-            width: 100%;
-            min-width: 220px;
-            flex: 1 1 280px;
-            border: 1px solid var(--border);
-            background: var(--bg-surface);
-            color: var(--text-primary);
-            border-radius: 10px;
-            padding: 12px 14px;
-            font-size: 0.95rem;
-        }
-        .tool-search-input:focus {
-            outline: none;
-            border-color: var(--border-hover);
-            box-shadow: 0 0 0 3px var(--accent-light);
-        }
-        .tool-search-clear {
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text-secondary);
-            border-radius: 10px;
-            padding: 11px 14px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-        }
-        .tool-search-clear:hover,
-        .tool-search-clear:focus-visible {
-            background: var(--bg-surface);
-            border-color: var(--border-hover);
-            color: var(--text-primary);
-            outline: none;
-        }
-        .tool-search-clear[hidden] {
-            display: none !important;
-        }
-        .tool-search-meta {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-        .tool-search-status strong {
-            color: var(--text-primary);
-        }
-        .tool-filter-chip {
-            border: 1px solid var(--border);
-            background: var(--bg-surface);
-            color: var(--text-secondary);
-            border-radius: 999px;
-            padding: 7px 12px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .tool-filter-chip.active {
-            color: #fff;
-            border-color: transparent;
-            background: var(--accent);
-        }
-        .tool-filter-chip:focus-visible {
-            outline: none;
-            border-color: var(--border-hover);
-            box-shadow: 0 0 0 3px var(--accent-light);
-        }
-
-        /* tool icon container */
-        .tool-icon-wrap {
-            width: 44px; height: 44px;
-            border-radius: 11px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 16px;
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .tool-name {
-            font-size: 0.925rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 5px;
-            letter-spacing: -0.01em;
-        }
-        .tool-desc {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        .tool-arrow {
-            position: absolute;
-            top: 18px; right: 18px;
-            opacity: 0;
-            transform: translate(-4px, 4px);
-            transition: all 0.2s ease;
-            color: var(--text-muted);
-        }
-        .tool-card:hover .tool-arrow { opacity: 1; transform: translate(0, 0); }
-
-        /* ── Category pill ── */
-        .cat-pill {
-            display: inline-flex; align-items: center; gap: 6px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 6px;
-            margin-bottom: 18px;
-        }
-
-        /* ── Upload zone ── */
-        .upload-zone {
-            border: 2px dashed var(--border);
-            border-radius: 14px;
-            padding: 48px 32px;
-            text-align: center;
-            transition: all 0.25s ease;
-            background: rgba(255,255,255,0.015);
-            cursor: pointer;
-            position: relative;
-        }
-        .upload-zone:hover, .upload-zone.dragging {
-            border-color: var(--accent);
-            background: var(--accent-light);
-        }
-        .upload-zone-icon {
-            width: 56px; height: 56px;
-            margin: 0 auto 16px;
-            background: rgba(108,99,255,0.12);
-            border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* ── Progress bar ── */
-        .progress-track {
-            height: 4px;
-            background: rgba(255,255,255,0.06);
-            border-radius: 100px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            border-radius: 100px;
-            background: linear-gradient(90deg, var(--accent), #A78BFA);
-            transition: width 0.4s ease;
-            position: relative;
-        }
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0; right: 0;
-            width: 24px; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5));
-            border-radius: 100px;
-            animation: shimmer 1.5s infinite;
-        }
-        @keyframes shimmer { 0%,100%{opacity:0} 50%{opacity:1} }
-
-        /* ── Alert ── */
-        .alert {
-            display: flex; align-items: flex-start; gap: 12px;
-            padding: 14px 16px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            border: 1px solid;
-        }
-        .alert-success { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.25); color: #34D399; }
-        .alert-error   { background: rgba(239,68,68,0.08);  border-color: rgba(239,68,68,0.25);  color: #F87171; }
-
-        /* ── Modal ── */
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(17,24,39,0.58);
-            backdrop-filter: blur(3px);
-            z-index: 100;
-            display: none; align-items: center; justify-content: center;
-            padding: clamp(8px, 2.5vw, 24px);
-        }
-        .modal-overlay.flex { display: flex; }
-        .modal-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            max-width: 920px;
-            width: 100%;
-            max-height: min(90vh, 900px);
-            overflow-y: auto;
-            box-shadow: 0 18px 56px rgba(15,23,42,0.24);
-            animation: modalIn 0.18s ease-out;
-        }
-        #modalContent {
-            min-width: 0;
-            color: var(--text-primary);
-            background: var(--bg-base);
-            overflow-wrap: anywhere;
-        }
-        #modalContent h1, #modalContent h2, #modalContent h3, #modalContent h4 {
-            letter-spacing: -0.025em;
-            line-height: 1.25;
-        }
-        #modalContent input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
-        #modalContent select,
-        #modalContent textarea {
-            max-width: 100%;
-            font: inherit;
-        }
-        #modalContent input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
-        #modalContent select:focus,
-        #modalContent textarea:focus {
-            outline: 3px solid var(--accent-light);
-            outline-offset: 1px;
-        }
-        #modalContent [class*="rounded-[28px]"],
-        #modalContent [class*="rounded-[32px]"],
-        #modalContent [class*="rounded-[34px]"] {
-            border-radius: 14px !important;
-        }
-        #modalContent [class*="rounded-[32px]"][class*="bg-gradient"],
-        #modalContent [class*="rounded-[34px]"][class*="bg-gradient"] {
-            background-image: none !important;
-            background-color: var(--bg-card) !important;
-            border-color: var(--border) !important;
-        }
-        #modalContent [class~="shadow-xl"],
-        #modalContent [class~="shadow-2xl"],
-        #modalContent [class~="shadow-lg"] {
-            box-shadow: 0 1px 3px rgba(15,23,42,0.08) !important;
-        }
-        html.dark #modalContent { background: #101017; }
-        .modal-box { scrollbar-color: rgba(100,116,139,.4) transparent; }
-        .modal-box.modal-box-editor {
-            max-width: min(1480px, calc(100vw - 28px));
-            height: min(920px, calc(100vh - 28px));
-            max-height: calc(100vh - 28px);
-            display: grid;
-            grid-template-rows: auto minmax(0, 1fr);
-            overflow: hidden;
-        }
-        .modal-box.modal-box-editor .modal-header {
-            position: relative;
-        }
-        .modal-box.modal-box-game {
-            max-width: min(1120px, calc(100vw - 28px));
-            max-height: calc(100dvh - 28px);
-            display: grid;
-            grid-template-rows: auto minmax(0, 1fr);
-            overflow: hidden;
-        }
-        .modal-box.modal-box-game #modalContent {
-            min-height: 0;
-            overflow-y: auto;
-            overscroll-behavior: contain;
-        }
-        .modal-box.modal-box-editor #modalContent {
-            min-height: 0;
-            overflow: hidden;
-        }
-        @keyframes modalIn {
-            from { opacity:0; transform:scale(0.94) translateY(16px); }
-            to   { opacity:1; transform:scale(1) translateY(0); }
-        }
-        .modal-header {
-            position: sticky; top: 0;
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-            padding: 15px 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 12px;
-            border-radius: 16px 16px 0 0;
-            z-index: 2;
-        }
-        .modal-title-group { display:flex; align-items:center; gap:10px; min-width:0; }
-        .modal-title { min-width:0; margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:0.98rem; font-weight:650; color:var(--text-primary); letter-spacing:-0.02em; }
-        .modal-close {
-            width: 32px; height: 32px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 16px; line-height: 1;
-        }
-        .modal-close:hover { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #F87171; }
-        .modal-close:focus-visible, .tool-home-link:focus-visible { outline:3px solid var(--accent-light); outline-offset:2px; }
-        .tool-home-link {
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            min-height: 34px; padding: 0 11px; border: 1px solid var(--border);
-            border-radius: 9px; color: var(--text-secondary); font-size: 0.78rem;
-            font-weight: 600; text-decoration: none; white-space: nowrap;
-            transition: background 0.2s, color 0.2s, border-color 0.2s;
-        }
-        .tool-home-link:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
-        @media (max-width: 520px) {
-            .modal-box { max-height: calc(100dvh - 16px); border-radius: 12px; }
-            .modal-header { padding: 12px; gap: 7px; border-radius: 12px 12px 0 0; }
-            .modal-title-group { gap:8px; }
-            .modal-title { font-size:0.9rem; }
-            #modalContent { padding:16px !important; }
-            .modal-box-editor #modalContent { padding:0 !important; }
-            .tool-home-link { width: 34px; padding: 0; }
-            .tool-home-link span { display: none; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .modal-box { animation:none; }
-            #modalContent *, #modalContent *::before, #modalContent *::after { scroll-behavior:auto !important; transition-duration:0.01ms !important; animation-duration:0.01ms !important; animation-iteration-count:1 !important; }
-        }
-
-        /* ── Spinner ── */
-        .spin { animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ── Footer ── */
-        .footer-link {
-            color: var(--text-muted);
-            font-size: 0.82rem;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .footer-link:hover { color: var(--text-secondary); }
-
-        /* ── Scrollbar ── */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 100px; }
-
-        /* ── Stagger animation for cards ── */
-        .stagger-in { opacity: 0; transform: translateY(16px); }
-        .stagger-in.visible {
-            animation: fadeUp 0.4s ease forwards;
-        }
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ── Tag / chip ── */
-        .chip {
-            display: inline-flex; align-items: center;
-            padding: 5px 12px;
-            border-radius: 100px;
-            font-size: 0.78rem;
-            font-weight: 500;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-        .chip:hover { background: var(--accent-light); border-color: rgba(108,99,255,0.35); color: #A78BFA; }
-
-        /* ── Blog card ── */
-        .blog-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 24px;
-            transition: all 0.25s ease;
-            text-decoration: none;
-            display: block;
-            position: relative;
-            overflow: hidden;
-        }
-        .blog-card::after {
-            content: '';
-            position: absolute; inset: 0;
-            background: linear-gradient(135deg, var(--accent-light), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .blog-card:hover { border-color: rgba(108,99,255,0.3); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-        .blog-card:hover::after { opacity: 1; }
-        .blog-card > * { position: relative; z-index: 1; }
-
-        /* ── Responsive utilities ── */
-        @media (max-width: 640px) {
-            .hero-title { font-size: 2rem; }
-            .hero-sub { font-size: 0.95rem; }
-        }
-        @media (max-width: 900px) {
-            body::before { display: none; }
-            .hero-glow { width: 480px; height: 280px; filter: blur(26px); opacity: 0.75; }
-            .tool-card { padding: 16px; }
-            .tool-name { font-size: 0.88rem; }
-            .tool-desc { font-size: 0.76rem; }
-        }
-
-        /* ── Dropdown menu ── */
-        .dropdown-menu {
-            position: absolute; right: 0; top: calc(100% + 8px);
-            min-width: 180px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 6px;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
-            opacity: 0; visibility: hidden;
-            transform: translateY(-6px);
-            transition: all 0.2s ease;
-            z-index: 200;
-        }
-        .dropdown-trigger:hover .dropdown-menu,
-        .dropdown-trigger:focus-within .dropdown-menu {
-            opacity: 1; visibility: visible; transform: translateY(0);
-        }
-        .dropdown-item {
-            display: block;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.84rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.15s;
-        }
-        .dropdown-item:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
-        .dropdown-item.danger:hover { background: rgba(239,68,68,0.08); color: #F87171; }
-
-        /* ── Theme toggle button ── */
-        #themeToggle:hover {
-            background: var(--accent-light) !important;
-            border-color: rgba(108,99,255,0.3) !important;
-            color: var(--accent) !important;
-        }
-
-        /* ── Separator ── */
-        hr.sep { border: none; border-top: 1px solid var(--border); margin: 0 12px; }
-
-        body {
-            animation: homeFadeIn 0.65s cubic-bezier(.22,1,.36,1);
-        }
-        @keyframes homeFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .tool-card {
-            transition: transform 0.34s cubic-bezier(.22,1,.36,1), border-color 0.28s ease, box-shadow 0.32s ease, background 0.28s ease;
-            will-change: transform;
-        }
-        .tool-card::before {
-            transition: opacity 0.34s ease;
-        }
-        .tool-card::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: -44px;
-            width: 220px;
-            height: 140px;
-            border-radius: 999px;
-            background: radial-gradient(circle, rgba(108,99,255,0.18), transparent 68%);
-            opacity: 0;
-            transform: translateX(-50%) scale(.82);
-            transition: opacity 0.34s ease, transform 0.38s cubic-bezier(.22,1,.36,1);
-        }
-        .tool-card:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 20px 44px rgba(0,0,0,0.34), 0 0 0 1px rgba(108,99,255,0.12);
-        }
-        .tool-card:hover::after {
-            opacity: 1;
-            transform: translateX(-50%) scale(1.05);
-        }
-        .tool-card:active {
-            transform: translateY(-2px) scale(1.005);
-        }
-        .tool-search-wrap {
-            transition: transform 0.28s cubic-bezier(.22,1,.36,1), border-color 0.24s ease, box-shadow 0.28s ease;
-        }
-        .tool-search-wrap:focus-within {
-            transform: translateY(-2px);
-            border-color: var(--border-hover);
-            box-shadow: 0 16px 34px rgba(15,23,42,0.12);
-        }
-        .tool-search-input {
-            transition: transform 0.24s cubic-bezier(.22,1,.36,1), border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .tool-search-input:focus {
-            transform: translateY(-1px);
-        }
-        .tool-filter-chip {
-            transition: transform 0.24s cubic-bezier(.22,1,.36,1), border-color 0.24s ease, background 0.24s ease, color 0.24s ease, box-shadow 0.24s ease;
-        }
-        .tool-filter-chip:hover {
-            transform: translateY(-2px);
-            border-color: rgba(108,99,255,0.25);
-            box-shadow: 0 12px 22px rgba(15,23,42,0.1);
-        }
-        .tool-filter-chip.active {
-            box-shadow: 0 14px 28px rgba(108,99,255,0.22);
-        }
-        .tool-arrow {
-            transition: opacity 0.24s ease, transform 0.28s cubic-bezier(.22,1,.36,1);
-        }
-        .upload-zone {
-            transition: transform 0.28s cubic-bezier(.22,1,.36,1), border-color 0.25s ease, background 0.25s ease, box-shadow 0.28s ease;
-        }
-        .upload-zone:hover, .upload-zone.dragging {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 34px rgba(15,23,42,0.12);
-        }
-        .stagger-in {
-            opacity: 0;
-            transform: translateY(18px) scale(.985);
-        }
-        .stagger-in.visible {
-            animation: fadeUp 0.58s cubic-bezier(.22,1,.36,1) forwards;
-        }
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .chip {
-            transition: transform 0.24s cubic-bezier(.22,1,.36,1), border-color 0.24s ease, background 0.24s ease, color 0.24s ease, box-shadow 0.24s ease;
-        }
-        .chip:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(15,23,42,0.08);
-        }
-        .blog-card {
-            transition: transform 0.34s cubic-bezier(.22,1,.36,1), border-color 0.28s ease, box-shadow 0.32s ease;
-        }
-        .blog-card:hover {
-            transform: translateY(-5px) scale(1.008);
-            box-shadow: 0 18px 38px rgba(0,0,0,0.24);
-        }
-    </style>
-    <!-- Microsoft Clarity -->
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "xymcprs44h");
-    </script>
+    @include('partials.defer-external-scripts', ['sources' => array_values(array_filter([
+        (!auth()->check() || !auth()->user()->hasPremiumFeature('ad_free')) ? ['src' => 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4031884874698168', 'crossorigin' => 'anonymous'] : null,
+        ['src' => 'https://www.googletagmanager.com/gtag/js?id=G-GNWNK7QZTD'],
+        ['src' => 'https://www.clarity.ms/tag/xymcprs44h'],
+    ]))])
 </head>
 <body>
 
@@ -1581,10 +721,10 @@ if ($isToolPage) {
         <h1 class="hero-title">
             <?php if ($isToolPage): ?>
             <?= htmlspecialchars($currentToolName, ENT_QUOTES) ?><br>
-            <em>Free online tool.</em>
+            <em>Ready when you are.</em>
             <?php else: ?>
-            Free Online PDF, Image &<br>
-            <em>Utility Tools.</em>
+            Tools for files and<br>
+            <em>everyday work.</em>
             <?php endif; ?>
         </h1>
 
@@ -1592,13 +732,13 @@ if ($isToolPage) {
             <?php if ($isToolPage): ?>
             <?= htmlspecialchars($currentToolDescription !== '' ? $currentToolDescription : 'Use this focused browser-based tool on Any2Convert.', ENT_QUOTES) ?>
             <?php else: ?>
-            80+ professional-grade tools for PDF, documents, images, and more. Free forever, no account required.
+            Convert, edit, and organize files with practical tools. Most are available without an account.
             <?php endif; ?>
         </p>
 
         <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;">
             <?php foreach ($trustHighlights as $highlight): ?>
-            <a href="/highlights/<?= rawurlencode($highlight['slug']) ?>" class="stat-item">
+            <a href="<?= htmlspecialchars($highlight['href'], ENT_QUOTES) ?>" class="stat-item">
                 <?= $highlight['icon'] ?>
                 <?= htmlspecialchars($highlight['label']) ?>
             </a>
@@ -1791,18 +931,18 @@ if ($isToolPage) {
 
         <!-- Grid -->
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;">
-            <?php foreach ($category['tools'] as $i => $tool):
+            <?php foreach ($category['tools'] as $tool):
                 $iconSvg = $iconSvgs[$tool['icon']] ?? $iconSvgs['pdf_to_word'];
             ?>
             <?php $tool_slug = $tool_slugs[$tool['id']] ?? $tool['id']; ?>
             <a
                 href="/<?= htmlspecialchars($tool_slug) ?>"
-                class="tool-card stagger-in"
+                class="tool-card"
                 data-tool-id="<?= htmlspecialchars($tool['id']) ?>"
                 data-tool-name="<?= htmlspecialchars(strtolower($tool['name'])) ?>"
                 data-tool-desc="<?= htmlspecialchars(strtolower($tool['desc'])) ?>"
                 data-tool-category="<?= htmlspecialchars($catKey) ?>"
-                style="animation-delay:<?= $i * 40 ?>ms; text-decoration:none; display:block;"
+                style="text-decoration:none; display:block;"
             >
                 <!-- Arrow -->
                 <div class="tool-arrow">
@@ -1830,20 +970,19 @@ if ($isToolPage) {
     <?php if (empty($initialToolId)): ?>
     <section style="margin-bottom:64px;">
         <div style="text-align:center;margin-bottom:40px;">
-            <div class="section-label" style="justify-content:center;">Why Any2Convert</div>
-            <h2 class="section-heading" style="margin-top:8px;">Built around your privacy</h2>
+            <div class="section-label" style="justify-content:center;">A straightforward workflow</div>
+            <h2 class="section-heading" style="margin-top:8px;">Start with what you need</h2>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">
             <?php
             $features = [
-                ['slug'=>'files-never-leave-your-device', 'icon'=>'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>', 'color'=>'var(--green)', 'bg'=>'rgba(16,185,129,0.1)', 'title'=>'Files stay on your device', 'desc'=>'Many tools process files locally on your device instead of pushing them through a remote upload flow.'],
-                ['slug'=>'instant-results', 'icon'=>'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', 'color'=>'var(--accent)', 'bg'=>'rgba(108,99,255,0.1)', 'title'=>'Instant results', 'desc'=>'No server round-trips. Conversions happen in milliseconds, regardless of file size.'],
-                ['slug'=>'always-free-no-watermarks', 'icon'=>'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>', 'color'=>'var(--amber)', 'bg'=>'rgba(245,158,11,0.1)', 'title'=>'Always free, no watermarks', 'desc'=>'No hidden fees, no paywalls, no branding added to your files.'],
-                ['slug'=>'works-on-any-device', 'icon'=>'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>', 'color'=>'var(--blue)', 'bg'=>'rgba(59,130,246,0.1)', 'title'=>'Runs on the device you already have', 'desc'=>'Desktop, tablet, or phone - open the page and get to work without installing anything first.'],
+                ['href'=>'#tools', 'icon'=>'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>', 'color'=>'var(--green)', 'bg'=>'rgba(16,185,129,0.1)', 'title'=>'Pick a tool', 'desc'=>'Search by task or browse the categories to find a good place to start.'],
+                ['href'=>'/privacy', 'icon'=>'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>', 'color'=>'var(--accent)', 'bg'=>'rgba(108,99,255,0.1)', 'title'=>'Check how files are handled', 'desc'=>'Processing depends on the tool. Review the details before choosing a file.'],
+                ['href'=>'/contact', 'icon'=>'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.5a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3h.5a8.5 8.5 0 0 1 8 8z"/></svg>', 'color'=>'var(--blue)', 'bg'=>'rgba(59,130,246,0.1)', 'title'=>'Ask for help', 'desc'=>'Send a question or report a problem to the support team.'],
             ];
             foreach($features as $f):
-                $featureSlug = $f['slug'] ?? 'works-on-any-device'; ?>
-            <a href="/highlights/<?= rawurlencode($featureSlug) ?>" class="detail-card" style="padding:24px;">
+                $featureHref = $f['href'] ?? '#tools'; ?>
+            <a href="<?= htmlspecialchars($featureHref, ENT_QUOTES) ?>" class="detail-card" style="padding:24px;">
                 <div style="width:40px;height:40px;border-radius:10px;background:<?= $f['bg'] ?>;color:<?= $f['color'] ?>;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
                     <?= $f['icon'] ?>
                 </div>
@@ -1940,7 +1079,7 @@ if ($isToolPage) {
                     </div>
                     <span style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Any2Convert</span>
                 </div>
-                <p style="font-size:0.8rem;color:var(--text-muted);line-height:1.7;max-width:220px;">Free online tools with local on-device processing, cleaner workflows, and privacy-first defaults.</p>
+                <p style="font-size:0.8rem;color:var(--text-muted);line-height:1.7;max-width:220px;">Practical online tools for files, documents, and everyday tasks.</p>
             </div>
 
             <div>
@@ -1978,7 +1117,7 @@ if ($isToolPage) {
             <span style="font-size:0.78rem;color:var(--text-muted);">&copy; <?= date('Y') ?> Any2Convert. All rights reserved. Made with love in Karachi, Pakistan.</span>
             <div style="display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--text-muted);">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                Local-first processing on your device
+                Processing depends on the tool: in your browser or on our server
             </div>
         </div>
 
@@ -1986,7 +1125,7 @@ if ($isToolPage) {
 </footer>
 
 <!-- ═══════════════════════════════ TOOL MODAL ═══════════════════════════════ -->
-<div id="toolModal" class="modal-overlay" onclick="closeToolModal(event)">
+<div id="toolModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1" onclick="closeToolModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
         <div class="modal-header">
             <div class="modal-title-group">
@@ -1999,7 +1138,7 @@ if ($isToolPage) {
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M20 12H9"/></svg>
                 <span>All tools</span>
             </a>
-            <button onclick="closeToolModal()" class="modal-close" title="Close">✕</button>
+            <button type="button" onclick="closeToolModal()" class="modal-close" aria-label="Close tool" title="Close">✕</button>
         </div>
 
         <!-- Upload zone (shown while loading or as UI guide in modal) -->
@@ -2169,24 +1308,6 @@ function toggleDarkMode() {
     }
 })();
 
-// ── Stagger animation observer ──
-(function(){
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-            if(e.isIntersecting){
-                const delay = e.target.dataset.staggerDelay || '0ms';
-                e.target.style.animationDelay = delay;
-                e.target.classList.add('visible');
-                io.unobserve(e.target);
-            }
-        });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.stagger-in').forEach((el, index) => {
-        el.dataset.staggerDelay = `${Math.min(index * 35, 280)}ms`;
-        io.observe(el);
-    });
-})();
-
 // ── Execute scripts in dynamically loaded HTML ──
 async function executeScripts(container) {
     document.querySelectorAll('script[data-dynamic-tool-script="1"]').forEach(script => script.remove());
@@ -2216,6 +1337,7 @@ async function executeScripts(container) {
 // ── Tool modal ──
 let activeToolRequest = null;
 let activeToolRequestId = 0;
+let toolModalReturnFocus = null;
 
 function openTool(toolId) {
     if (redirectToToolPage(toolId)) {
@@ -2228,6 +1350,7 @@ function openTool(toolId) {
     activeToolRequest?.abort();
     const requestId = ++activeToolRequestId;
     activeToolRequest = new AbortController();
+    if (!modal.classList.contains('flex')) toolModalReturnFocus = document.activeElement;
     const isEditorTool = toolId === 'edit_pdf' || toolId === 'sign_pdf' || toolId === 'tournament_bracket_generator';
     const isGameTool = toolId === 'memory_match_game';
 
@@ -2249,6 +1372,7 @@ function openTool(toolId) {
         </div>`;
 
     modal.classList.add('flex');
+    modal.querySelector('.modal-close')?.focus({ preventScroll: true });
     title.textContent = getToolName(toolId);
     document.body.style.overflow = 'hidden';
 
@@ -2304,6 +1428,10 @@ function closeToolModal(event) {
     document.getElementById('modalContent').innerHTML = '';
     document.getElementById('modalContent').style.padding = '24px';
     document.body.style.overflow = '';
+    if (toolModalReturnFocus instanceof HTMLElement && toolModalReturnFocus.isConnected) {
+        toolModalReturnFocus.focus({ preventScroll: true });
+    }
+    toolModalReturnFocus = null;
 }
 
 function getToolName(toolId) {
@@ -2349,9 +1477,32 @@ if (window.any2convertInitialTool) {
     }, 100);
 }
 
-// ESC to close
+// Keep keyboard users inside the active tool and return focus to its launcher.
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeToolModal();
+    const modal = document.getElementById('toolModal');
+    if (!modal?.classList.contains('flex')) return;
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        closeToolModal();
+        return;
+    }
+    if (e.key !== 'Tab') return;
+    const focusable = Array.from(modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+        .filter(element => element.getClientRects().length > 0);
+    if (!focusable.length) {
+        e.preventDefault();
+        modal.focus();
+        return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && (document.activeElement === first || document.activeElement === modal)) {
+        e.preventDefault();
+        last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+    }
 });
 
 // ── Homepage tool search + filters ──
@@ -2472,17 +1623,5 @@ document.addEventListener('keydown', e => {
     .footer-grid { grid-template-columns: 1fr !important; }
 }
 </style>
-<!-- StartupBase Badge (Hidden for Verification) -->
-<div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">
-    <a href="https://startupbase.io/products/any2convert-com?utm_source=startupbase&utm_medium=badge&utm_campaign=featured-badge-dark" target="_blank" rel="noopener noreferrer">
-      <img src="https://statics.startupbase.io/site/badges/featured-on-sb-dark.svg" alt="Featured on StartupBase" height="55" loading="lazy" decoding="async" style="height:55px;width:auto;" />
-    </a>
-</div>
-
-<!-- SEO Homepage Keywords -->
-<div class="fixed bottom-0 left-0 right-0 p-1 text-[9px] text-gray-400/20 hover:text-gray-400/80 transition-opacity select-none z-[-1] text-justify" aria-hidden="true" style="line-height: 1.2;">
-    anyconv, any conversion, any converter, any2convert, any 2 convert, any to convert, free online converter tools anyconv alternative, anyconversion online free without email, any2convert image pdf calculator word ocr tool, best anyconv tools free alternative no signup, fast any2convert utility, any converter no watermark online, any conversion online free tool, any2convert ocr scanner, any2convert generator, anyconvert web tools, any converter fast secure privacy safe local processing.
-</div>
-
 </body>
 </html>
