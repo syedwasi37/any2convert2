@@ -24,7 +24,7 @@
                     <div class="admin-muted" style="margin-top:3px">{{ $message->name }} · {{ $message->email }} · {{ ucfirst($message->category) }}</div>
                     <div class="admin-muted" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:5px">{{ $message->message }}</div>
                 </div>
-                <time class="admin-muted" style="font-size:12px;white-space:nowrap" datetime="{{ $message->created_at->toIso8601String() }}">{{ $message->created_at->format('M j, Y · g:i a') }}</time>
+                <time class="admin-muted" style="font-size:12px;white-space:nowrap" datetime="{{ $message->created_at?->toIso8601String() ?? '' }}">{{ $message->created_at?->format('M j, Y · g:i a') ?? 'Date unavailable' }}</time>
             </a>
         @empty
             <div style="padding:40px 12px;text-align:center"><strong>No messages found</strong><p class="admin-muted" style="margin:5px 0 0">New contact messages will appear here.</p></div>

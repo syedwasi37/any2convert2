@@ -2,7 +2,7 @@
 @section('title', $message->subject)
 @section('content')
 <div class="admin-heading">
-    <div><a href="{{ route('admin.contact.index') }}" class="admin-muted" style="display:inline-block;margin-bottom:9px;text-decoration:none">← Inbox</a><h1>{{ $message->subject }}</h1><p>From {{ $message->name }} · <a href="mailto:{{ $message->email }}">{{ $message->email }}</a> · {{ $message->created_at->format('M j, Y · g:i a') }}</p></div>
+    <div><a href="{{ route('admin.contact.index') }}" class="admin-muted" style="display:inline-block;margin-bottom:9px;text-decoration:none">← Inbox</a><h1>{{ $message->subject }}</h1><p>From {{ $message->name }} · <a href="mailto:{{ $message->email }}">{{ $message->email }}</a> · {{ $message->created_at?->format('M j, Y · g:i a') ?? 'Date unavailable' }}</p></div>
     <span class="admin-status {{ $message->status }}">{{ str_replace('_', ' ', ucfirst($message->status)) }}</span>
 </div>
 <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);gap:16px;align-items:start">
@@ -13,7 +13,7 @@
             @forelse ($message->replies as $reply)
                 <article style="padding:13px 0;border-top:1px solid #e2e8f0">
                     <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><strong>{{ $reply->author?->name ?? 'Admin' }}</strong><span class="admin-status {{ $reply->delivery_status === 'sent' ? 'replied' : 'in_progress' }}">{{ $reply->delivery_status === 'sent' ? 'Sent' : ucfirst($reply->delivery_status) }}</span></div>
-                    <time class="admin-muted" style="display:block;margin:3px 0 8px;font-size:12px">{{ $reply->sent_at?->format('M j, Y · g:i a') ?? $reply->created_at->format('M j, Y · g:i a') }}</time>
+                    <time class="admin-muted" style="display:block;margin:3px 0 8px;font-size:12px">{{ $reply->sent_at?->format('M j, Y · g:i a') ?? $reply->created_at?->format('M j, Y · g:i a') ?? 'Date unavailable' }}</time>
                     <div style="white-space:pre-wrap;overflow-wrap:anywhere">{{ $reply->body }}</div>
                     @if ($reply->delivery_status !== 'sent')
                         <form method="post" action="{{ route('admin.contact.resend', [$message, $reply]) }}" style="margin-top:10px">@csrf<button class="admin-button" type="submit">Resend reply</button></form>
