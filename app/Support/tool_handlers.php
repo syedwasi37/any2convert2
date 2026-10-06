@@ -4317,7 +4317,7 @@ function getMemoryMatchGameHTML() {
             const themes = {
                 emoji: ["\u{1F60E}","\u{1F389}","\u{1F525}","\u{1F31F}","\u{1F984}","\u{1F3A7}","\u{1F680}","\u{1F4A1}","\u{1F31C}","\u{1F308}"],
                 gaming: ["\u{1F3AE}","\u{1F579}\u{FE0F}","\u{1F3C6}","\u{1F5A5}\u{FE0F}","\u{1F3AF}","\u{1F9E9}","\u{1F52B}","\u{1F47E}","\u{2B50}","\u{1F3B2}"],
-                space: ["\u{1F680}","\u{1FA90}","\u{1F31D}","\u{2604}\u{FE0F}","\u{1F31F}","\u{1F6F8}","\u{1F30C}","\u{1FA90}","\u{1F9D1}\u200D\u{1F680}","\u{1F6F0}\u{FE0F}"]
+                space: ["\u{1F680}","\u{1FA90}","\u{1F31D}","\u{2604}\u{FE0F}","\u{1F31F}","\u{1F6F8}","\u{1F30C}","\u{1FAA8}","\u{1F9D1}\u200D\u{1F680}","\u{1F6F0}\u{FE0F}"]
             };
             const board = document.getElementById("memoryBoard");
             const movesEl = document.getElementById("memoryMoves");
@@ -4372,10 +4372,7 @@ function getMemoryMatchGameHTML() {
                         loginText: "Log in to save your Memory Match result to the public leaderboard."
                     }))
                     .catch(() => {
-                        leaderboardEl.innerHTML = '<div class="rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 px-4 py-5 text-sm text-slate-500 dark:text-slate-400">Could not load the leaderboard right now.</div>
-    <div class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-400 opacity-60 hover:opacity-100 transition-opacity" style="font-size: 11px; line-height: 1.6;">
-        <p><strong>Related Searches:</strong> convert Memory Match Game online free without email, Memory Match Game no watermark fast for mobile, best Memory Match Game high quality software pc mac, Memory Match Game unlimited file size free 2026, how to use Memory Match Game easily without app install, secure Memory Match Game safe for business confidential files, Memory Match Game unblocked for school chromebook.</p>
-    </div>';
+                        leaderboardEl.innerHTML = '<div class="rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 px-4 py-5 text-sm text-slate-500 dark:text-slate-400">Could not load the leaderboard right now.</div>';
                     });
             }
 
@@ -4446,14 +4443,16 @@ function getMemoryMatchGameHTML() {
             function revealCard(button, force = false) {
                 if (button.dataset.matched === "1" || (!force && (lockBoard || button.dataset.flipped === "1"))) return;
                 button.dataset.flipped = "1";
-                button.querySelector("[data-card-front]").style.transform = "rotateY(180deg)";
-                button.querySelector("[data-card-back]").style.transform = "rotateY(0deg)";
+                button.querySelector("[data-card-front]").style.opacity = "0";
+                button.querySelector("[data-card-back]").style.opacity = "1";
+                button.setAttribute("aria-label", `Card ${button.dataset.symbol}`);
             }
 
             function hideCard(button) {
                 button.dataset.flipped = "0";
-                button.querySelector("[data-card-front]").style.transform = "rotateY(0deg)";
-                button.querySelector("[data-card-back]").style.transform = "rotateY(-180deg)";
+                button.querySelector("[data-card-front]").style.opacity = "1";
+                button.querySelector("[data-card-back]").style.opacity = "0";
+                button.setAttribute("aria-label", "Hidden card");
             }
 
             function handleCardClick(event) {
@@ -4500,9 +4499,9 @@ function getMemoryMatchGameHTML() {
                 const deck = createDeck();
                 board.className = `grid gap-3 ${deck.length >= 20 ? "grid-cols-4 md:grid-cols-5" : "grid-cols-4"}`;
                 board.innerHTML = deck.map((card) => `
-                    <button type="button" data-symbol="${card.symbol}" data-flipped="0" data-matched="0" class="group relative aspect-square overflow-hidden rounded-[24px] bg-transparent transition duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/35" style="perspective:1000px;">
-                        <span data-card-front class="absolute inset-0 rounded-[24px] border border-slate-200/70 dark:border-white/10 bg-gradient-to-br from-white via-slate-50 to-indigo-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_10px_24px_rgba(15,23,42,0.08)] dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_24px_rgba(2,6,23,0.38)] flex items-center justify-center text-xs font-black uppercase tracking-[0.26em] text-slate-500 dark:text-slate-400 transition duration-500 group-hover:border-fuchsia-300/60 dark:group-hover:border-fuchsia-400/30" style="backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(0deg);transform-style:preserve-3d;">Flip</span>
-                        <span data-card-back class="absolute inset-0 rounded-[24px] border border-fuchsia-200/80 dark:border-fuchsia-400/20 bg-gradient-to-br from-fuchsia-100 via-pink-50 to-indigo-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_10px_24px_rgba(168,85,247,0.12)] dark:from-fuchsia-500/15 dark:via-pink-500/10 dark:to-indigo-500/15 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_10px_24px_rgba(76,29,149,0.28)] flex items-center justify-center text-4xl transition duration-500 group-hover:border-fuchsia-300/70 dark:group-hover:border-fuchsia-400/30" style="backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(-180deg);transform-style:preserve-3d;">${card.symbol}</span>
+                    <button type="button" aria-label="Hidden card" data-symbol="${card.symbol}" data-flipped="0" data-matched="0" class="group relative aspect-square overflow-hidden rounded-[24px] bg-transparent transition duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/35" style="touch-action:manipulation;">
+                        <span data-card-front class="absolute inset-0 rounded-[24px] border border-slate-200/70 dark:border-white/10 bg-gradient-to-br from-white via-slate-50 to-indigo-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_10px_24px_rgba(15,23,42,0.08)] dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_24px_rgba(2,6,23,0.38)] flex items-center justify-center text-xs font-black uppercase tracking-[0.26em] text-slate-500 dark:text-slate-400 transition-opacity duration-200 group-hover:border-fuchsia-300/60 dark:group-hover:border-fuchsia-400/30" style="pointer-events:none;opacity:1;">Flip</span>
+                        <span data-card-back class="absolute inset-0 rounded-[24px] border border-fuchsia-200/80 dark:border-fuchsia-400/20 bg-gradient-to-br from-fuchsia-100 via-pink-50 to-indigo-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_10px_24px_rgba(168,85,247,0.12)] dark:from-fuchsia-500/15 dark:via-pink-500/10 dark:to-indigo-500/15 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_10px_24px_rgba(76,29,149,0.28)] flex items-center justify-center text-4xl transition-opacity duration-200 group-hover:border-fuchsia-300/70 dark:group-hover:border-fuchsia-400/30" style="pointer-events:none;opacity:0;">${card.symbol}</span>
                     </button>
                 `).join("");
                 board.querySelectorAll("button").forEach((button) => button.addEventListener("click", handleCardClick));
@@ -16078,5 +16077,4 @@ if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) {
 }
 
 ?>
-
 

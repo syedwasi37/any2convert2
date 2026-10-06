@@ -581,8 +581,14 @@ if ($isToolPage) {
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="en">
     <link rel="alternate" href="<?= $canonicalUrl ?>" hreflang="x-default">
     <title><?= htmlspecialchars($seoTitle, ENT_QUOTES) ?></title>
-    <link rel="icon" type="image/png" href="<?= asset('any2convertlogo.png') ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= asset('favicon.svg') ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= asset('favicon-32.png') ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= asset('favicon-16.png') ?>">
     <link rel="icon" type="image/x-icon" href="<?= asset('favicon.ico') ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= asset('apple-touch-icon.png') ?>">
+    <link rel="manifest" href="<?= asset('site.webmanifest') ?>">
+    <meta name="msapplication-TileColor" content="#3B82F6">
+    <meta name="msapplication-TileImage" content="<?= asset('icon-192.png') ?>">
     <meta name="description" content="<?= htmlspecialchars($seoDescription, ENT_QUOTES) ?>">
     <meta name="keywords" content="<?= htmlspecialchars($seoKeywords ?? '', ENT_QUOTES) ?>">
     <meta property="og:title" content="<?= htmlspecialchars($seoTitle, ENT_QUOTES) ?>">
@@ -1178,6 +1184,19 @@ if ($isToolPage) {
             font-size: 16px; line-height: 1;
         }
         .modal-close:hover { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #F87171; }
+        .tool-home-link {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            min-height: 34px; padding: 0 11px; border: 1px solid var(--border);
+            border-radius: 9px; color: var(--text-secondary); font-size: 0.78rem;
+            font-weight: 600; text-decoration: none; white-space: nowrap;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .tool-home-link:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+        @media (max-width: 520px) {
+            .modal-header { padding: 13px 14px; gap: 8px; }
+            .tool-home-link { width: 34px; padding: 0; }
+            .tool-home-link span { display: none; }
+        }
 
         /* ── Spinner ── */
         .spin { animation: spin 1s linear infinite; }
@@ -1927,6 +1946,10 @@ if ($isToolPage) {
                 </div>
                 <h3 id="modalTitle" style="font-size:0.95rem;font-weight:600;color:var(--text-primary);letter-spacing:-0.01em;">Tool</h3>
             </div>
+            <a href="/" class="tool-home-link" aria-label="Go back to all tools" title="Back to all tools">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M20 12H9"/></svg>
+                <span>All tools</span>
+            </a>
             <button onclick="closeToolModal()" class="modal-close" title="Close">✕</button>
         </div>
 
