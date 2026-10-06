@@ -2229,6 +2229,22 @@ function openTool(toolId) {
 
 function closeToolModal(event) {
     if (event && event.target !== event.currentTarget) return;
+    if (window.any2convertInitialTool) {
+        const currentUrl = new URL(window.location.href);
+        let returnUrl = null;
+        if (document.referrer) {
+            try {
+                const referrerUrl = new URL(document.referrer);
+                if (referrerUrl.origin === currentUrl.origin && referrerUrl.href !== currentUrl.href) {
+                    returnUrl = referrerUrl.href;
+                }
+            } catch (_) {
+                returnUrl = null;
+            }
+        }
+        window.location.assign(returnUrl || '/');
+        return;
+    }
     document.getElementById('toolModal').classList.remove('flex');
     const modalBox = document.querySelector('#toolModal .modal-box');
     if (modalBox) modalBox.classList.remove('modal-box-editor', 'modal-box-game');
