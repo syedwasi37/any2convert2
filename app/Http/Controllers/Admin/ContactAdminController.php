@@ -45,6 +45,10 @@ class ContactAdminController extends Controller
 
     public function show(ContactMessage $contactMessage): View
     {
+        if ($contactMessage->status === 'new') {
+            $contactMessage->update(['status' => 'in_progress']);
+        }
+
         $contactMessage->load(['replies.author', 'user']);
 
         return view('admin.contact.show', ['message' => $contactMessage, 'statuses' => self::STATUSES]);

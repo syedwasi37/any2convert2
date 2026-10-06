@@ -33,8 +33,9 @@
         .admin-section-icon.messages { background: #fff2e5; color: #b66a25; }
         .admin-section-title { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
         .admin-section-description { max-width: 34ch; margin: 5px 0 0; color: #64748b; font-size: 13px; line-height: 1.5; }
-        .admin-section-arrow { position: absolute; top: 22px; right: 20px; display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid #e8edf2; border-radius: 50%; color: #64748b; transition: transform .18s ease, background .18s ease; }
+        .admin-section-arrow { position: absolute; right: 20px; bottom: 20px; display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid #e8edf2; border-radius: 50%; color: #64748b; transition: transform .18s ease, background .18s ease; }
         .admin-section-card:hover .admin-section-arrow { transform: translateX(2px); background: #f8fafc; }
+        .admin-section-count { position: absolute; top: 18px; right: 20px; display: inline-flex; min-width: 28px; height: 28px; align-items: center; justify-content: center; padding: 0 8px; border: 1px solid #f4caca; border-radius: 999px; background: #fff1f0; color: #aa3c36; font-size: 12px; font-weight: 750; font-variant-numeric: tabular-nums; }
         .admin-flash { margin-bottom: 16px; padding: 12px 14px; border: 1px solid #a7f3d0; border-radius: 8px; background: #ecfdf5; color: #047857; }
         .admin-flash.warning { border-color: #fcd34d; background: #fffbeb; color: #92400e; }
         .admin-flash.error { border-color: #fca5a5; background: #fef2f2; color: #b91c1c; }
