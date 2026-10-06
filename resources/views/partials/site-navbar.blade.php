@@ -13,7 +13,9 @@
 
             <!-- Right side -->
             <div class="flex items-center gap-2">
-                <a href="/blog" class="nav-pill {{ request()->is('blog') || request()->is('blog/*') ? 'active' : '' }}" @if(request()->is('blog') || request()->is('blog/*')) aria-current="page" @endif>Blog</a>
+                @if (!request()->is('admin', 'admin/*'))
+                    <a href="/blog" class="nav-pill {{ request()->is('blog') || request()->is('blog/*') ? 'active' : '' }}" @if(request()->is('blog') || request()->is('blog/*')) aria-current="page" @endif>Blog</a>
+                @endif
 
                 <!-- Dark / Light mode toggle -->
                 <button id="themeToggle" type="button" onclick="toggleDarkMode()" title="Toggle dark mode" aria-label="Toggle dark mode" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;transition:all 0.2s ease;flex-shrink:0;">
@@ -78,5 +80,13 @@
             </div>
 
         </div>
+        @if (auth()->check() && auth()->user()->isAdmin() && request()->is('admin', 'admin/*'))
+            <nav class="admin-navbar-links" aria-label="Admin sections">
+                <a href="{{ route('admin.dashboard') }}" class="nav-pill {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" @if(request()->routeIs('admin.dashboard')) aria-current="page" @endif>Overview</a>
+                <a href="{{ route('admin.analytics') }}" class="nav-pill {{ request()->routeIs('admin.analytics') ? 'active' : '' }}" @if(request()->routeIs('admin.analytics')) aria-current="page" @endif>Analytics</a>
+                <a href="{{ route('admin.users.index') }}" class="nav-pill {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" @if(request()->routeIs('admin.users.*')) aria-current="page" @endif>Users</a>
+                <a href="{{ route('admin.contact.index') }}" class="nav-pill {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}" @if(request()->routeIs('admin.contact.*')) aria-current="page" @endif>Contact messages</a>
+            </nav>
+        @endif
     </div>
 </nav>
