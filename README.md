@@ -133,7 +133,7 @@ Make sure your development machine has the following tools installed:
 4.  Configure account sign-in:
     *   Email sign-in codes use the configured Laravel mailer. Set `MAIL_MAILER=smtp`, the SMTP host, port, username, password, and a verified `MAIL_FROM_ADDRESS` in `.env` for real delivery. Codes expire after 10 minutes and are rate-limited.
     *   For Google sign-in, set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_REDIRECT_URI` in `.env`. The existing client authorizes `https://any2convert.com/backend/google_login.php`; the app keeps that callback path working. If you register a different redirect in Google Cloud, set the matching URI in `GOOGLE_REDIRECT_URI`.
-    *   Run `php artisan config:clear` after changing environment values, then `php artisan migrate --force` before deploying. On production, rebuild cached config with `php artisan config:cache` after the values are in place.
+    *   Set `APP_ENV=production` and `APP_DEBUG=false` on the live server. Run `php artisan config:clear` after changing environment values, then `php artisan migrate --force` before deploying. On production, rebuild cached config with `php artisan config:cache` after the values are in place.
 
 5.  Configure contact support and the admin inbox:
     *   Set `CONTACT_EMAIL`, `CONTACT_PHONE`, and `CONTACT_HOURS` in `.env` to the support details that should appear on the Contact page. The form still works if these optional details are blank.
