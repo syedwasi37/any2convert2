@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\ContactMessage;
 use App\Support\Totp;
 use App\Support\CountryCatalog;
 use Illuminate\Http\RedirectResponse;
@@ -33,6 +34,17 @@ class ProfileController extends Controller
             'setupUri' => $pendingSecret ? Totp::provisioningUri($user->email, $pendingSecret) : null,
             'recoveryCodes' => $request->session()->get('new_recovery_codes', []),
         ]);
+    }
+
+    public function supportMessages(Request $request): View
+    {
+        $messages = ContactMessage::query()
+            ->where('user_id', $request->user()->getKey())
+            ->with('replies')
+            ->latest()
+            ->paginate(10);
+
+        return view('account.messages', compact('messages'));
     }
 
     public function updateProfile(Request $request): RedirectResponse

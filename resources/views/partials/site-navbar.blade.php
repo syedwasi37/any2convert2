@@ -50,6 +50,12 @@
                                     <?php if (auth()->user()->hasPremiumAccess()): ?><span style="color:#9a6b1d">✦ Premium</span><?php endif; ?>
                                 </span>
                             </a>
+                            <a href="{{ route('account.messages') }}" class="dropdown-item">
+                                <span style="display:flex;align-items:center;gap:8px;">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v12H8l-4 4V5Z"/><path d="M8 9h8M8 13h5"/></svg>
+                                    Support messages
+                                </span>
+                            </a>
                             <?php if (auth()->user()->isAdmin()): ?>
                                 <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
                                     <span style="display:flex;align-items:center;gap:8px;">

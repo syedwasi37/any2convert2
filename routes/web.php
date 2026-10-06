@@ -94,6 +94,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/account', [ProfileController::class, 'show'])->name('account.profile');
+    Route::get('/account/messages', [ProfileController::class, 'supportMessages'])->name('account.messages');
     Route::patch('/account/profile', [ProfileController::class, 'updateProfile'])->name('account.profile.update');
     Route::post('/account/email/code', [ProfileController::class, 'sendEmailChangeCode'])->middleware('throttle:5,1')->name('account.email.code');
     Route::put('/account/email', [ProfileController::class, 'updateEmail'])->middleware('throttle:6,1')->name('account.email.update');

@@ -63,7 +63,7 @@
     </section>
 
     @if (session('contact_submitted'))
-        <div class="notice" role="status">Thanks for reaching out. Your message has been received, and our team will follow up by email.</div>
+        <div class="notice" role="status">Thanks for reaching out. Your message has been received. @auth You can follow the conversation in <a href="{{ route('account.messages') }}">your support messages</a>, and we’ll also email you when we reply. @else We’ll follow up by email. @endauth</div>
     @endif
 
     <div class="contact-grid">
@@ -119,7 +119,7 @@
                         @error('message')<span class="field-error">{{ $message }}</span>@enderror
                     </label>
                 </div>
-                <div class="form-footer"><p class="form-help">We’ll reply to the email address you provide.</p><button class="submit-button" type="submit">Send message</button></div>
+                <div class="form-footer"><p class="form-help">@auth Replies appear in your account and are also sent by email. @else We’ll reply to the email address you provide. @endauth</p><button class="submit-button" type="submit">Send message</button></div>
             </form>
         </section>
     </div>
