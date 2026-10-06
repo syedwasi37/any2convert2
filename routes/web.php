@@ -17,39 +17,20 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/tools/render', [ToolController::class, 'render'])->middleware('tools.allowed')->name('tools.render');
-Route::post('/tools/pdf-service', [ToolController::class, 'unavailable'])->middleware('tools.allowed')->name('tools.pdf-service');
-Route::post('/tools/ai-image', [ToolController::class, 'unavailable'])->middleware('tools.allowed')->name('tools.ai-image');
-Route::post('/tools/youtube-download', [ToolController::class, 'youtubeDownload'])->middleware('tools.allowed')->name('tools.youtube');
 
 Route::view('/about', 'page', [
-    'title' => 'About Any2Convert Free Online Tools',
-    'description' => 'Learn more about Any2Convert and our comprehensive suite of free online tools designed for privacy, efficiency, and ease of use.',
-    'keywords' => 'about Any2Convert, free online tools, file conversion, privacy, digital tools',
-    'subtitle' => 'Empowering Your Digital Workflow',
+    'title' => 'About Any2Convert',
+    'description' => 'Learn what Any2Convert offers, how its browser-based tools work, and how to contact the team.',
+    'subtitle' => 'Practical tools for everyday digital tasks',
     'headline' => 'About Any2Convert',
     'content' => '
-        <p>In a digital world that moves at lightning speed, Any2Convert stands as your reliable partner for all your file conversion and utility needs. We believe that powerful tools should be accessible to everyone, which is why we offer a comprehensive suite of free online utilities designed with privacy, efficiency, and ease of use at their core. Our mission is to empower you to manage your digital documents and media without compromising your data or your time.</p>
-        
-        <h2>Our Philosophy: Privacy First</h2>
-        <p>At the heart of Any2Convert is a steadfast commitment to your privacy. In an era where data breaches are all too common, we\'ve engineered our platform to be a safe haven for your files. Unlike many other online services, we\'ve designed the majority of our tools to perform their magic directly on your device. This means your files are never uploaded to our servers, ensuring that your sensitive information remains in your hands, and your hands alone. For the few tools that require server-side processing, we have a strict policy of automatically deleting your files from our servers shortly after the conversion is complete. We don\'t believe in holding on to your data, and we\'re committed to being transparent about our processes.</p>
-        
-        <h2>A Universe of Tools at Your Fingertips</h2>
-        <p>Any2Convert is more than just a single-purpose tool; it\'s a universe of utilities designed to tackle a wide array of digital tasks. Whether you\'re a student, a professional, a creative, or just someone who needs to get things done, our platform has something for you. Our extensive collection of tools includes:</p>
-        <ul>
-            <li><strong>PDF Tools:</strong> From converting images to PDF and vice versa, to merging, splitting, compressing, and even editing PDF files, our PDF toolkit is your one-stop-shop for all things PDF.</li>
-            <li><strong>Image Utilities:</strong> Need to resize an image, compress it for the web, or remove a background? Our image tools are designed to be fast, intuitive, and powerful.</li>
-            <li><strong>Converters:</strong> We support a wide range of file conversions, from documents and spreadsheets to audio and video. Our goal is to make file incompatibility a thing of the past.</li>
-            <li><strong>Calculators and Generators:</strong> From simple percentage calculators to complex loan calculators and even fun tools like a gamer tag generator, we have a variety of utilities to help you with your daily tasks.</li>
-        </ul>
-        
-        <h2>Designed for Everyone</h2>
-        <p>We believe that technology should be inclusive, not exclusive. That\'s why we\'ve designed our tools to be as user-friendly as possible. You don\'t need to be a tech wizard to use Any2Convert. Our clean, intuitive interface makes it easy for anyone to get the job done quickly and efficiently. And because our tools work directly in your browser, there\'s no need to download or install any software. It\'s as simple as visiting our website, choosing your tool, and getting to work.</p>
-        
-        <h2>Free, and Always Will Be</h2>
-        <p>We\'re passionate about providing accessible tools to everyone, which is why the vast majority of our services are completely free to use. We don\'t believe in paywalls or hidden fees. Our goal is to provide a valuable service that you can rely on, day in and day out. While we may offer premium features in the future, our core set of tools will always remain free for everyone.</p>
-        
-        <h2>Join Our Community</h2>
-        <p>We\'re constantly working to improve and expand our platform, and we\'re always eager to hear from our users. If you have any feedback, suggestions, or ideas for new tools, we\'d love to hear from you. Together, we can build the ultimate online toolkit for a more productive and secure digital life.</p>
+        <p>Any2Convert is a collection of browser-based tools for common file, document, image, writing, calculation, and productivity tasks. The site brings these utilities together so people can complete supported tasks without installing a separate desktop application.</p>
+        <h2>How the tools work</h2>
+        <p>Processing depends on the tool. Many tools work in your browser; some features may contact an external service or use server processing. Check the individual tool and the Privacy Policy before using sensitive information. File format support, output quality, and limits can vary by task and device.</p>
+        <h2>Access and features</h2>
+        <p>Available features and any account or plan requirements are shown on the site. Tool availability may change as we maintain and improve the service.</p>
+        <h2>Questions and feedback</h2>
+        <p>If a tool does not work as expected, or you have a suggestion, please <a href="/contact">contact the team</a> with the tool name and a description of the issue. Please do not include passwords or sensitive documents in a support message.</p>
     '
 ]);
 
@@ -57,49 +38,45 @@ Route::get('/contact', [ContactController::class, 'show'])->name('contact.show')
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:3,10')->name('contact.store');
 
 Route::view('/privacy', 'page', [
-    'title' => 'Privacy Policy for Any2Convert Online Tools',
-    'description' => 'Read our detailed privacy policy to understand how we protect your data and prioritize your privacy when you use our free online tools.',
-    'keywords' => 'privacy policy, data protection, privacy, security, terms',
-    'subtitle' => 'Your Privacy, Our Priority',
+    'title' => 'Privacy Policy | Any2Convert',
+    'description' => 'Learn what information Any2Convert collects, how tools process data, and how to contact us about privacy.',
+    'subtitle' => 'How information is handled on Any2Convert',
     'headline' => 'Privacy Policy',
     'content' => '
-        <p>At Any2Convert, we are deeply committed to protecting your privacy and ensuring the security of your data. This Privacy Policy outlines our practices and principles regarding the collection, use, and protection of your information when you use our website and services. We\'ve designed our platform from the ground up to be a safe and trustworthy environment for all your file conversion and utility needs.</p>
-        
-        <h2>Our Core Privacy Principle: On-Device Processing</h2>
-        <p>The cornerstone of our privacy commitment is our emphasis on on-device processing. For the vast majority of our tools, all the work is done directly within your web browser on your own computer or mobile device. This means that your files are never uploaded to our servers, and we never have access to them. This approach provides the highest level of privacy and security, as your data never leaves your control.</p>
-        
-        <h2>When Server-Side Processing is Necessary</h2>
-        <p>For a small number of our more complex tools, server-side processing is required to perform the requested task. In these cases, we are committed to handling your data with the utmost care and transparency. When you use one of these tools, your file is temporarily uploaded to our secure servers for processing. However, we have a strict data retention policy: all uploaded files are automatically and permanently deleted from our servers within a short period after the processing is complete. We do not store your files, and we do not share them with any third parties.</p>
-        
-        <h2>Information We Collect</h2>
-        <p>Most tools do not require an account. If you submit the Contact form, we store the name, email address, subject, topic, and message you provide so the support team can review and answer it. If you are signed in, the message may also be associated with your account. Contact messages and replies are kept in the site database until an administrator deletes them. Do not include passwords or sensitive documents in a support request.</p>
-        <ul>
-            <li><strong>Account information:</strong> If you create an account, we store the information needed to provide sign-in and account features.</li>
-            <li><strong>Contact messages:</strong> Messages are visible to authorized site administrators. If an administrator replies, the reply is stored and sent to the email address supplied with the message when email delivery is configured.</li>
-            <li><strong>Service logs and analytics:</strong> The hosting platform may record standard request and error logs. We also count page views and tool opens in a first-party database to understand aggregate usage. These analytics events do not include IP addresses, account IDs, cookies, or query strings.</li>
-        </ul>
-        
-        <h2>Cookies and Tracking Technologies</h2>
-        <p>The site stores essential session and preference data. Google advertising and Microsoft Clarity analytics scripts are also loaded on some pages; those providers may use cookies or similar identifiers under their own privacy policies. You can manage cookies in your browser, though disabling essential cookies may affect sign-in and other site features.</p>
-        
-        <h2>Third-Party Services</h2>
-        <p>We do not sell contact messages or account details. Contact information is processed by the website and may be sent through the configured email provider when an administrator replies. The PDF translation tool sends extracted text to the MyMemory translation service to produce translations. Other tools may load libraries or models from third-party content delivery networks. Advertising, analytics, and hosting providers may also process information as part of delivering those services.</p>
-        
-        <h2>Your Rights and Choices</h2>
-        <p>You can contact the support team to ask about or request deletion of a contact message or account information. An administrator can locate and remove contact messages and their saved replies. Clearing browser cookies removes locally stored preferences but does not delete messages stored in the site database.</p>
-        
-        <h2>Changes to This Privacy Policy</h2>
-        <p>We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We encourage you to review this Privacy Policy periodically to stay informed about how we are protecting your information.</p>
+        <p>This policy explains how Any2Convert handles information when you browse the site, use a tool, create an account, or contact support. Processing varies by feature, so review the information shown on the tool page before using sensitive content.</p>
+        <h2>Files and tool inputs</h2>
+        <p>Many tools process selected files or text in your browser. Some features make requests to external services or use server processing. When a tool sends information outside your browser, the relevant tool should explain that before you use it. Do not submit information unless you are comfortable with that tool’s processing method.</p>
+        <h2>Accounts and support messages</h2>
+        <p>If you create an account, we store account details needed to provide sign-in and account features, including your name, email address, and a protected password credential. We store contact form details, including your name, email, subject, category, and message, so authorized administrators can respond. Replies may be sent through the configured email provider. Messages and replies remain in the site database until an administrator deletes them or a valid deletion request is handled.</p>
+        <h2>Site usage, logs, and cookies</h2>
+        <p>The site records public page visits and tool opens in its database using the page path or tool identifier and event time. The hosting provider may also keep standard server and security logs. Google Analytics, Google advertising, and Microsoft Clarity may be loaded on some pages; those providers may use cookies or similar technologies according to their own policies. Essential session and preference data may also be stored by your browser.</p>
+        <h2>Third-party services</h2>
+        <p>Some tools rely on external libraries, content delivery networks, or service providers. For example, PDF translation may send extracted text to a translation service. Google provides advertising and analytics services, Microsoft provides Clarity analytics, and an email provider may deliver support replies. Those providers handle information under their own privacy terms. The individual tool page should be checked for any service specific to that task.</p>
+        <h2>Retention and your choices</h2>
+        <p>Account records are kept while needed to provide the account and related features. Support messages and replies are retained in the database until deleted. Browser storage can be cleared in your browser settings; this does not remove records already stored by the site. To ask about access to or deletion of account or support information, use the <a href="/contact">contact form</a>.</p>
+        <h2>Children and policy updates</h2>
+        <p>Any2Convert is a general-purpose service and is not designed to collect personal information from children. We may update this policy when site practices change. The current version is available on this page.</p>
     '
 ]);
 
 Route::view('/terms', 'page', [
-    'title' => 'Terms of Service for Any2Convert Online Tools',
-    'description' => 'Read our terms of service and usage rules.',
-    'keywords' => 'terms of service, usage rules, legal, terms, conditions',
-    'subtitle' => 'Read our terms of service.',
-    'headline' => 'Terms of Service',
-    'content' => '<p>By using this site, you agree to our rules. You can use our tools for free. We try to keep all tools online, but we offer them as-is. Please use them fairly.</p>'
+    'title' => 'Terms of Use | Any2Convert',
+    'description' => 'Read the terms for using Any2Convert tools and services.',
+    'subtitle' => 'Rules for using the site and its tools',
+    'headline' => 'Terms of Use',
+    'content' => '
+        <p>By using Any2Convert, you agree to these terms. If you do not agree, stop using the site. These terms apply to the website, tools, and account features.</p>
+        <h2>Use the tools responsibly</h2>
+        <p>You are responsible for the files, text, links, and other material you submit. Use only material you own or are authorized to use. Do not use the site to break the law, infringe another person’s rights, distribute malware, interfere with the service, bypass access controls, or attempt to access another user’s information.</p>
+        <h2>Results and limitations</h2>
+        <p>Tools are provided for general convenience. Results may be incomplete, inaccurate, or unsuitable for a particular purpose. Check important outputs before relying on or sharing them. Calculators and informational tools are not professional legal, medical, tax, or financial advice. Keep your own copy of important source files.</p>
+        <h2>Availability and changes</h2>
+        <p>We work to keep the site useful, but do not guarantee uninterrupted access, compatibility with every device or file, or a particular conversion result. We may change, suspend, or discontinue a feature, and may set reasonable limits to protect the service.</p>
+        <h2>Accounts and external services</h2>
+        <p>You are responsible for keeping your sign-in credentials secure and for activity under your account. Some tools may rely on third-party services; their terms and availability may also apply when you use them.</p>
+        <h2>Contact</h2>
+        <p>For questions about these terms or the service, please <a href="/contact">contact Any2Convert</a>.</p>
+    '
 ]);
 
 Route::get('/login', fn (Request $request) => app(AuthController::class)->show($request, 'login'))->middleware('guest')->name('login');
@@ -160,6 +137,7 @@ Route::get('/highlights', [HomeController::class, 'legacyHighlight'])->name('hig
 Route::get('/highlights/{topic}', [HomeController::class, 'highlight'])
     ->where('topic', '[A-Za-z0-9-]+')
     ->name('highlights');
+Route::redirect('/youtube-video-downloader', '/', 301);
 Route::get('/blog', [HomeController::class, 'blogIndex'])->name('blog.index');
 Route::get('/blog/{slug}', [HomeController::class, 'blogArticle'])
     ->where('slug', '[a-z0-9-]+')

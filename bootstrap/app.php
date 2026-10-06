@@ -19,9 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => App\Http\Middleware\EnsureUserIsAdmin::class,
             'tools.allowed' => App\Http\Middleware\EnsureToolsAreAllowed::class,
         ]);
-        $middleware->validateCsrfTokens(except: [
-            'tools/youtube-download',
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

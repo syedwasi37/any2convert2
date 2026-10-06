@@ -31,7 +31,6 @@ $tool_slugs = [
     'social_image_resizer' => 'social-image-resizer', 'jwt_decoder' => 'jwt-decoder',
     'bank_statement_to_excel' => 'bank-statement-pdf-to-excel', 'grammar_checker' => 'grammar-checker',
     'paraphrase_tool' => 'paraphrase-tool', 'percentage_calculator' => 'percentage-calculator',
-    'youtube_downloader' => 'youtube-video-downloader',
     'loan_calculator' => 'loan-calculator', 'bmi_calculator' => 'bmi-calculator',
     'age_calculator' => 'age-calculator',
     'sensitivity_converter' => 'sensitivity-converter',
@@ -275,264 +274,17 @@ foreach ($tools as $category) {
 
 $defaultTitle = 'Any2Convert | Free All-in-One PDF & Document Converter Suite';
 $defaultDescription = 'Free online tools for PDFs, documents, images, and everyday tasks. Most tools are available without an account.';
-$defaultKeywords = 'free online tools, file converter, PDF tools, image tools, calculators, converters, generators, utilities';
-
 $seoTitle = $defaultTitle;
 $seoDescription = $defaultDescription;
-$seoKeywords = $defaultKeywords;
 $isToolPage = !empty($initialToolId) && isset($toolNameMap[$initialToolId]);
 $currentToolName = $isToolPage ? $toolNameMap[$initialToolId] : '';
 $currentToolDescription = $isToolPage ? trim($toolDescriptionMap[$initialToolId] ?? '') : '';
 $currentToolCategory = $isToolPage ? ($toolCategoryMap[$initialToolId] ?? 'Online Tools') : '';
-$toolPageContent = [];
-$toolPageKeywords = [];
 if ($isToolPage) {
-    $seoTitle = $currentToolName . ' Online Free Tool | Any2Convert';
-    $toolDesc = $currentToolDescription;
-    $seoDescription = $toolDesc !== ''
-        ? rtrim($toolDesc, ". \t\n\r\0\x0B") . '. Free, fast, and privacy-focused online tool.'
-        : $currentToolName . ' is a free, fast, and privacy-focused online tool.';
-
-    $toolSlug = strtolower(str_replace(' ', '-', $currentToolName));
-    $searchPhrase = 'free online ' . strtolower($currentToolName) . ' tool';
-    $useCasePhrase = 'complete this task quickly without extra software';
-    $outputPhrase = 'download the finished file or copy the result';
-
-    if (str_starts_with($initialToolId, 'pdf_to_')) {
-        $target = str_replace('pdf_to_', '', $initialToolId);
-        $searchPhrase = 'online PDF to ' . str_replace('_', ' ', $target) . ' converter';
-        $useCasePhrase = 'convert PDF into ' . str_replace('_', ' ', $target) . ' online';
-        $outputPhrase = 'receive a converted ' . str_replace('_', ' ', $target) . ' file from your PDF';
-    } elseif (str_ends_with($initialToolId, '_to_pdf')) {
-        $source = str_replace('_to_pdf', '', $initialToolId);
-        $searchPhrase = 'online ' . str_replace('_', ' ', $source) . ' to PDF converter';
-        $useCasePhrase = 'turn ' . str_replace('_', ' ', $source) . ' into PDF in seconds';
-        $outputPhrase = 'get a clean PDF from your ' . str_replace('_', ' ', $source) . ' content';
-    } elseif ($initialToolId === 'merge_pdf') {
-        $searchPhrase = 'merge PDF files online';
-        $useCasePhrase = 'combine multiple PDF files into one document';
-        $outputPhrase = 'download a single merged PDF';
-    } elseif ($initialToolId === 'compress_pdf') {
-        $searchPhrase = 'compress PDF online';
-        $useCasePhrase = 'reduce PDF file size for easier sharing';
-        $outputPhrase = 'save a smaller PDF copy';
-    } elseif ($initialToolId === 'protect_pdf') {
-        $searchPhrase = 'password protect PDF online';
-        $useCasePhrase = 'secure a PDF with a password';
-        $outputPhrase = 'save an encrypted PDF document';
-    } elseif ($initialToolId === 'qr_generator') {
-        $searchPhrase = 'free QR code generator online';
-        $useCasePhrase = 'create QR codes for links, menus, and contacts';
-        $outputPhrase = 'download a ready-to-use QR code image';
-    } elseif ($initialToolId === 'password_gen') {
-        $searchPhrase = 'secure password generator online';
-        $useCasePhrase = 'create strong random passwords for accounts';
-        $outputPhrase = 'copy a secure password instantly';
-    } elseif ($initialToolId === 'image_compressor') {
-        $searchPhrase = 'online image compressor';
-        $useCasePhrase = 'reduce photo file sizes without losing quality';
-        $outputPhrase = 'download a smaller image file';
-    } elseif ($initialToolId === 'resize_image') {
-        $searchPhrase = 'resize image online';
-        $useCasePhrase = 'change photo dimensions for email, social media, or printing';
-        $outputPhrase = 'download a resized image with exact width and height';
-    } elseif ($initialToolId === 'image_to_svg') {
-        $searchPhrase = 'image to SVG converter online';
-        $useCasePhrase = 'trace artwork and convert bitmap images into vector SVG';
-        $outputPhrase = 'download a sharp SVG vector file';
-    } elseif ($initialToolId === 'image_to_dxf') {
-        $searchPhrase = 'image to DXF converter online';
-        $useCasePhrase = 'convert artwork into CAD-ready DXF format';
-        $outputPhrase = 'download a DXF file for CAD software';
-    } elseif ($initialToolId === 'background-remover' || $initialToolId === 'bg_remover') {
-        $searchPhrase = 'remove image background online';
-        $useCasePhrase = 'create transparent PNGs from photos and logos';
-        $outputPhrase = 'download a transparent image';
-    } elseif ($initialToolId === 'ocr_tool' || $initialToolId === 'ocr_pdf') {
-        $searchPhrase = 'OCR tool online';
-        $useCasePhrase = 'extract text from scanned pages and images';
-        $outputPhrase = 'copy or download the extracted text';
-    } elseif ($initialToolId === 'csv_to_json') {
-        $searchPhrase = 'CSV to JSON converter online';
-        $useCasePhrase = 'convert spreadsheet data into JSON format';
-        $outputPhrase = 'download a clean JSON file';
-    } elseif ($initialToolId === 'json_to_csv') {
-        $searchPhrase = 'JSON to CSV converter online';
-        $useCasePhrase = 'turn structured JSON data into spreadsheet-ready CSV';
-        $outputPhrase = 'download a CSV file for Excel or Google Sheets';
-    } elseif ($initialToolId === 'word_counter') {
-        $searchPhrase = 'online word counter tool';
-        $useCasePhrase = 'count words, characters, and paragraphs quickly';
-        $outputPhrase = 'copy the word count result';
-    } elseif ($initialToolId === 'grammar_checker') {
-        $searchPhrase = 'online grammar checker';
-        $useCasePhrase = 'correct spelling, punctuation, and sentence structure';
-        $outputPhrase = 'copy improved text with better grammar';
-    } elseif ($initialToolId === 'paraphrase_tool') {
-        $searchPhrase = 'online paraphrase tool';
-        $useCasePhrase = 'rewrite text into clearer alternative phrasing';
-        $outputPhrase = 'copy the rewritten text';
-    } elseif ($initialToolId === 'jwt_decoder') {
-        $searchPhrase = 'JWT decoder online';
-        $useCasePhrase = 'inspect JSON Web Tokens safely in the browser';
-        $outputPhrase = 'copy the token payload and header';
-    } elseif ($initialToolId === 'invoice_generator') {
-        $searchPhrase = 'invoice generator online';
-        $useCasePhrase = 'build printable invoices with totals and tax';
-        $outputPhrase = 'download or print the invoice';
-    } elseif ($initialToolId === 'loan_calculator') {
-        $searchPhrase = 'loan calculator online';
-        $useCasePhrase = 'estimate monthly payments, interest, and total cost';
-        $outputPhrase = 'see loan payment details instantly';
-    }
-
-    if (empty($toolPageKeywords)) {
-        $toolPageKeywords = [
-            $searchPhrase,
-            'free online ' . strtolower($currentToolName),
-            'best browser-based ' . strtolower($currentToolName),
-            'use ' . strtolower($currentToolName) . ' without installing software',
-        ];
-
-        if ($initialToolId === 'pdf_to_word') {
-            $toolPageKeywords = array_merge($toolPageKeywords, [
-                'free online pdf to word converter',
-                'convert pdf to editable word docx online',
-                'best pdf to word converter online free',
-                'pdf to word docx converter with formatting',
-                'convert scanned pdf to editable word document',
-                'online pdf to word tool without software download',
-                'fast high quality pdf to word conversion',
-                'pdf to word document converter for resumes and contracts',
-            ]);
-        } elseif ($initialToolId === 'word_counter') {
-            $toolPageKeywords = array_merge($toolPageKeywords, [
-                'word calculator', 'free word counter', 'character counter online', 'kachra text tool',
-                'how many words is this', 'count my words online', 'text length calculator', 'word tally',
-                'paragraph counter', 'sentence counter', 'letter counter tool', 'words length check',
-                'essay word count checker', 'resume word counter', 'tweet character counter', 'twitter word count',
-                'instagram caption length checker', 'seo word counter tool', 'blog post word counter',
-                'count characters with spaces', 'count characters without spaces', 'word number calculator',
-                'reading time calculator text', 'text statistics analyzer', 'alphabets counter', 'how to count text',
-                'how long is my essay tool', 'book word counter', 'word limit checker online', 'count letters in a word',
-                'text size calculator', 'text character tally', 'copy paste word count', 'paste and count text',
-                'safe privacy word counter', 'fastest offline word counter online', 'word counter free no ads',
-                'random word counter tool for assignments', 'word length checker for students', 'count space as character',
-                'exact word calculator online', 'free tool to count words and characters instantly',
-                'how to count words without MS word', 'count characters for sms message', 'sms limit checker',
-                'linkedin post character counter', 'facebook post word counter', 'whatsapp status character count',
-                'title tag pixel counter', 'meta description length checker', 'keyword density counter',
-                'find word count of text', 'count words in a string', 'total words calculator', 'how many characters',
-                'count spaces in text', 'word frequency counter online', 'syllable counter tool', 'vowel counter',
-                'vowels and consonants counter', 'words per page calculator', 'word calc', 'text characters count',
-                'how to check how many words i have typed', 'word count tool for writers', 'author word tracker',
-                'novel word count tracker', 'wattpad story word counter', 'academic paper word counter',
-                'dissertation word count tool', 'thesis character counter', 'personal statement word limit checker',
-                'college essay word counter', 'common app essay word counter', 'uc application word limit checker',
-                'count words in copy pasted text', 'online notepad with word count', 'text box word counter',
-                'kachra text length checker', 'random text words counter', 'any text word calculator',
-                'count words in arabic', 'count words in hindi', 'count words in urdu', 'count words in spanish',
-                'multilingual word counter', 'unicode character counter', 'emoji counter in text',
-                'special characters counter', 'punctuation marks counter', 'line counter online',
-                'count empty lines in text', 'find and replace word counter', 'most repeated words finder',
-                'text metrics tool online free', 'word count for translation', 'transcription word counter',
-                'subtitles word counter', 'script character counter', 'screenplay word count tool',
-                'poetry line counter', 'haiku syllable counter', 'song lyrics word counter',
-                'rap lyrics word counter', 'speech word count to time', 'presentation speaking time calculator',
-                'voiceover script word counter', 'teleprompter text length calculator', 'youtube description word limit',
-                'tiktok caption character limit checker', 'pinterest pin description word count',
-                'google ads headline character counter', 'facebook ads text limit checker',
-                'amazon product description character count', 'ebay listing word counter',
-                'shopify product description word count', 'etsy listing character limit checker',
-                'app store description character counter', 'google play store description word count',
-                'github readme word counter', 'stackoverflow question character limit',
-                'reddit post title character limit', 'discord message character counter',
-                'slack message word count', 'whatsapp message character limit', 'telegram message word counter',
-                'sms 160 character counter', 'mms text length checker', 'email subject line character counter',
-                'newsletter word count tool', 'press release word counter', 'article word count checker',
-                'journalism word counter', 'copywriting text length calculator', 'seo copywriting word counter',
-                'content writing word count tool', 'freelance writer word counter', 'word count for upwork proposal',
-                'fiverr gig description character limit', 'freelancer profile word counter',
-                'linkedin summary character limit checker', 'twitter bio character counter',
-                'instagram bio word counter', 'tiktok bio character limit', 'facebook bio word count',
-                'youtube channel description character limit', 'twitch panel text counter',
-                'patreon tier description word count', 'onlyfans bio character limit',
-                'gofundme campaign story word counter', 'kickstarter project description word count',
-                'indiegogo pitch character limit', 'change.org petition text counter',
-                'wikipedia article word count', 'medium post word counter', 'substack newsletter character count',
-                'wordpress blog post word count', 'blogger post text length', 'tumblr post word counter',
-                'quora answer word count', 'yahoo answers text length', 'forum post character limit',
-                'guest post word count requirements', 'submit article word limit',
-                'abstract word counter', 'executive summary word count', 'business plan text length calculator',
-                'marketing strategy word counter', 'case study word count tool', 'white paper word counter',
-                'ebook word count tracker', 'kindle book text length', 'kdp description character limit',
-                'smashwords description word count', 'wattpad description character counter',
-                'ao3 fic word count', 'fanfiction.net word counter', 'novel writing nano wri mo word count tracker',
-                'nanowrimo daily word count calculator', 'sprint word counter', 'writing sprint text length',
-                'prompts word counter', 'daily writing habit word tracker', 'words typed today calculator',
-                'how many words did i type', 'check my word count right now', 'fast word counter for slow internet',
-                'word counter without javascript', 'simple text counter tool', 'basic word calculator',
-                'advanced text statistics tool', 'comprehensive word count analyzer', 'detailed character counter',
-                'word frequency analyzer free', 'keyword density tool free', 'seo text analyzer online',
-                'readability score calculator', 'text complexity analyzer', 'vocabulary richness calculator',
-                'lexical density tool', 'unique words counter', 'different words calculator', 'repeated words counter',
-                'longest word finder', 'shortest word finder', 'average word length calculator',
-                'average sentence length calculator', 'average paragraph length calculator',
-                'number of syllables per word calculator', 'polysyllabic words counter',
-                'monosyllabic words counter', 'action verbs counter', 'adjectives counter',
-                'adverbs counter', 'nouns counter', 'pronouns counter', 'conjunctions counter',
-                'prepositions counter', 'interjections counter', 'articles counter', 'determiners counter',
-                'passive voice checker text counter', 'active voice text analyzer',
-                'transition words counter', 'cliche finder and counter', 'redundant words counter',
-                'filler words counter', 'buzzwords counter', 'jargon counter', 'slang counter',
-                'profanity counter tool', 'swear words counter', 'curse words counter',
-                'positive words counter', 'negative words counter', 'sentiment analyzer text counter',
-                'emotional tone analyzer tool', 'formality checker text counter', 'informal text analyzer',
-                'academic writing checker word count', 'business writing analyzer text length',
-                'creative writing word counter', 'technical writing text analyzer', 'legal document word counter',
-                'medical transcription word count', 'medical report character counter',
-                'police report word counter', 'incident report text length calculator',
-                'insurance claim word counter', 'tax form text limit checker', 'government form character limit',
-                'visa application word counter', 'passport application character limit',
-                'immigration form text length', 'college application essay word limit',
-                'scholarship essay word counter', 'grant proposal word count tool',
-                'research paper word counter', 'science fair project word count',
-                'book report text length calculator', 'lab report word counter',
-                'internship application character limit', 'job application cover letter word count',
-                'motivation letter word counter', 'letter of recommendation word limit',
-                'reference letter character counter', 'thank you note word count',
-                'sympathy card text length', 'birthday wishes character limit',
-                'wedding vows word counter', 'eulogy word count to minutes',
-                'toast speech text length calculator', 'stand up comedy set word count',
-                'podcast script character counter', 'radio ad word count to seconds',
-                'tv commercial script length calculator', 'explainer video word counter',
-                'whiteboard animation script text length', 'elearning course script word count',
-                'training manual word counter', 'employee handbook text length calculator',
-                'company policy document word count', 'terms of service word counter',
-                'privacy policy text length calculator', 'cookie policy character counter',
-                'disclaimer word count tool', 'copyright notice text limit',
-                'software license agreement word counter', 'eula text length calculator',
-                'nda non disclosure agreement word count', 'contract text length checker',
-                'lease agreement word counter', 'rental application character limit',
-                'mortgage application text length', 'loan application word counter',
-                'credit card application character limit', 'bank account application text length',
-                'insurance quote request word counter', 'customer service email character limit',
-                'support ticket word count tool', 'live chat message text length',
-                'chatbot script word counter', 'ivr prompt text length calculator',
-                'voice assistant command character limit', 'alexa skill script word count'
-            ]);
-        }
-    }
-
-    $toolPageContent = [
-        'headline' => 'Detailed guidance for ' . $currentToolName,
-        'paragraphs' => [
-            $currentToolName . ' on Any2Convert is a free online tool that helps you ' . lcfirst($currentToolDescription) . '. It is built for browser-first workflows so you can complete the task without installing extra software or opening multiple apps.',
-            'Use this page when you need to ' . $useCasePhrase . '. The tool interface is focused on the job, with just the right options to turn your selected file, image, or data into the output you need.',
-            'This page is useful for people searching for ' . $searchPhrase . ' and other related queries. It is designed to answer the key questions around using this tool, while still delivering the fast online tools any2convert.com is known for.',
-        ],
-    ];
-    $seoKeywords = implode(', ', $toolPageKeywords);
+    $seoTitle = $currentToolName . ' | Any2Convert';
+    $seoDescription = $currentToolDescription !== ''
+        ? $currentToolDescription . '. Open the tool to see its supported inputs and options.'
+        : 'Use the ' . $currentToolName . ' tool on Any2Convert.';
 }
 
 $canonicalBase = 'https://any2convert.com';
@@ -554,11 +306,6 @@ if ($isToolPage) {
         'applicationCategory' => 'UtilityApplication',
         'operatingSystem' => 'All',
         'browserRequirements' => 'Requires JavaScript. Requires HTML5.',
-        'offers' => [
-            '@type' => 'Offer',
-            'price' => '0',
-            'priceCurrency' => 'USD'
-        ]
     ];
 }
 ?>
@@ -588,7 +335,6 @@ if ($isToolPage) {
     <meta name="msapplication-TileColor" content="#3B82F6">
     <meta name="msapplication-TileImage" content="<?= asset('icon-192.png') ?>">
     <meta name="description" content="<?= htmlspecialchars($seoDescription, ENT_QUOTES) ?>">
-    <meta name="keywords" content="<?= htmlspecialchars($seoKeywords ?? '', ENT_QUOTES) ?>">
     <meta property="og:title" content="<?= htmlspecialchars($seoTitle, ENT_QUOTES) ?>">
     <meta name="twitter:title" content="<?= htmlspecialchars($seoTitle, ENT_QUOTES) ?>">
     <meta property="og:description" content="<?= htmlspecialchars($seoDescription, ENT_QUOTES) ?>">
@@ -706,64 +452,14 @@ if ($isToolPage) {
         No tools matched that search. Try a broader keyword or switch back to All.
     </div>
 
-    <!-- Tool page heading -->
+    <!-- Tool page introduction -->
     <?php if ($isToolPage): ?>
-    <section style="margin-bottom:32px;text-align:center;">
-        <h2 class="section-heading" style="margin-bottom:8px;">Free online <?= htmlspecialchars($currentToolName, ENT_QUOTES) ?> guide</h2>
+    <section style="margin:0 auto 32px;max-width:760px;text-align:center;">
+        <p class="eyebrow"><?= htmlspecialchars($currentToolCategory, ENT_QUOTES) ?></p>
+        <h1 class="section-heading" style="margin:0 0 8px;"><?= htmlspecialchars($currentToolName, ENT_QUOTES) ?></h1>
         <p style="font-size:0.95rem;color:var(--text-secondary);max-width:620px;margin:0 auto;line-height:1.6;">
             <?= htmlspecialchars($currentToolDescription, ENT_QUOTES) ?>
         </p>
-    </section>
-    <section style="margin:0 auto 56px;max-width:920px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
-        <article class="detail-card" style="padding:24px;">
-            <h3 style="margin:0 0 10px;font-size:1.05rem;color:var(--text-primary);">About this <?= htmlspecialchars($currentToolCategory, ENT_QUOTES) ?> tool</h3>
-            <p style="margin:0;color:var(--text-secondary);line-height:1.75;font-size:0.92rem;">
-                <?= htmlspecialchars($currentToolName, ENT_QUOTES) ?> is built for quick browser-based work on Any2Convert. <?= htmlspecialchars($currentToolDescription, ENT_QUOTES) ?> Use it when you need a focused utility without installing desktop software, creating a complex workflow, or switching between multiple apps for a simple file or data task.
-            </p>
-        </article>
-        <article class="detail-card" style="padding:24px;">
-            <h3 style="margin:0 0 10px;font-size:1.05rem;color:var(--text-primary);">How it works</h3>
-            <p style="margin:0;color:var(--text-secondary);line-height:1.75;font-size:0.92rem;">
-                Open the tool, add the file or text requested by the form, choose the available options, and generate your result. The interface is designed for everyday conversions, edits, checks, and calculations, so you can complete the task from the same page and download or copy the finished output when the tool provides it.
-            </p>
-        </article>
-        <article class="detail-card" style="padding:24px;">
-            <h3 style="margin:0 0 10px;font-size:1.05rem;color:var(--text-primary);">Privacy and file handling</h3>
-            <p style="margin:0;color:var(--text-secondary);line-height:1.75;font-size:0.92rem;">
-                Any2Convert keeps many tasks local in your browser whenever the feature supports it. That means common PDF, image, text, calculator, and converter actions can often run on your own device, reducing unnecessary uploads and helping you work faster with private documents, drafts, screenshots, and utility data.
-            </p>
-        </article>
-    </section>
-
-    <section style="margin-bottom:56px;max-width:920px;margin-left:auto;margin-right:auto;">
-        <div style="margin-bottom:28px;">
-            <h2 class="section-heading">More about <?= htmlspecialchars($currentToolName, ENT_QUOTES) ?></h2>
-            <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.75;">
-                <?= htmlspecialchars($toolPageContent['paragraphs'][0] ?? '', ENT_QUOTES) ?>
-            </p>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr;gap:18px;">
-            <div style="padding:24px;border:1px solid rgba(15,23,42,0.08);border-radius:24px;background:var(--bg-surface);">
-                <h3 style="margin:0 0 10px;font-size:1rem;color:var(--text-primary);">How to use this tool</h3>
-                <p style="margin:0;color:var(--text-secondary);line-height:1.75;font-size:0.92rem;">
-                    <?= htmlspecialchars($toolPageContent['paragraphs'][1] ?? '', ENT_QUOTES) ?>
-                </p>
-            </div>
-            <div style="padding:24px;border:1px solid rgba(15,23,42,0.08);border-radius:24px;background:var(--bg-surface);">
-                <h3 style="margin:0 0 10px;font-size:1rem;color:var(--text-primary);">When to use it</h3>
-                <p style="margin:0;color:var(--text-secondary);line-height:1.75;font-size:0.92rem;">
-                    <?= htmlspecialchars($toolPageContent['paragraphs'][2] ?? '', ENT_QUOTES) ?>
-                </p>
-            </div>
-            <div style="padding:24px;border:1px solid rgba(15,23,42,0.08);border-radius:24px;background:var(--bg-surface);">
-                <h3 style="margin:0 0 10px;font-size:1rem;color:var(--text-primary);">Common search phrases for this page</h3>
-                <ul style="margin:0;padding-left:18px;color:var(--text-secondary);line-height:1.75;font-size:0.92rem;">
-                    <?php foreach ($toolPageKeywords as $keyword): ?>
-                        <li><?= htmlspecialchars($keyword, ENT_QUOTES) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        </div>
     </section>
     <?php endif; ?>
 
@@ -822,7 +518,6 @@ if ($isToolPage) {
         'meme_caption_generator' => '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5-8 8"/></svg>',
         'truth_or_dare_generator' => '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V7l7-4Z"/><path d="M10 10h4"/><path d="M12 8v4"/></svg>',
         'memory_match_game' => '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',
-        'youtube_downloader' => '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>',
     ];
 
     $catColors = [
@@ -1027,10 +722,6 @@ if ($isToolPage) {
 
 <!-- ═══════════════════════════════ SCRIPTS ═══════════════════════════════ -->
 <script>
-window.any2convertRoutes = {
-    pdfService: '{{ route('tools.pdf-service') }}',
-    aiImage: '{{ route('tools.ai-image') }}'
-};
 window.any2convertInitialTool = @json($initialToolId ?? null);
 const toolDependencyMap = {
     img_to_pdf: ["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"],

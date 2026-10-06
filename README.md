@@ -4,17 +4,15 @@
   <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="250" alt="Laravel Logo">
 </p>
 
-Any2Convert is a comprehensive, modern, and high-performance web platform offering a suite of 85+ free online conversion, manipulation, and utility tools. Designed with a Privacy-First / Local-First philosophy, the majority of the tools process files directly in the user's browser, ensuring sensitive documents and files never leave their device.
+Any2Convert is a web platform offering browser-based conversion, document, image, calculation, writing, and utility tools. Processing depends on the selected feature; review its instructions and the Privacy Policy before using sensitive content.
 
 ---
 
  🌟 Key Pillars & Features
 
-*   🔒 Privacy First (On-Device Processing): The core of the platform is designed around user privacy. Most document, image, and text operations occur locally in the client browser using custom UMD scripts and libraries. No files are uploaded to the server for these tools.
-*   ⚡ Instant Processing: Localized processing eliminates file upload/download wait times, offering instant operations.
-*   🛠️ Extensive Tool Directory: Over 85+ tools categorized across PDF utilities, developer/data tools, image processing, media handling, calculators, writing enhancers, and interactive tests/games.
-*   📱 Responsive & Cross-Device: Optimized interface built with Tailwind CSS v4 to render flawlessly across desktops, tablets, and smartphones.
-*   📝 Integrated SEO & Blogging: Dynamic topic highlights page, Google Search Console 301 redirects, automated XML sitemap generator, and a built-in blogging platform for search engine visibility.
+*   🛠️ Tool directory: Utilities for PDF, images, documents, data, calculators, writing, and interactive tasks.
+*   📱 Responsive interface: The site is designed for desktop, tablet, and mobile browsers.
+*   📝 Help and policies: The site includes contact, privacy, terms, and editorial guide pages.
 
 ---
 
@@ -23,7 +21,6 @@ Any2Convert is a comprehensive, modern, and high-performance web platform offeri
 # Backend
 *   PHP: `^8.3`
 *   Laravel Framework: `^13.7`
-*   yt-dlp: Integrated server-side executable for fetching and downloading YouTube media (located in `bin/`).
 
 # Frontend
 *   Vite: High-speed asset bundling (`^8.0`)
@@ -38,17 +35,16 @@ Key components of the Any2Convert platform include:
 
 *   `routes/web.php`: Central routing file mapping all tool slugs, blog posts, redirect layouts, and static views.
 *   `app/Http/Controllers/HomeController.php`: Core controller managing the homepage tool state, dynamic SEO highlight topics, and blog index/articles.
-*   `app/Http/Controllers/ToolController.php`: Renders dynamic tool handlers and processes server-side API operations (e.g., YouTube video downloads).
-*   `app/Support/tool_handlers.php`: Contains the structural HTML/JS templates for each of the 85+ tools.
+*   `app/Http/Controllers/ToolController.php`: Renders dynamic tool handlers.
+*   `app/Support/tool_handlers.php`: Contains the structural HTML/JS templates for the tool directory.
 *   `app/Support/tool_slugs.php`: Map lookup configuration translating tool IDs (e.g., `img_to_pdf`) to user-friendly URL slugs (e.g., `image-to-pdf`).
 *   `resources/views/home.blade.php`: Main entry layout and user interface housing the tool presentation logic.
-*   `bin/`: Storage folder for server-side binaries/executables, including `yt-dlp` for video extraction.
 
 ---
 
  🛠️ Tool Directory
 
-Here is a breakdown of the 85+ conversion and utility tools included in the platform:
+Here is a breakdown of the conversion and utility tools included in the platform:
 
 # 📄 PDF Utilities
 *   Image to PDF / PDF to Image
@@ -84,7 +80,6 @@ Here is a breakdown of the 85+ conversion and utility tools included in the plat
 *   AI Image Generator
 *   OCR Image to Text
 *   Repair Corrupt Photos & Videos
-*   YouTube Video Downloader (Server-side downloads powered by `yt-dlp`)
 
 # 🧮 Calculators & Generators
 *   Invoice Generator

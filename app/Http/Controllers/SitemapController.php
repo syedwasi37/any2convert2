@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\URL;
 
 class SitemapController extends Controller
 {
@@ -13,74 +12,31 @@ class SitemapController extends Controller
         $slugs = require app_path('Support/tool_slugs.php');
         
         $urls = [
-            [
-                'loc' => $siteUrl,
-                'lastmod' => date('Y-m-d'),
-                'changefreq' => 'daily',
-                'priority' => '1.0',
-            ],
-            [
-                'loc' => $siteUrl . '/about',
-                'lastmod' => date('Y-m-d'),
-                'changefreq' => 'monthly',
-                'priority' => '0.8',
-            ],
-            [
-                'loc' => $siteUrl . '/contact',
-                'lastmod' => date('Y-m-d'),
-                'changefreq' => 'monthly',
-                'priority' => '0.8',
-            ],
-            [
-                'loc' => $siteUrl . '/privacy',
-                'lastmod' => date('Y-m-d'),
-                'changefreq' => 'monthly',
-                'priority' => '0.8',
-            ],
-            [
-                'loc' => $siteUrl . '/terms',
-                'lastmod' => date('Y-m-d'),
-                'changefreq' => 'monthly',
-                'priority' => '0.8',
-            ],
-            [
-                'loc' => $siteUrl . '/blog',
-                'lastmod' => date('Y-m-d'),
-                'changefreq' => 'weekly',
-                'priority' => '0.8',
-            ]
+            $siteUrl,
+            $siteUrl . '/about',
+            $siteUrl . '/contact',
+            $siteUrl . '/privacy',
+            $siteUrl . '/terms',
+            $siteUrl . '/blog',
         ];
 
         // Add all tools
         foreach ($slugs as $id => $slug) {
-            $urls[] = [
-                'loc' => $siteUrl . '/' . $slug,
-                'lastmod' => date('Y-m-d'),
-                'changefreq' => 'weekly',
-                'priority' => '0.9',
-            ];
+            $urls[] = $siteUrl . '/' . $slug;
         }
 
         // Include only the editorial posts displayed on the blog page.
         $allBlogPosts = \App\Support\BlogContent::getAllPosts();
         foreach ($allBlogPosts as $post) {
-            $urls[] = [
-                'loc' => $siteUrl . '/blog/' . $post['slug'],
-                'lastmod' => date('Y-m-d'),
-                'changefreq' => 'monthly',
-                'priority' => '0.7',
-            ];
+            $urls[] = $siteUrl . '/blog/' . $post['slug'];
         }
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-        foreach ($urls as $url) {
+        foreach (array_unique($urls) as $url) {
             $xml .= '<url>';
-            $xml .= '<loc>' . htmlspecialchars($url['loc']) . '</loc>';
-            $xml .= '<lastmod>' . $url['lastmod'] . '</lastmod>';
-            $xml .= '<changefreq>' . $url['changefreq'] . '</changefreq>';
-            $xml .= '<priority>' . $url['priority'] . '</priority>';
+            $xml .= '<loc>' . htmlspecialchars($url, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</loc>';
             $xml .= '</url>';
         }
 
