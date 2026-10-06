@@ -135,7 +135,12 @@ Make sure your development machine has the following tools installed:
     *   For Google sign-in, set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_REDIRECT_URI` in `.env`. The existing client authorizes `https://any2convert.com/backend/google_login.php`; the app keeps that callback path working. If you register a different redirect in Google Cloud, set the matching URI in `GOOGLE_REDIRECT_URI`.
     *   Run `php artisan config:clear` after changing environment values, then `php artisan migrate --force` before deploying. On production, rebuild cached config with `php artisan config:cache` after the values are in place.
 
-5.  Install FFmpeg (Optional but Recommended for Video Downloader):
+5.  Configure contact support and the admin inbox:
+    *   Set `CONTACT_EMAIL`, `CONTACT_PHONE`, and `CONTACT_HOURS` in `.env` to the support details that should appear on the Contact page. The form still works if these optional details are blank.
+    *   Set a real delivery mailer (`MAIL_MAILER=smtp` and its host, port, credentials, and verified sender) so admin replies can be emailed. The log and array mailers save replies but do not deliver them.
+    *   Create your account, run `php artisan migrate --force`, then grant that existing account admin access with `php artisan contact:make-admin you@example.com`. The inbox is available at `/admin/contact`.
+
+6.  Install FFmpeg (Optional but Recommended for Video Downloader):
     For tools that require server-side media processing (such as the Youtube video downloader), place the `ffmpeg` executable in the `bin/` directory or make sure it is installed globally in the system environment.
 
 ---

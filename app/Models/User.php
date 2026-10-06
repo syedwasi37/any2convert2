@@ -36,6 +36,7 @@ class User extends Authenticatable
             'two_factor_recovery_codes' => 'encrypted:array',
             'two_factor_confirmed_at' => 'datetime',
             'isPremium' => 'boolean',
+            'is_admin' => 'boolean',
             'premium_expires_at' => 'datetime',
             'premium_features' => 'array',
         ];
@@ -44,6 +45,11 @@ class User extends Authenticatable
     public function hasTwoFactorEnabled(): bool
     {
         return filled($this->two_factor_secret) && $this->two_factor_confirmed_at !== null;
+    }
+
+    public function isAdmin(): bool
+    {
+        return (bool) $this->is_admin;
     }
 
     public function hasPremiumAccess(): bool

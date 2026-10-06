@@ -467,7 +467,7 @@ $blogSchema = [
                         @foreach($recentPosts as $post)
                         <div class="flex gap-3">
                             <a href="/blog/{{ $post['slug'] }}" class="w-20 h-14 rounded-lg overflow-hidden shrink-0 bg-zinc-800 border border-[var(--border)] block">
-                                <img src="{{ asset($post['image']) }}" alt="{{ $post['title'] }}" class="w-full h-full object-cover">
+                                <img src="{{ asset($post['image']) }}" alt="{{ $post['title'] }}" width="80" height="56" loading="lazy" decoding="async" class="w-full h-full object-cover">
                             </a>
                             <div>
                                 <h4 class="text-xs font-bold text-[var(--text-primary)] leading-snug m-0 mb-1 hover:text-[var(--accent)] transition-colors">

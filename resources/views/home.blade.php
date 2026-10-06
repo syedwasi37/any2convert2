@@ -77,7 +77,7 @@ $tools = [
             ['id' => 'sign_pdf', 'name' => 'Sign PDF', 'icon' => 'protect_pdf', 'desc' => 'Place a signature image on a PDF'],
             ['id' => 'crop_pdf', 'name' => 'Crop PDF', 'icon' => 'merge_pdf', 'desc' => 'Trim margins from PDF pages'],
             ['id' => 'compare_pdf', 'name' => 'Compare PDF', 'icon' => 'pdf_to_word', 'desc' => 'Compare text differences between PDFs'],
-            ['id' => 'ai_summarizer', 'name' => 'AI Summarizer', 'icon' => 'ocr_tool', 'desc' => 'Generate a quick PDF summary'],
+            ['id' => 'ai_summarizer', 'name' => 'PDF Summary Builder', 'icon' => 'ocr_tool', 'desc' => 'Create a short extractive summary locally in your browser'],
             ['id' => 'pdf_to_pdfa', 'name' => 'PDF to PDF/A', 'icon' => 'protect_pdf', 'desc' => 'Create an archival-style export'],
             ['id' => 'edit_pdf', 'name' => 'Edit PDF', 'icon' => 'pdf_to_word', 'desc' => 'Add text and images to a PDF'],
             ['id' => 'redact_pdf', 'name' => 'Redact PDF', 'icon' => 'protect_pdf', 'desc' => 'Burn in keyword redactions'],
@@ -116,7 +116,7 @@ $tools = [
             ['id' => 'video_compressor', 'name' => 'Video Compressor', 'icon' => 'video_compressor', 'desc' => 'Compress video files into smaller MP4 output'],
             ['id' => 'bg_remover', 'name' => 'Background Remover', 'icon' => 'bg_remover', 'desc' => 'Remove backgrounds to create transparent PNGs'],
             ['id' => 'image_to_dxf', 'name' => 'Image to DXF', 'icon' => 'image_to_dxf', 'desc' => 'Trace bitmap images for CAD DXF files'],
-            ['id' => 'ai_image_generator', 'name' => 'AI Image Generator', 'icon' => 'ai_image_generator', 'desc' => 'Create images from prompts'],
+            ['id' => 'ai_image_generator', 'name' => 'Prompt Art Maker', 'icon' => 'ai_image_generator', 'desc' => 'Create a procedural illustration locally from prompt keywords'],
             ['id' => 'ocr_tool', 'name' => 'OCR Tool', 'icon' => 'ocr_tool', 'desc' => 'Extract text from images'],
             ['id' => 'scan_to_pdf', 'name' => 'Scan to PDF', 'icon' => 'img_to_pdf', 'desc' => 'Convert captured pages into a PDF'],
             ['id' => 'repair_media', 'name' => 'Repair Photos & Videos', 'icon' => 'bg_remover', 'desc' => 'Fix corrupt or unopenable images and videos in bulk'],
@@ -1427,26 +1427,6 @@ if ($isToolPage) {
             box-shadow: 0 18px 38px rgba(0,0,0,0.24);
         }
     </style>
-    <?php if (isset($websiteSchema)): ?>
-    <script type="application/ld+json">
-        <?= json_encode($websiteSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
-    </script>
-    <?php endif; ?>
-    <?php if (isset($organizationSchema)): ?>
-    <script type="application/ld+json">
-        <?= json_encode($organizationSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
-    </script>
-    <?php endif; ?>
-    <?php if (!$isToolPage && isset($collectionPageSchema)): ?>
-    <script type="application/ld+json">
-        <?= json_encode($collectionPageSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
-    </script>
-    <?php endif; ?>
-    <?php if (!$isToolPage && isset($itemListSchema)): ?>
-    <script type="application/ld+json">
-        <?= json_encode($itemListSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
-    </script>
-    <?php endif; ?>
     <!-- Microsoft Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){
@@ -1926,6 +1906,9 @@ if ($isToolPage) {
                     <a href="/contact" class="footer-link">Contact</a>
                     <a href="/privacy" class="footer-link">Privacy Policy</a>
                     <a href="/terms" class="footer-link">Terms</a>
+                    @if (auth()->check() && auth()->user()->isAdmin())
+                    <a href="{{ route('admin.contact.index') }}" class="footer-link">Admin inbox</a>
+                    @endif
                 </div>
             </div>
 
@@ -2177,6 +2160,9 @@ async function executeScripts(container) {
 }
 
 // ── Tool modal ──
+let activeToolRequest = null;
+let activeToolRequestId = 0;
+
 function openTool(toolId) {
     if (redirectToToolPage(toolId)) {
         return;
@@ -2185,6 +2171,9 @@ function openTool(toolId) {
     const modalBox = modal.querySelector('.modal-box');
     const title   = document.getElementById('modalTitle');
     const content = document.getElementById('modalContent');
+    activeToolRequest?.abort();
+    const requestId = ++activeToolRequestId;
+    activeToolRequest = new AbortController();
     const isEditorTool = toolId === 'edit_pdf' || toolId === 'sign_pdf' || toolId === 'tournament_bracket_generator';
     const isGameTool = toolId === 'memory_match_game';
 
@@ -2209,20 +2198,27 @@ function openTool(toolId) {
     title.textContent = getToolName(toolId);
     document.body.style.overflow = 'hidden';
 
-    fetch(`{{ route('tools.render') }}?tool=${encodeURIComponent(toolId)}`)
-        .then(r => r.text())
+    fetch(`{{ route('tools.render') }}?tool=${encodeURIComponent(toolId)}`, { signal: activeToolRequest.signal })
+        .then(r => {
+            if (!r.ok) throw new Error('The tool could not be loaded. Please try again.');
+            return r.text();
+        })
         .then(html => {
+            if (requestId !== activeToolRequestId || !modal.classList.contains('flex')) return;
             content.innerHTML = html;
-            return ensureToolDependencies(toolId).then(() => executeScripts(content));
+            return ensureToolDependencies(toolId).then(() => {
+                if (requestId === activeToolRequestId && modal.classList.contains('flex')) executeScripts(content);
+            });
         })
         .catch(err => {
+            if (err.name === 'AbortError' || requestId !== activeToolRequestId) return;
             content.innerHTML = `
                 <div style="padding:32px;text-align:center;">
                     <div style="width:44px;height:44px;border-radius:12px;background:rgba(239,68,68,0.1);color:#F87171;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                     </div>
                     <p style="font-size:0.88rem;color:#F87171;margin-bottom:4px;font-weight:600;">Failed to load tool</p>
-                    <p style="font-size:0.78rem;color:var(--text-muted);">${err.message}</p>
+                    <p style="font-size:0.78rem;color:var(--text-muted);">The tool could not be loaded. Please try again.</p>
                 </div>`;
         });
 }
@@ -2245,6 +2241,9 @@ function closeToolModal(event) {
         window.location.assign(returnUrl || '/');
         return;
     }
+    activeToolRequest?.abort();
+    activeToolRequest = null;
+    activeToolRequestId++;
     document.getElementById('toolModal').classList.remove('flex');
     const modalBox = document.querySelector('#toolModal .modal-box');
     if (modalBox) modalBox.classList.remove('modal-box-editor', 'modal-box-game');
@@ -2262,13 +2261,13 @@ function getToolName(toolId) {
         'repair_pdf':'Repair PDF','ocr_pdf':'OCR PDF','rotate_pdf':'Rotate PDF',
         'add_page_numbers':'Add Page Numbers','add_watermark':'Add Watermark','protect_pdf':'Protect PDF',
         'unlock_pdf':'Unlock PDF','sign_pdf':'Sign PDF','crop_pdf':'Crop PDF',
-        'compare_pdf':'Compare PDF','ai_summarizer':'AI Summarizer','pdf_to_pdfa':'PDF to PDF/A',
+        'compare_pdf':'Compare PDF','ai_summarizer':'PDF Summary Builder','pdf_to_pdfa':'PDF to PDF/A',
         'edit_pdf':'Edit PDF','redact_pdf':'Redact PDF','translate_pdf':'Translate PDF','word_to_pdf':'Word to PDF',
         'excel_to_pdf':'Excel to PDF','ppt_to_pdf':'PowerPoint to PDF','html_to_pdf':'HTML to PDF','json_to_csv':'JSON to CSV',
         'csv_to_json':'CSV to JSON','qr_generator':'QR Code Generator','password_gen':'Password Generator',
         'word_counter':'Word Counter','image_compressor':'Image Compressor','bg_remover':'Background Remover',
         'image_to_dxf':'Image to DXF','image_to_svg':'Image to SVG','resize_image':'Resize Image','image_enhancer':'Image Enhancer',
-        'image_converter':'Image Converter','heic_converter':'HEIC to JPG PNG PDF','jpg_converter':'JPG to PNG JPEG PDF','webp_converter':'WEBP to PNG JPG JPEG PDF','video_to_audio':'Video to Audio','video_compressor':'Video Compressor','crop_image':'Crop Image','ai_image_generator':'AI Image Generator','ocr_tool':'OCR Tool',
+        'image_converter':'Image Converter','heic_converter':'HEIC to JPG PNG PDF','jpg_converter':'JPG to PNG JPEG PDF','webp_converter':'WEBP to PNG JPG JPEG PDF','video_to_audio':'Video to Audio','video_compressor':'Video Compressor','crop_image':'Crop Image','ai_image_generator':'Prompt Art Maker','ocr_tool':'OCR Tool',
         'scan_to_pdf':'Scan to PDF','repair_media':'Repair Photos & Videos','currency_converter':'Currency Converter','length_converter':'Length Converter',
         'weight_converter':'Weight Converter','temperature_converter':'Temperature Converter','area_converter':'Area Converter',
         'volume_converter':'Volume Converter','speed_converter':'Speed Converter','time_converter':'Time Converter',
@@ -2422,7 +2421,7 @@ document.addEventListener('keydown', e => {
 <!-- StartupBase Badge (Hidden for Verification) -->
 <div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">
     <a href="https://startupbase.io/products/any2convert-com?utm_source=startupbase&utm_medium=badge&utm_campaign=featured-badge-dark" target="_blank" rel="noopener noreferrer">
-      <img src="https://statics.startupbase.io/site/badges/featured-on-sb-dark.svg" alt="Featured on StartupBase" height="55" style="height:55px;width:auto;" />
+      <img src="https://statics.startupbase.io/site/badges/featured-on-sb-dark.svg" alt="Featured on StartupBase" height="55" loading="lazy" decoding="async" style="height:55px;width:auto;" />
     </a>
 </div>
 

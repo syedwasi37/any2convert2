@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Admin\ContactAdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,14 +49,8 @@ Route::view('/about', 'page', [
     '
 ]);
 
-Route::view('/contact', 'page', [
-    'title' => 'Contact Any2Convert Support and Feedback',
-    'description' => 'Contact us for help and feedback.',
-    'keywords' => 'contact Any2Convert, support, feedback, help, customer service',
-    'subtitle' => 'Contact us for help.',
-    'headline' => 'Contact Any2Convert',
-    'content' => '<p>Do you need help or have ideas to share? Please contact us. You can report bugs, ask questions, or suggest new tools. We love to hear from you.</p>'
-]);
+Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:3,10')->name('contact.store');
 
 Route::view('/privacy', 'page', [
     'title' => 'Privacy Policy for Any2Convert Online Tools',
@@ -72,20 +68,21 @@ Route::view('/privacy', 'page', [
         <p>For a small number of our more complex tools, server-side processing is required to perform the requested task. In these cases, we are committed to handling your data with the utmost care and transparency. When you use one of these tools, your file is temporarily uploaded to our secure servers for processing. However, we have a strict data retention policy: all uploaded files are automatically and permanently deleted from our servers within a short period after the processing is complete. We do not store your files, and we do not share them with any third parties.</p>
         
         <h2>Information We Collect</h2>
-        <p>We believe in collecting only the minimum amount of information necessary to provide and improve our services. We do not require you to create an account to use our tools, and we do not collect any personally identifiable information (PII) without your explicit consent. The information we do collect is limited to:</p>
+        <p>Most tools do not require an account. If you submit the Contact form, we store the name, email address, subject, topic, and message you provide so the support team can review and answer it. If you are signed in, the message may also be associated with your account. Contact messages and replies are kept in the site database until an administrator deletes them. Do not include passwords or sensitive documents in a support request.</p>
         <ul>
-            <li><strong>Usage Data:</strong> We may collect anonymous usage data, such as which tools are being used and how often. This information helps us understand how our services are being used and allows us to improve them over time. This data is always aggregated and anonymized, and it cannot be used to identify individual users.</li>
-            <li><strong>Error Reports:</strong> If you encounter an error while using our tools, we may collect anonymous error reports to help us diagnose and fix the problem. These reports do not contain any personal information or file data.</li>
+            <li><strong>Account information:</strong> If you create an account, we store the information needed to provide sign-in and account features.</li>
+            <li><strong>Contact messages:</strong> Messages are visible to authorized site administrators. If an administrator replies, the reply is stored and sent to the email address supplied with the message when email delivery is configured.</li>
+            <li><strong>Service logs:</strong> The hosting platform may record standard request and error logs used to operate and secure the website.</li>
         </ul>
         
         <h2>Cookies and Tracking Technologies</h2>
-        <p>We use a minimal number of cookies to enhance your experience on our website. These cookies are used for essential function like remembering your preferences and for analytics purposes. We do not use cookies for tracking you across other websites or for advertising purposes. You can control the use of cookies at the individual browser level, but if you choose to disable cookies, it may limit your use of certain features or functions on our website.</p>
+        <p>The site stores essential session and preference data. Google advertising and Microsoft Clarity analytics scripts are also loaded on some pages; those providers may use cookies or similar identifiers under their own privacy policies. You can manage cookies in your browser, though disabling essential cookies may affect sign-in and other site features.</p>
         
         <h2>Third-Party Services</h2>
-        <p>We do not share your personal information or file data with any third-party services for marketing or advertising purposes. We may use third-party services for analytics and error reporting, but all data shared with these services is anonymized and does not contain any personally identifiable information.</p>
+        <p>We do not sell contact messages or account details. Contact information is processed by the website and may be sent through the configured email provider when an administrator replies. The PDF translation tool sends extracted text to the MyMemory translation service to produce translations. Other tools may load libraries or models from third-party content delivery networks. Advertising, analytics, and hosting providers may also process information as part of delivering those services.</p>
         
         <h2>Your Rights and Choices</h2>
-        <p>You have the right to control your data. Since we do not store your files or personal information, there is no data to access, modify, or delete. You can clear your browser\'s cookies to remove any stored preferences. If you have any questions or concerns about our privacy practices, please do not hesitate to contact us.</p>
+        <p>You can contact the support team to ask about or request deletion of a contact message or account information. An administrator can locate and remove contact messages and their saved replies. Clearing browser cookies removes locally stored preferences but does not delete messages stored in the site database.</p>
         
         <h2>Changes to This Privacy Policy</h2>
         <p>We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We encourage you to review this Privacy Policy periodically to stay informed about how we are protecting your information.</p>
@@ -125,6 +122,14 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/account/two-factor/setup', [ProfileController::class, 'startTwoFactorSetup'])->middleware('throttle:5,1')->name('account.two-factor.setup');
     Route::post('/account/two-factor/confirm', [ProfileController::class, 'confirmTwoFactorSetup'])->middleware('throttle:6,1')->name('account.two-factor.confirm');
     Route::delete('/account/two-factor', [ProfileController::class, 'disableTwoFactor'])->middleware('throttle:6,1')->name('account.two-factor.disable');
+});
+Route::prefix('admin/contact')->name('admin.contact.')->middleware(['auth', 'admin'])->group(function (): void {
+    Route::get('/', [ContactAdminController::class, 'index'])->name('index');
+    Route::get('/{contactMessage}', [ContactAdminController::class, 'show'])->name('show');
+    Route::patch('/{contactMessage}', [ContactAdminController::class, 'update'])->name('update');
+    Route::post('/{contactMessage}/replies', [ContactAdminController::class, 'reply'])->name('reply');
+    Route::post('/{contactMessage}/replies/{reply}/resend', [ContactAdminController::class, 'resend'])->name('resend');
+    Route::delete('/{contactMessage}', [ContactAdminController::class, 'destroy'])->name('destroy');
 });
 Route::middleware('guest')->group(function (): void {
     Route::get('/account/complete', [AuthController::class, 'showGoogleOnboarding'])->name('auth.google.onboarding');
