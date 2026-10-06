@@ -61,7 +61,7 @@ class SitemapController extends Controller
             ];
         }
 
-        // Add all blog posts
+        // Include only the editorial posts displayed on the blog page.
         $allBlogPosts = \App\Support\BlogContent::getAllPosts();
         foreach ($allBlogPosts as $post) {
             $urls[] = [
@@ -69,26 +69,6 @@ class SitemapController extends Controller
                 'lastmod' => date('Y-m-d'),
                 'changefreq' => 'monthly',
                 'priority' => '0.7',
-            ];
-        }
-
-        // Add highlight pages
-        $highlights = [
-            'instant-processing',
-            'files-never-leave-your-device',
-            'no-file-uploads',
-            'free-forever',
-            'works-in-browser',
-            'works-on-any-device',
-            'always-free-no-watermarks',
-            'instant-results'
-        ];
-        foreach ($highlights as $slug) {
-            $urls[] = [
-                'loc' => $siteUrl . '/highlights/' . $slug,
-                'lastmod' => date('Y-m-d'),
-                'changefreq' => 'monthly',
-                'priority' => '0.6',
             ];
         }
 

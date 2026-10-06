@@ -626,7 +626,7 @@ if ($isToolPage) {
     </script>
 
     @include('partials.defer-external-scripts', ['sources' => array_values(array_filter([
-        (!auth()->check() || !auth()->user()->hasPremiumFeature('ad_free')) ? ['src' => 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4031884874698168', 'crossorigin' => 'anonymous'] : null,
+        (empty($initialToolId) && (!auth()->check() || !auth()->user()->hasPremiumFeature('ad_free'))) ? ['src' => 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4031884874698168', 'crossorigin' => 'anonymous'] : null,
         ['src' => 'https://www.googletagmanager.com/gtag/js?id=G-GNWNK7QZTD'],
         ['src' => 'https://www.clarity.ms/tag/xymcprs44h'],
     ]))])

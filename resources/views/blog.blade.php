@@ -7,7 +7,6 @@ $canonicalUrl = 'https://any2convert.com/blog';
     <meta charset="UTF-8">
     @include('partials.site-theme')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-adsense-account" content="ca-pub-4031884874698168">
     <?php if (request()->has('topic') || request()->has('noindex')): ?>
     <meta name="robots" content="noindex, follow">
     <?php else: ?>
@@ -203,7 +202,6 @@ $canonicalUrl = 'https://any2convert.com/blog';
         }
     </style>
     @include('partials.defer-external-scripts', ['sources' => [
-        ['src' => 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4031884874698168', 'crossorigin' => 'anonymous'],
         ['src' => 'https://www.clarity.ms/tag/xymcprs44h'],
     ]])
 </head>
@@ -318,7 +316,9 @@ $canonicalUrl = 'https://any2convert.com/blog';
                             </div>
                             <div class="text-[10px]">
                                 <p class="font-bold text-[var(--text-primary)] m-0 leading-none mb-1">{{ $post['author'] }}</p>
-                                <p class="text-[var(--text-muted)] m-0 leading-none">{{ $post['date'] }}</p>
+                                @if (!empty($post['date']))
+                                    <p class="text-[var(--text-muted)] m-0 leading-none">{{ $post['date'] }}</p>
+                                @endif
                             </div>
                         </div>
 

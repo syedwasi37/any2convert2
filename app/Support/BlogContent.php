@@ -9,51 +9,21 @@ class BlogContent
      */
     public static function getAllPosts(): array
     {
-        $slugs = require app_path('Support/tool_slugs.php');
-        $tools = self::getToolList();
         $posts = [];
-
-        foreach ($tools as $toolId => $tool) {
-            if (!isset($slugs[$toolId])) {
-                continue;
-            }
-
-            $slug = $slugs[$toolId];
-            $category = $tool['category'];
-            $gradients = self::getCategoryGradients($category);
-
-            $post = [
-                'slug' => $slug,
-                'tool_id' => $toolId,
-                'title' => self::getBlogTitle($toolId, $tool['name']),
-                'excerpt' => $tool['desc'] . '. Learn what it supports and how to get started.',
-                'category' => self::getCategoryLabel($category),
-                'category_slug' => $category,
-                'read_time' => self::calculateReadTime($toolId),
-                'date' => self::getPublishDate($toolId),
-                'image' => self::getCategoryImage($category),
-                'author' => 'Any2Convert Tech Team',
-                'gradient_class' => $gradients['gradient'],
-                'glow_class' => $gradients['glow'],
-                'text_class' => $gradients['text'],
-                'icon_svg' => self::getIconSvg($toolId, $category),
-            ];
-            $posts[] = $post;
-        }
-
-        // Add legacy blog posts to the list for backwards compatibility
+        // List only individually written editorial posts. Tool pages remain
+        // available without generating repetitive posts or invented dates.
         $pdfGradients = self::getCategoryGradients('pdf');
         $posts[] = [
             'slug' => 'security-benefits',
             'tool_id' => null,
-            'title' => 'Why Image to PDF is More Secure',
-            'excerpt' => 'Learn the key PDF security benefits of converting photos to PDF documents, including password protection and formatting preservation.',
+            'title' => 'What to Check Before Converting Images to PDF',
+            'excerpt' => 'A practical checklist for combining images into a PDF, including page order, orientation, readability, and handling sensitive files.',
             'category' => 'Security',
             'category_slug' => 'pdf',
             'read_time' => '3 min read',
-            'date' => 'May 12, 2026',
+            'date' => null,
             'image' => '/images/blog/pdf_blog.webp',
-            'author' => 'Security Analyst',
+            'author' => 'Any2Convert Editorial Team',
             'gradient_class' => $pdfGradients['gradient'],
             'glow_class' => $pdfGradients['glow'],
             'text_class' => $pdfGradients['text'],
@@ -64,14 +34,14 @@ class BlogContent
         $posts[] = [
             'slug' => 'qr-guide',
             'tool_id' => null,
-            'title' => 'Business QR Code Best Practices',
-            'excerpt' => 'A comprehensive guide on creating clear, scan-friendly QR codes for links, menus, contacts, and marketing campaigns.',
+            'title' => 'A Practical Checklist for Business QR Codes',
+            'excerpt' => 'Plan, test, and label a business QR code so customers know where it leads and can scan it reliably.',
             'category' => 'Business & Marketing',
             'category_slug' => 'business',
             'read_time' => '4 min read',
-            'date' => 'June 05, 2026',
+            'date' => null,
             'image' => '/images/blog/utility_blog.webp',
-            'author' => 'Marketing Team',
+            'author' => 'Any2Convert Editorial Team',
             'gradient_class' => $bizGradients['gradient'],
             'glow_class' => $bizGradients['glow'],
             'text_class' => $bizGradients['text'],
@@ -285,34 +255,30 @@ class BlogContent
             // Static content for legacy posts
             if ($post['slug'] === 'security-benefits') {
                 return '
-                <p class="lead">In today\'s digital landscape, document security is more crucial than ever. Many users often share photos (like receipts, IDs, and screenshots) in raw image formats (JPG/PNG), unaware of the security vulnerabilities associated with doing so. Transforming these images into a single, unified PDF document offers critical safety features.</p>
-                
-                <h2>1. Advanced Password Encryption</h2>
-                <p>Unlike raw image formats, PDF files natively support industry-standard encryption algorithms (such as AES-256). By converting your photos into a PDF, you can set an owner password to control who can view, copy, print, or edit your documents, ensuring that sensitive credentials or identity cards don\'t fall into unauthorized hands.</p>
-                
-                <h2>2. Uniform Formatting & Anti-Tampering</h2>
-                <p>When you send raw photos, they can easily be manipulated, cropped, or edited in paint software. A PDF locks the visual elements in place, making it considerably harder for bad actors to alter the content without leaving digital footprint traces. It also guarantees that the layout remains identical across all systems, whether the recipient is opening the document on an iPhone, an Android tablet, or a Windows workstation.</p>
-                
-                <div class="blog-note">
-                    <strong>Pro Tip:</strong> When uploading scanned documents or receipts, always convert them to PDF first, then apply password restrictions.
-                </div>
-
-                <h2>3. Removal of Hidden Metadata (EXIF Data)</h2>
-                <p>Photos may contain EXIF metadata such as device details, camera settings, or location. Converting an image to PDF does not automatically guarantee that all metadata is removed. Check the file handling notes for the tool you use, and avoid sharing sensitive location details when they are not needed.</p>
+                <p class="lead">Putting several images into one PDF can make a document easier to review, print, or send. The conversion changes the container and page layout; it does not automatically make the images private, prove they are authentic, or protect the result with a password.</p>
+                <h2>Choose and arrange the source images</h2>
+                <p>Use the clearest original files available. Before exporting, check the page order and rotate any photos that appear sideways. If the pages have very different shapes, decide whether consistent page sizes or preserving each image’s proportions matters more for your use.</p>
+                <h2>Check readability and file size</h2>
+                <p>Open the finished PDF and inspect every page at normal viewing size. Small text may become difficult to read if images are reduced too far. Large or high-resolution images can create a PDF that is difficult to email or upload, so check the final file size against the recipient’s limit.</p>
+                <h2>Handle sensitive images carefully</h2>
+                <p>A PDF is not inherently secure simply because it combines images. Conversion may not remove embedded image metadata, and it does not prevent someone with the file from copying or sharing it. If the document contains personal or financial information, review the tool’s processing method and privacy details before choosing it. Use a separate, trusted encryption tool if the recipient requires password protection.</p>
+                <h2>Before you share</h2>
+                <ul><li>Confirm the pages are in the intended order and orientation.</li><li>Check that names, dates, and small print remain legible.</li><li>Make sure the exported file opens and meets the destination’s size requirements.</li><li>Share it only with the people who need access.</li></ul>
+                <p>These checks help avoid common formatting surprises. Keep the original image files until the recipient confirms the PDF is usable.</p>
                 ';
             }
             if ($post['slug'] === 'qr-guide') {
                 return '
-                <p class="lead">Quick Response (QR) codes have transitioned from high-tech novelties to everyday essentials for businesses worldwide. From contactless restaurant menus to app downloads and marketing landing pages, a QR code bridges the gap between physical media and digital experiences.</p>
-                
-                <h2>1. Optimal Contrast and Colors</h2>
-                <p>For high scan reliability across older smartphones and budget devices, your QR code must have a high contrast ratio. A dark code on a white or light background is the industry standard. While custom colors are excellent for branding, avoid pastel colors or matching background tones, as this will fail in low-light environments.</p>
-                
-                <h2>2. Keep URL Slugs Short</h2>
-                <p>The complexity of a QR code\'s pixel grid is directly related to the length of the data it contains. A long URL with multiple query parameters results in a dense, complex grid that is difficult for cameras to scan. Use a URL shortener or clean path redirects to keep the grid simple and quick to resolve.</p>
-                
-                <h2>3. Provide an Explicit Call to Action (CTA)</h2>
-                <p>Never print a bare QR code. Users are cautious about scanning random codes due to security concerns. Always border your QR code with a clear action text like "Scan to View Menu" or "Scan for Free Wi-Fi". This establishes trust and increases engagement rates by over 40%.</p>
+                <p class="lead">A QR code is useful when it takes someone to a clear next step, such as a menu, booking page, or contact card. The code itself does not explain its destination, so the surrounding design and a quick test matter.</p>
+                <h2>Pick a destination that will stay current</h2>
+                <p>Use a page that works well on a phone and answers the visitor’s immediate need. Check that the link is correct, loads without requiring an unexpected sign-in, and will remain available for as long as printed materials are in circulation. If you later change the destination, make sure the printed code still resolves to the right place.</p>
+                <h2>Keep the printed code easy to scan</h2>
+                <p>Use a clear, high-contrast design and leave space around the code. Avoid stretching, cropping, or placing decorative elements over it. A longer destination can make the pattern denser, so scan the exported design at its intended printed size before producing a large batch.</p>
+                <h2>Tell people what to expect</h2>
+                <p>Add a short label such as “View today’s menu” or “Book an appointment.” Use wording that accurately describes the destination. For codes that request personal information or open a payment page, say so before the person scans.</p>
+                <h2>Test before sharing</h2>
+                <ul><li>Scan the final artwork from a phone, not just the generator preview.</li><li>Test it at the smallest size and lowest contrast where it will appear.</li><li>Confirm the destination on both Wi-Fi and mobile data.</li><li>Check a printed proof under ordinary lighting before ordering more copies.</li></ul>
+                <p>Keep a record of where each code is used and who can update its destination. That makes it easier to correct a broken link without reprinting every item.</p>
                 ';
             }
         }
