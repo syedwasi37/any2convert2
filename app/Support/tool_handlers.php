@@ -4244,72 +4244,113 @@ HTML;
 
 function getMemoryMatchGameHTML() {
     return <<<'HTML'
-    <div class="max-w-6xl mx-auto grid xl:grid-cols-[0.92fr_1.08fr] gap-6">
-        <div class="rounded-[34px] border border-fuchsia-200/70 dark:border-fuchsia-500/15 bg-gradient-to-br from-white via-fuchsia-50/70 to-indigo-50/70 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 shadow-[0_24px_80px_rgba(217,70,239,0.12)] p-6 md:p-8">
-            <p class="text-[11px] tracking-[0.34em] uppercase text-fuchsia-500 font-semibold">Fun Tools</p>
-            <h2 class="mt-2 text-3xl font-black text-slate-900 dark:text-white">Memory Match Game</h2>
-            <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">Flip cards, match pairs, and try to finish the board in the fewest moves. Every restart shuffles the deck again.</p>
+    <style>
+        .memory-game-shell { max-width: 1080px; margin: 0 auto; container-type: inline-size; color: #172033; }
+        .memory-game-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+        .memory-game-panel { min-width: 0; padding: 20px; border: 1px solid #e2e8f0; border-radius: 14px; background: #fff; }
+        .memory-game-kicker { margin: 0 0 5px; color: #64748b; font-size: 12px; font-weight: 600; }
+        .memory-game-title { margin: 0; color: #111827; font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing: -0.025em; }
+        .memory-game-copy { margin: 8px 0 0; color: #64748b; font-size: 14px; line-height: 1.5; }
+        .memory-game-controls { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 20px; }
+        .memory-game-field { display: block; min-width: 0; color: #475569; font-size: 13px; font-weight: 600; }
+        .memory-game-field select { display: block; box-sizing: border-box; width: 100%; min-width: 0; height: 44px; margin-top: 6px; padding: 0 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; color: #172033; font: inherit; }
+        .memory-game-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+        .memory-game-stat { min-width: 0; padding: 11px 12px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; }
+        .memory-game-stat-label { color: #64748b; font-size: 11px; font-weight: 600; }
+        .memory-game-stat-value { margin-top: 3px; color: #172033; font-size: 21px; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .memory-game-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 16px; }
+        .memory-game-button { min-height: 42px; padding: 0 15px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; color: #334155; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .memory-game-button:hover { background: #f8fafc; }
+        .memory-game-button-primary { border-color: #2563eb; background: #2563eb; color: #fff; }
+        .memory-game-button-primary:hover { border-color: #1d4ed8; background: #1d4ed8; }
+        .memory-game-button:focus-visible, .memory-card:focus-visible, .memory-game-field select:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+        .memory-game-status { min-height: 22px; margin-top: 14px; color: #475569; font-size: 13px; line-height: 1.5; }
+        .memory-game-status[data-tone="success"] { color: #047857; }
+        .memory-game-status[data-tone="warn"] { color: #b45309; }
+        .memory-board-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+        .memory-board-title { margin: 0; color: #111827; font-size: 18px; line-height: 1.3; font-weight: 700; }
+        .memory-game-best { flex: 0 0 auto; max-width: 48%; color: #64748b; font-size: 12px; line-height: 1.4; text-align: right; }
+        .memory-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+        .memory-card { display: grid; place-items: center; width: 100%; aspect-ratio: 1; padding: 0; overflow: hidden; border: 1px solid #cbd5e1; border-radius: 10px; background: #f1f5f9; color: #64748b; font: inherit; font-size: 22px; font-weight: 600; cursor: pointer; touch-action: manipulation; transition: background-color .15s, border-color .15s, transform .15s; }
+        .memory-card:hover { transform: translateY(-1px); border-color: #94a3b8; }
+        .memory-card-face { pointer-events: none; }
+        .memory-card[data-flipped="1"] { border-color: #93c5fd; background: #eff6ff; }
+        .memory-card[data-matched="1"] { border-color: #86efac; background: #f0fdf4; }
+        .memory-leaderboard { margin-top: 16px; border-top: 1px solid #e2e8f0; padding-top: 12px; }
+        .memory-leaderboard summary { color: #475569; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .memory-leaderboard-content { display: grid; gap: 8px; margin-top: 12px; }
+        .dark .memory-game-shell { color: #e2e8f0; }
+        .dark .memory-game-panel { border-color: #334155; background: #111827; }
+        .dark .memory-game-title, .dark .memory-board-title, .dark .memory-game-stat-value { color: #f8fafc; }
+        .dark .memory-game-copy, .dark .memory-game-kicker, .dark .memory-game-field, .dark .memory-game-stat-label, .dark .memory-game-best, .dark .memory-game-status, .dark .memory-leaderboard summary { color: #94a3b8; }
+        .dark .memory-game-field select, .dark .memory-game-button { border-color: #475569; background: #0f172a; color: #e2e8f0; }
+        .dark .memory-game-button-primary { border-color: #3b82f6; background: #2563eb; color: #fff; }
+        .dark .memory-game-stat { border-color: #334155; background: #0f172a; }
+        .dark .memory-card { border-color: #475569; background: #1e293b; color: #cbd5e1; }
+        .dark .memory-card[data-flipped="1"] { border-color: #3b82f6; background: #172554; }
+        .dark .memory-card[data-matched="1"] { border-color: #22c55e; background: #052e16; }
+        .dark .memory-leaderboard { border-color: #334155; }
+        @container (min-width: 900px) {
+            .memory-game-layout { grid-template-columns: minmax(270px, .72fr) minmax(0, 1.28fr); align-items: start; }
+            .memory-game-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .memory-board[data-count="20"] { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+        }
+        @container (max-width: 380px) {
+            .memory-game-panel { padding: 15px; }
+            .memory-game-stats { gap: 6px; }
+            .memory-game-stat { padding: 9px 8px; }
+            .memory-game-stat-value { font-size: 18px; }
+            .memory-board { gap: 6px; }
+        }
+    </style>
+    <div class="memory-game-shell">
+        <div class="memory-game-layout">
+            <section class="memory-game-panel" aria-labelledby="memoryGameTitle">
+                <p class="memory-game-kicker">Fun tool</p>
+                <h2 id="memoryGameTitle" class="memory-game-title">Memory Match</h2>
+                <p class="memory-game-copy">Find every matching pair in as few moves as you can.</p>
 
-            <div class="mt-6 grid sm:grid-cols-2 gap-4">
-                <label class="rounded-[24px] border border-slate-200/80 dark:border-slate-700/70 bg-white/80 dark:bg-slate-900/80 p-4">
-                    <span class="block text-[11px] uppercase tracking-[0.22em] text-slate-400 mb-2">Difficulty</span>
-                    <select id="memoryDifficulty" class="w-full min-h-[56px] rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 text-[15px] font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-fuchsia-500/30">
-                        <option value="12">Easy - 12 cards</option>
-                        <option value="16" selected>Normal - 16 cards</option>
-                        <option value="20">Hard - 20 cards</option>
-                    </select>
-                </label>
-                <label class="rounded-[24px] border border-slate-200/80 dark:border-slate-700/70 bg-white/80 dark:bg-slate-900/80 p-4">
-                    <span class="block text-[11px] uppercase tracking-[0.22em] text-slate-400 mb-2">Theme</span>
-                    <select id="memoryTheme" class="w-full min-h-[56px] rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 text-[15px] font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-fuchsia-500/30">
-                        <option value="emoji" selected>Emoji Party</option>
-                        <option value="gaming">Gaming Icons</option>
-                        <option value="space">Space Mix</option>
-                    </select>
-                </label>
-            </div>
+                <div class="memory-game-controls">
+                    <label class="memory-game-field" for="memoryDifficulty">Cards
+                        <select id="memoryDifficulty">
+                            <option value="12">12 cards · Easy</option>
+                            <option value="16" selected>16 cards · Normal</option>
+                            <option value="20">20 cards · Hard</option>
+                        </select>
+                    </label>
+                    <label class="memory-game-field" for="memoryTheme">Theme
+                        <select id="memoryTheme">
+                            <option value="emoji" selected>Emoji</option>
+                            <option value="gaming">Gaming</option>
+                            <option value="space">Space</option>
+                        </select>
+                    </label>
+                </div>
 
-            <div class="mt-5 grid grid-cols-3 gap-3">
-                <div class="rounded-[22px] border border-slate-200/80 dark:border-slate-700/70 bg-white/80 dark:bg-slate-900/75 p-4">
-                    <p class="text-[11px] uppercase tracking-[0.22em] text-slate-400">Moves</p>
-                    <div id="memoryMoves" class="mt-2 text-2xl font-black text-slate-900 dark:text-white">0</div>
+                <div class="memory-game-stats" aria-label="Game statistics">
+                    <div class="memory-game-stat"><div class="memory-game-stat-label">Moves</div><div id="memoryMoves" class="memory-game-stat-value">0</div></div>
+                    <div class="memory-game-stat"><div class="memory-game-stat-label">Pairs</div><div id="memoryMatches" class="memory-game-stat-value">0</div></div>
+                    <div class="memory-game-stat"><div class="memory-game-stat-label">Time</div><div id="memoryTimer" class="memory-game-stat-value">00:00</div></div>
                 </div>
-                <div class="rounded-[22px] border border-slate-200/80 dark:border-slate-700/70 bg-white/80 dark:bg-slate-900/75 p-4">
-                    <p class="text-[11px] uppercase tracking-[0.22em] text-slate-400">Matches</p>
-                    <div id="memoryMatches" class="mt-2 text-2xl font-black text-slate-900 dark:text-white">0</div>
-                </div>
-                <div class="rounded-[22px] border border-slate-200/80 dark:border-slate-700/70 bg-white/80 dark:bg-slate-900/75 p-4">
-                    <p class="text-[11px] uppercase tracking-[0.22em] text-slate-400">Timer</p>
-                    <div id="memoryTimer" class="mt-2 text-2xl font-black text-slate-900 dark:text-white">00:00</div>
-                </div>
-            </div>
 
-            <div class="mt-6 flex flex-wrap gap-3">
-                <button id="memoryStartBtn" class="rounded-[24px] bg-gradient-to-r from-fuchsia-500 via-pink-500 to-indigo-500 text-white px-6 py-4 font-semibold shadow-[0_20px_45px_rgba(217,70,239,0.24)]">Start New Game</button>
-                <button id="memoryPeekBtn" class="rounded-[24px] bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-4 font-semibold">Quick Peek</button>
-            </div>
-
-            <div id="memoryStatus" class="mt-5 rounded-[24px] border border-fuchsia-200/70 dark:border-fuchsia-500/20 bg-fuchsia-50/80 dark:bg-fuchsia-500/10 px-5 py-4 text-sm text-fuchsia-700 dark:text-fuchsia-200">
-                Start a round and match every pair before the board beats your focus.
-            </div>
-        </div>
-
-        <div class="rounded-[34px] border border-slate-200/80 dark:border-slate-800 bg-white/92 dark:bg-slate-950 p-5 md:p-6 shadow-[0_24px_80px_rgba(15,23,42,0.14)] dark:shadow-[0_24px_80px_rgba(15,23,42,0.35)] text-slate-900 dark:text-white">
-            <div class="flex items-center justify-between gap-4 mb-4">
-                <div>
-                    <p class="text-[11px] uppercase tracking-[0.24em] text-fuchsia-500 dark:text-fuchsia-300">Live Board</p>
-                    <h3 class="mt-2 text-xl font-black text-slate-900 dark:text-white">Tap two cards to find a pair</h3>
+                <div class="memory-game-actions">
+                    <button id="memoryStartBtn" type="button" class="memory-game-button memory-game-button-primary">New game</button>
+                    <button id="memoryPeekBtn" type="button" class="memory-game-button">Quick peek</button>
                 </div>
-                <div id="memoryBest" class="rounded-full border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300">Best: --</div>
-            </div>
-            <div id="memoryBoard" class="grid grid-cols-4 gap-3"></div>
-            <div class="mt-5 rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/85 dark:bg-slate-950/75 p-5">
-                <div class="flex items-center justify-between gap-3">
-                    <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Global Leaderboard</p>
-                    <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-fuchsia-500 dark:text-fuchsia-300">Top 10</span>
+                <p id="memoryStatus" class="memory-game-status" aria-live="polite">Choose a card to begin.</p>
+            </section>
+
+            <section class="memory-game-panel" aria-labelledby="memoryBoardTitle">
+                <div class="memory-board-heading">
+                    <div><p class="memory-game-kicker">Game board</p><h3 id="memoryBoardTitle" class="memory-board-title">Find the pairs</h3></div>
+                    <div id="memoryBest" class="memory-game-best">Best: —</div>
                 </div>
-                <div id="memoryLeaderboard" class="mt-4 grid gap-3"></div>
-            </div>
+                <div id="memoryBoard" class="memory-board" role="group" aria-label="Memory cards"></div>
+                <details class="memory-leaderboard">
+                    <summary>Global leaderboard · Top 10</summary>
+                    <div id="memoryLeaderboard" class="memory-leaderboard-content"></div>
+                </details>
+            </section>
         </div>
     </div>
     <script>
@@ -4400,12 +4441,7 @@ function getMemoryMatchGameHTML() {
             }
 
             function setStatus(message, tone = "default") {
-                const tones = {
-                    default: "border-fuchsia-200/70 dark:border-fuchsia-500/20 bg-fuchsia-50/80 dark:bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-200",
-                    success: "border-emerald-200/70 dark:border-emerald-500/20 bg-emerald-50/80 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-200",
-                    warn: "border-amber-200/70 dark:border-amber-500/20 bg-amber-50/80 dark:bg-amber-500/10 text-amber-700 dark:text-amber-200"
-                };
-                statusEl.className = `mt-5 rounded-[24px] px-5 py-4 text-sm ${tones[tone] || tones.default}`;
+                statusEl.dataset.tone = tone;
                 statusEl.textContent = message;
             }
 
@@ -4429,7 +4465,7 @@ function getMemoryMatchGameHTML() {
                 matchesEl.textContent = "0";
                 timerEl.textContent = "00:00";
                 stopTimer();
-                setStatus("Start matching pairs. Every new game shuffles the board.", "default");
+                setStatus("Choose a card to begin.", "default");
             }
 
             function finishIfDone() {
@@ -4443,15 +4479,15 @@ function getMemoryMatchGameHTML() {
             function revealCard(button, force = false) {
                 if (button.dataset.matched === "1" || (!force && (lockBoard || button.dataset.flipped === "1"))) return;
                 button.dataset.flipped = "1";
-                button.querySelector("[data-card-front]").style.opacity = "0";
-                button.querySelector("[data-card-back]").style.opacity = "1";
+                button.querySelector("[data-card-front]").hidden = true;
+                button.querySelector("[data-card-back]").hidden = false;
                 button.setAttribute("aria-label", `Card ${button.dataset.symbol}`);
             }
 
             function hideCard(button) {
                 button.dataset.flipped = "0";
-                button.querySelector("[data-card-front]").style.opacity = "1";
-                button.querySelector("[data-card-back]").style.opacity = "0";
+                button.querySelector("[data-card-front]").hidden = false;
+                button.querySelector("[data-card-back]").hidden = true;
                 button.setAttribute("aria-label", "Hidden card");
             }
 
@@ -4497,11 +4533,12 @@ function getMemoryMatchGameHTML() {
             function renderBoard() {
                 resetBoardState();
                 const deck = createDeck();
-                board.className = `grid gap-3 ${deck.length >= 20 ? "grid-cols-4 md:grid-cols-5" : "grid-cols-4"}`;
+                board.className = "memory-board";
+                board.dataset.count = String(deck.length);
                 board.innerHTML = deck.map((card) => `
-                    <button type="button" aria-label="Hidden card" data-symbol="${card.symbol}" data-flipped="0" data-matched="0" class="group relative aspect-square overflow-hidden rounded-[24px] bg-transparent transition duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/35" style="touch-action:manipulation;">
-                        <span data-card-front class="absolute inset-0 rounded-[24px] border border-slate-200/70 dark:border-white/10 bg-gradient-to-br from-white via-slate-50 to-indigo-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_10px_24px_rgba(15,23,42,0.08)] dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_24px_rgba(2,6,23,0.38)] flex items-center justify-center text-xs font-black uppercase tracking-[0.26em] text-slate-500 dark:text-slate-400 transition-opacity duration-200 group-hover:border-fuchsia-300/60 dark:group-hover:border-fuchsia-400/30" style="pointer-events:none;opacity:1;">Flip</span>
-                        <span data-card-back class="absolute inset-0 rounded-[24px] border border-fuchsia-200/80 dark:border-fuchsia-400/20 bg-gradient-to-br from-fuchsia-100 via-pink-50 to-indigo-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_10px_24px_rgba(168,85,247,0.12)] dark:from-fuchsia-500/15 dark:via-pink-500/10 dark:to-indigo-500/15 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_10px_24px_rgba(76,29,149,0.28)] flex items-center justify-center text-4xl transition-opacity duration-200 group-hover:border-fuchsia-300/70 dark:group-hover:border-fuchsia-400/30" style="pointer-events:none;opacity:0;">${card.symbol}</span>
+                    <button type="button" aria-label="Hidden card" data-symbol="${card.symbol}" data-flipped="0" data-matched="0" class="memory-card">
+                        <span data-card-front class="memory-card-face">?</span>
+                        <span data-card-back class="memory-card-face" hidden>${card.symbol}</span>
                     </button>
                 `).join("");
                 board.querySelectorAll("button").forEach((button) => button.addEventListener("click", handleCardClick));
@@ -16077,4 +16114,3 @@ if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) {
 }
 
 ?>
-

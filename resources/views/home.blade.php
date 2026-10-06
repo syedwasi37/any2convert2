@@ -1156,6 +1156,18 @@ if ($isToolPage) {
         .modal-box.modal-box-editor .modal-header {
             position: relative;
         }
+        .modal-box.modal-box-game {
+            max-width: min(1120px, calc(100vw - 28px));
+            max-height: calc(100dvh - 28px);
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            overflow: hidden;
+        }
+        .modal-box.modal-box-game #modalContent {
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
         .modal-box.modal-box-editor #modalContent {
             min-height: 0;
             overflow: hidden;
@@ -2174,9 +2186,11 @@ function openTool(toolId) {
     const title   = document.getElementById('modalTitle');
     const content = document.getElementById('modalContent');
     const isEditorTool = toolId === 'edit_pdf' || toolId === 'sign_pdf' || toolId === 'tournament_bracket_generator';
+    const isGameTool = toolId === 'memory_match_game';
 
     if (modalBox) {
         modalBox.classList.toggle('modal-box-editor', isEditorTool);
+        modalBox.classList.toggle('modal-box-game', isGameTool);
         if (toolId === 'tournament_bracket_generator') {
             modalBox.style.maxWidth = '1280px';
         } else {
@@ -2217,7 +2231,7 @@ function closeToolModal(event) {
     if (event && event.target !== event.currentTarget) return;
     document.getElementById('toolModal').classList.remove('flex');
     const modalBox = document.querySelector('#toolModal .modal-box');
-    if (modalBox) modalBox.classList.remove('modal-box-editor');
+    if (modalBox) modalBox.classList.remove('modal-box-editor', 'modal-box-game');
     document.getElementById('modalContent').innerHTML = '';
     document.getElementById('modalContent').style.padding = '24px';
     document.body.style.overflow = '';
