@@ -1127,24 +1127,64 @@ if ($isToolPage) {
         /* ── Modal ── */
         .modal-overlay {
             position: fixed; inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
+            background: rgba(17,24,39,0.58);
+            backdrop-filter: blur(3px);
             z-index: 100;
             display: none; align-items: center; justify-content: center;
-            padding: 16px;
+            padding: clamp(8px, 2.5vw, 24px);
         }
         .modal-overlay.flex { display: flex; }
         .modal-box {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            max-width: 760px;
+            border-radius: 16px;
+            max-width: 920px;
             width: 100%;
-            max-height: 90vh;
+            max-height: min(90vh, 900px);
             overflow-y: auto;
-            box-shadow: 0 32px 80px rgba(0,0,0,0.6);
-            animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow: 0 18px 56px rgba(15,23,42,0.24);
+            animation: modalIn 0.18s ease-out;
         }
+        #modalContent {
+            min-width: 0;
+            color: var(--text-primary);
+            background: var(--bg-base);
+            overflow-wrap: anywhere;
+        }
+        #modalContent h1, #modalContent h2, #modalContent h3, #modalContent h4 {
+            letter-spacing: -0.025em;
+            line-height: 1.25;
+        }
+        #modalContent input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+        #modalContent select,
+        #modalContent textarea {
+            max-width: 100%;
+            font: inherit;
+        }
+        #modalContent input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
+        #modalContent select:focus,
+        #modalContent textarea:focus {
+            outline: 3px solid var(--accent-light);
+            outline-offset: 1px;
+        }
+        #modalContent [class*="rounded-[28px]"],
+        #modalContent [class*="rounded-[32px]"],
+        #modalContent [class*="rounded-[34px]"] {
+            border-radius: 14px !important;
+        }
+        #modalContent [class*="rounded-[32px]"][class*="bg-gradient"],
+        #modalContent [class*="rounded-[34px]"][class*="bg-gradient"] {
+            background-image: none !important;
+            background-color: var(--bg-card) !important;
+            border-color: var(--border) !important;
+        }
+        #modalContent [class~="shadow-xl"],
+        #modalContent [class~="shadow-2xl"],
+        #modalContent [class~="shadow-lg"] {
+            box-shadow: 0 1px 3px rgba(15,23,42,0.08) !important;
+        }
+        html.dark #modalContent { background: #101017; }
+        .modal-box { scrollbar-color: rgba(100,116,139,.4) transparent; }
         .modal-box.modal-box-editor {
             max-width: min(1480px, calc(100vw - 28px));
             height: min(920px, calc(100vh - 28px));
@@ -1180,10 +1220,14 @@ if ($isToolPage) {
             position: sticky; top: 0;
             background: var(--bg-card);
             border-bottom: 1px solid var(--border);
-            padding: 18px 22px;
+            padding: 15px 20px;
             display: flex; align-items: center; justify-content: space-between;
-            border-radius: 20px 20px 0 0;
+            gap: 12px;
+            border-radius: 16px 16px 0 0;
+            z-index: 2;
         }
+        .modal-title-group { display:flex; align-items:center; gap:10px; min-width:0; }
+        .modal-title { min-width:0; margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:0.98rem; font-weight:650; color:var(--text-primary); letter-spacing:-0.02em; }
         .modal-close {
             width: 32px; height: 32px;
             display: flex; align-items: center; justify-content: center;
@@ -1196,6 +1240,7 @@ if ($isToolPage) {
             font-size: 16px; line-height: 1;
         }
         .modal-close:hover { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #F87171; }
+        .modal-close:focus-visible, .tool-home-link:focus-visible { outline:3px solid var(--accent-light); outline-offset:2px; }
         .tool-home-link {
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             min-height: 34px; padding: 0 11px; border: 1px solid var(--border);
@@ -1205,9 +1250,18 @@ if ($isToolPage) {
         }
         .tool-home-link:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
         @media (max-width: 520px) {
-            .modal-header { padding: 13px 14px; gap: 8px; }
+            .modal-box { max-height: calc(100dvh - 16px); border-radius: 12px; }
+            .modal-header { padding: 12px; gap: 7px; border-radius: 12px 12px 0 0; }
+            .modal-title-group { gap:8px; }
+            .modal-title { font-size:0.9rem; }
+            #modalContent { padding:16px !important; }
+            .modal-box-editor #modalContent { padding:0 !important; }
             .tool-home-link { width: 34px; padding: 0; }
             .tool-home-link span { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .modal-box { animation:none; }
+            #modalContent *, #modalContent *::before, #modalContent *::after { scroll-behavior:auto !important; transition-duration:0.01ms !important; animation-duration:0.01ms !important; animation-iteration-count:1 !important; }
         }
 
         /* ── Spinner ── */
@@ -1935,11 +1989,11 @@ if ($isToolPage) {
 <div id="toolModal" class="modal-overlay" onclick="closeToolModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
         <div class="modal-header">
-            <div style="display:flex;align-items:center;gap:10px;">
-                <div id="modalIconWrap" style="width:32px;height:32px;border-radius:8px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;">
+            <div class="modal-title-group">
+                <div id="modalIconWrap" style="width:32px;height:32px;border-radius:8px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:0 0 auto;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 </div>
-                <h3 id="modalTitle" style="font-size:0.95rem;font-weight:600;color:var(--text-primary);letter-spacing:-0.01em;">Tool</h3>
+                <h3 id="modalTitle" class="modal-title">Tool</h3>
             </div>
             <a href="/" class="tool-home-link" aria-label="Go back to all tools" title="Back to all tools">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M20 12H9"/></svg>
