@@ -37,6 +37,10 @@ class User extends Authenticatable
             'two_factor_confirmed_at' => 'datetime',
             'isPremium' => 'boolean',
             'is_admin' => 'boolean',
+            'is_blocked' => 'boolean',
+            'is_restricted' => 'boolean',
+            'blocked_at' => 'datetime',
+            'restricted_at' => 'datetime',
             'premium_expires_at' => 'datetime',
             'premium_features' => 'array',
         ];

@@ -13,7 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withCommands([App\Console\Commands\MakeContactAdmin::class])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(App\Http\Middleware\SecurityHeaders::class);
-        $middleware->alias(['admin' => App\Http\Middleware\EnsureUserIsAdmin::class]);
+        $middleware->appendToGroup('web', App\Http\Middleware\EnforceAccountStatus::class);
+        $middleware->appendToGroup('web', App\Http\Middleware\RecordSiteAnalytics::class);
+        $middleware->alias([
+            'admin' => App\Http\Middleware\EnsureUserIsAdmin::class,
+            'tools.allowed' => App\Http\Middleware\EnsureToolsAreAllowed::class,
+        ]);
         $middleware->validateCsrfTokens(except: [
             'tools/youtube-download',
         ]);

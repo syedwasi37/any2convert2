@@ -18,7 +18,7 @@
         .admin-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; padding: 0 24px; border-bottom: 1px solid #e2e8f0; background: #fff; }
         .admin-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; }
         .admin-brand img { width: 30px; height: 30px; object-fit: contain; }
-        .admin-top-nav { display: flex; align-items: center; gap: 16px; color: #475569; }
+        .admin-top-nav { display: flex; align-items: center; gap: 16px; color: #475569; flex-wrap: wrap; }
         .admin-top-nav a { text-decoration: none; }
         .admin-main { width: min(100% - 32px, 1160px); margin: 30px auto 64px; }
         .admin-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
@@ -44,14 +44,14 @@
         .admin-pagination { display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
         .admin-pagination a, .admin-pagination span { padding: 7px 10px; border: 1px solid #e2e8f0; border-radius: 6px; background: #fff; text-decoration: none; }
         .admin-pagination [aria-current="page"] span { background: #eff6ff; color: #1d4ed8; }
-        @media (max-width: 640px) { .admin-top { padding: 0 14px; } .admin-main { width: min(100% - 20px, 1160px); margin-top: 20px; } .admin-panel { padding: 15px; } .admin-heading { align-items: flex-start; flex-direction: column; } }
+        @media (max-width: 640px) { .admin-top { padding: 12px 14px; flex-wrap: wrap; } .admin-top-nav { width: 100%; gap: 14px; font-size: 13px; } .admin-main { width: min(100% - 20px, 1160px); margin-top: 20px; } .admin-panel { padding: 15px; } .admin-heading { align-items: flex-start; flex-direction: column; } }
     </style>
 </head>
 <body class="admin-page">
 @include('partials.site-navbar')
 <header class="admin-top">
     <a href="{{ route('admin.dashboard') }}" class="admin-brand"><img src="{{ asset('any2convertlogo.png') }}" alt=""><span>Any2Convert <span class="admin-muted">/ Admin</span></span></a>
-    <nav class="admin-top-nav" aria-label="Admin navigation"><a href="{{ route('admin.dashboard') }}" @if(request()->routeIs('admin.dashboard')) aria-current="page" @endif>Overview</a><a href="{{ route('admin.contact.index') }}" @if(request()->routeIs('admin.contact.*')) aria-current="page" @endif>Contact messages</a><a href="/" target="_blank" rel="noopener">View site</a></nav>
+    <nav class="admin-top-nav" aria-label="Admin navigation"><a href="{{ route('admin.dashboard') }}" @if(request()->routeIs('admin.dashboard')) aria-current="page" @endif>Overview</a><a href="{{ route('admin.analytics') }}" @if(request()->routeIs('admin.analytics')) aria-current="page" @endif>Analytics</a><a href="{{ route('admin.users.index') }}" @if(request()->routeIs('admin.users.*')) aria-current="page" @endif>Users</a><a href="{{ route('admin.contact.index') }}" @if(request()->routeIs('admin.contact.*')) aria-current="page" @endif>Contact messages</a><a href="/" target="_blank" rel="noopener">View site</a></nav>
 </header>
 <main class="admin-main">
     @if (session('status'))<div class="admin-flash" role="status">{{ session('status') }}</div>@endif

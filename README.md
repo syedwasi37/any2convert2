@@ -140,7 +140,11 @@ Make sure your development machine has the following tools installed:
     *   Set a real delivery mailer (`MAIL_MAILER=smtp` and its host, port, credentials, and verified sender) so admin replies can be emailed. The log and array mailers save replies but do not deliver them.
     *   Create your account, run `php artisan migrate --force`, then grant that existing account admin access with `php artisan contact:make-admin you@example.com`. The inbox is available at `/admin/contact`.
 
-6.  Install FFmpeg (Optional but Recommended for Video Downloader):
+6.  Configure admin analytics and user controls:
+    *   Run the new migration before opening Analytics or Users in the admin panel. It adds the user block/restriction fields and the `site_analytics_events` table. In phpMyAdmin, check the migration's fields against the existing `users` table before applying equivalent SQL, since older installations may have different column layouts.
+    *   Analytics start collecting page views and tool opens once the table exists; historical traffic is not backfilled. Admins can inspect account details and block/unblock or restrict/restore tool access. Admin accounts and the current administrator are protected from these actions.
+
+7.  Install FFmpeg (Optional but Recommended for Video Downloader):
     For tools that require server-side media processing (such as the Youtube video downloader), place the `ffmpeg` executable in the `bin/` directory or make sure it is installed globally in the system environment.
 
 ---

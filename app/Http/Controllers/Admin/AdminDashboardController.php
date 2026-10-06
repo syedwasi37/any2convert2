@@ -16,6 +16,8 @@ class AdminDashboardController extends Controller
             'inProgressMessages' => ContactMessage::where('status', 'in_progress')->count(),
             'repliedMessages' => ContactMessage::where('status', 'replied')->count(),
             'recentMessages' => ContactMessage::query()->latest()->limit(5)->get(),
+            'totalUsers' => \App\Models\User::count(),
+            'blockedUsers' => \App\Models\User::where('is_blocked', true)->count(),
         ]);
     }
 }

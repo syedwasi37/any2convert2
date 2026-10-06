@@ -399,6 +399,16 @@ class AuthController extends Controller
 
     private function finishAuthentication(User $user, Request $request): RedirectResponse
     {
+        if ($user->is_blocked) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'This account cannot sign in right now. Please contact support if you think this is a mistake.',
+            ]);
+        }
+
         if ($user->hasTwoFactorEnabled()) {
             Auth::logout();
             $request->session()->regenerate();

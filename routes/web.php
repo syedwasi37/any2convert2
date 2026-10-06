@@ -8,15 +8,17 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Admin\ContactAdminController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminAnalyticsController;
+use App\Http\Controllers\Admin\AdminUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
-Route::get('/tools/render', [ToolController::class, 'render'])->name('tools.render');
-Route::post('/tools/pdf-service', [ToolController::class, 'unavailable'])->name('tools.pdf-service');
-Route::post('/tools/ai-image', [ToolController::class, 'unavailable'])->name('tools.ai-image');
-Route::post('/tools/youtube-download', [ToolController::class, 'youtubeDownload'])->name('tools.youtube');
+Route::get('/tools/render', [ToolController::class, 'render'])->middleware('tools.allowed')->name('tools.render');
+Route::post('/tools/pdf-service', [ToolController::class, 'unavailable'])->middleware('tools.allowed')->name('tools.pdf-service');
+Route::post('/tools/ai-image', [ToolController::class, 'unavailable'])->middleware('tools.allowed')->name('tools.ai-image');
+Route::post('/tools/youtube-download', [ToolController::class, 'youtubeDownload'])->middleware('tools.allowed')->name('tools.youtube');
 
 Route::view('/about', 'page', [
     'title' => 'About Any2Convert Free Online Tools',
@@ -73,7 +75,7 @@ Route::view('/privacy', 'page', [
         <ul>
             <li><strong>Account information:</strong> If you create an account, we store the information needed to provide sign-in and account features.</li>
             <li><strong>Contact messages:</strong> Messages are visible to authorized site administrators. If an administrator replies, the reply is stored and sent to the email address supplied with the message when email delivery is configured.</li>
-            <li><strong>Service logs:</strong> The hosting platform may record standard request and error logs used to operate and secure the website.</li>
+            <li><strong>Service logs and analytics:</strong> The hosting platform may record standard request and error logs. We also count page views and tool opens in a first-party database to understand aggregate usage. These analytics events do not include IP addresses, account IDs, cookies, or query strings.</li>
         </ul>
         
         <h2>Cookies and Tracking Technologies</h2>
@@ -135,6 +137,11 @@ Route::prefix('admin/contact')->name('admin.contact.')->middleware(['auth', 'adm
 Route::get('/admin', [AdminDashboardController::class, 'index'])
     ->middleware(['auth', 'admin'])
     ->name('admin.dashboard');
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function (): void {
+    Route::get('/analytics', [AdminAnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}', [AdminUserController::class, 'updateStatus'])->name('users.update-status');
+});
 Route::middleware('guest')->group(function (): void {
     Route::get('/account/complete', [AuthController::class, 'showGoogleOnboarding'])->name('auth.google.onboarding');
     Route::post('/account/complete', [AuthController::class, 'finishGoogleOnboarding'])->middleware('throttle:5,1')->name('auth.google.onboarding.finish');
