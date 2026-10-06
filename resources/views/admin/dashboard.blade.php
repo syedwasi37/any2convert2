@@ -2,7 +2,7 @@
 @section('title', 'Admin dashboard')
 @section('content')
 <div class="admin-heading">
-    <div><h1>Admin panel</h1><p>A quick view of support activity and links to the tools you manage.</p></div>
+    <div><h1>Admin panel</h1><p>Manage site sections and keep an eye on new account activity.</p></div>
 </div>
 
 <section class="admin-section-grid" aria-label="Admin sections">
@@ -10,6 +10,12 @@
         <span class="admin-section-icon analytics" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h17"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/></svg></span>
         <h2 class="admin-section-title">Analytics</h2>
         <p class="admin-section-description">See what people use most and how visits change over time.</p>
+        <span class="admin-section-arrow" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+    </a>
+    <a class="admin-section-card" href="{{ route('admin.status') }}">
+        <span class="admin-section-icon analytics" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+        <h2 class="admin-section-title">Site status</h2>
+        <p class="admin-section-description">Check the database, email delivery and essential site setup.</p>
         <span class="admin-section-arrow" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
     </a>
     <a class="admin-section-card" href="{{ route('admin.users.index') }}">
@@ -26,4 +32,54 @@
         <span class="admin-section-arrow" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
     </a>
 </section>
+
+<section class="admin-panel" aria-labelledby="signupChartTitle" style="margin-bottom:18px">
+    <div class="admin-chart-head">
+        <div>
+            <h2 id="signupChartTitle" style="margin:0;font-size:17px">New users</h2>
+            <p class="admin-muted" style="margin:4px 0 0;font-size:13px">{{ number_format($newUsers) }} joined in the last 30 days · {{ number_format($totalUsers) }} accounts total</p>
+        </div>
+        @if ($newUsers > 0)
+            <div class="admin-chart-ranges" role="group" aria-label="Signup chart date range">
+                <button type="button" class="admin-chart-range" data-signup-range="7" aria-pressed="true">7 days</button>
+                <button type="button" class="admin-chart-range" data-signup-range="30" aria-pressed="false">30 days</button>
+            </div>
+        @endif
+    </div>
+    @if ($newUsers > 0)
+        <div class="admin-signup-bars" role="group" aria-label="Daily new account signups. Focus or point to a bar to see its date and count.">
+            @foreach ($signupTrend as $point)
+                @php($barHeight = $point['total'] > 0 ? max(7, round(($point['total'] / $maxSignups) * 100)) : 3)
+                <button type="button" class="admin-signup-bar" data-signup-day data-age-days="{{ $point['age'] }}" aria-label="{{ $point['label'] }}: {{ $point['total'] }} new users" title="{{ $point['label'] }} · {{ $point['total'] }} {{ \Illuminate\Support\Str::plural('signup', $point['total']) }}" @if($point['age'] >= 7) hidden @endif>
+                    <span class="admin-signup-fill" style="height:{{ $barHeight }}%" aria-hidden="true"></span>
+                    <span class="admin-signup-label" data-signup-label @if($point['age'] >= 7) hidden @endif>{{ $point['label'] }}</span>
+                </button>
+            @endforeach
+        </div>
+        <div class="admin-chart-foot"><span>Daily signups</span><span>Hover or focus a bar for details</span></div>
+    @else
+        <div class="admin-chart-empty">New signups will appear here as accounts are created.</div>
+    @endif
+</section>
+
+<script>
+(() => {
+    const chart = document.querySelector('.admin-signup-bars');
+    if (!chart) return;
+
+    const buttons = document.querySelectorAll('[data-signup-range]');
+    const bars = chart.querySelectorAll('[data-signup-day]');
+    const updateRange = (range) => {
+        bars.forEach((bar) => {
+            const age = Number(bar.dataset.ageDays);
+            bar.hidden = range === 7 && age >= 7;
+            const label = bar.querySelector('[data-signup-label]');
+            label.hidden = range === 30 && age !== 0 && age % 5 !== 0;
+        });
+        buttons.forEach((button) => button.setAttribute('aria-pressed', String(Number(button.dataset.signupRange) === range)));
+    };
+
+    buttons.forEach((button) => button.addEventListener('click', () => updateRange(Number(button.dataset.signupRange))));
+})();
+</script>
 @endsection

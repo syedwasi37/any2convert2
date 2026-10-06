@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\ContactAdminController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminAnalyticsController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminStatusController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -139,6 +140,7 @@ Route::get('/admin', [AdminDashboardController::class, 'index'])
     ->name('admin.dashboard');
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function (): void {
     Route::get('/analytics', [AdminAnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/status', [AdminStatusController::class, 'index'])->name('status');
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::patch('/users/{user}', [AdminUserController::class, 'updateStatus'])->name('users.update-status');
 });

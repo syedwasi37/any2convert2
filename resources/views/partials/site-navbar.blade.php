@@ -84,6 +84,7 @@
             <nav class="admin-navbar-links" aria-label="Admin sections">
                 <a href="{{ route('admin.dashboard') }}" class="nav-pill {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" @if(request()->routeIs('admin.dashboard')) aria-current="page" @endif>Overview</a>
                 <a href="{{ route('admin.analytics') }}" class="nav-pill {{ request()->routeIs('admin.analytics') ? 'active' : '' }}" @if(request()->routeIs('admin.analytics')) aria-current="page" @endif>Analytics</a>
+                <a href="{{ route('admin.status') }}" class="nav-pill {{ request()->routeIs('admin.status') ? 'active' : '' }}" @if(request()->routeIs('admin.status')) aria-current="page" @endif>Site status</a>
                 <a href="{{ route('admin.users.index') }}" class="nav-pill {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" @if(request()->routeIs('admin.users.*')) aria-current="page" @endif>Users</a>
                 <a href="{{ route('admin.contact.index') }}" class="nav-pill {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}" @if(request()->routeIs('admin.contact.*')) aria-current="page" @endif>Contact messages</a>
             </nav>
