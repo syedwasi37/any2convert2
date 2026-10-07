@@ -70,10 +70,11 @@ class ProfileController extends Controller
 
         if (filled(config('contact.email')) && ! in_array(config('mail.default'), ['log', 'array'], true)) {
             try {
-                Mail::raw(
-                    "A customer replied to a support conversation.\n\nFrom: {$contactMessage->name} <{$contactMessage->email}>\nSubject: {$contactMessage->subject}\n\nOpen: ".route('admin.contact.show', $contactMessage),
-                    fn ($mail) => $mail->to(config('contact.email'))->subject('Customer replied: '.$contactMessage->subject)
-                );
+                Mail::send('emails.admin-customer-reply', [
+                    'contactMessage' => $contactMessage,
+                    'replyBody' => $data['body'],
+                    'inboxUrl' => route('admin.contact.show', $contactMessage),
+                ], fn ($mail) => $mail->to(config('contact.email'))->subject('Customer replied: '.$contactMessage->subject));
             } catch (Throwable $exception) {
                 report($exception);
             }
@@ -185,10 +186,11 @@ class ProfileController extends Controller
 
         $code = (string) random_int(100000, 999999);
         try {
-            Mail::raw(
-                "Your Any2Convert email-change approval code is {$code}. It expires in 10 minutes. If you didn’t request this, you can ignore this email.",
-                fn ($message) => $message->to($user->email)->subject('Approve your email address change')
-            );
+            Mail::send('emails.otp', [
+                'heading' => 'Confirm your email change',
+                'message' => 'Enter this code in your account settings to confirm that you control your current email address.',
+                'code' => $code,
+            ], fn ($mail) => $mail->to($user->email)->subject('Confirm your Any2Convert email change'));
             Cache::put($this->emailChangeCurrentKey($user), [
                 'email' => $user->email,
                 'code_hash' => Hash::make($code),
@@ -237,10 +239,11 @@ class ProfileController extends Controller
 
         $newCode = (string) random_int(100000, 999999);
         try {
-            Mail::raw(
-                "Your Any2Convert email confirmation code is {$newCode}. It expires in 10 minutes. If you didn’t request this, you can ignore this email.",
-                fn ($message) => $message->to($data['new_email'])->subject('Confirm your new Any2Convert email')
-            );
+            Mail::send('emails.otp', [
+                'heading' => 'Confirm your new email',
+                'message' => 'Enter this code in your account settings to finish updating your Any2Convert email address.',
+                'code' => $newCode,
+            ], fn ($mail) => $mail->to($data['new_email'])->subject('Confirm your new Any2Convert email'));
             Cache::put($this->emailChangePendingKey($user), [
                 'email' => $data['new_email'],
                 'code_hash' => Hash::make($newCode),
@@ -290,10 +293,11 @@ class ProfileController extends Controller
         $request->session()->forget(['email_change_current_code_sent', 'email_change_pending_new_email']);
 
         try {
-            Mail::raw(
-                "The email address on your Any2Convert account was changed to {$newEmail}. If you did not make this change, reset your password and contact support.",
-                fn ($message) => $message->to($oldEmail)->subject('Your Any2Convert email was changed')
-            );
+            Mail::send('emails.account-notice', [
+                'preheader' => 'Your Any2Convert account email was changed',
+                'heading' => 'Your account email changed',
+                'body' => "The email address on your Any2Convert account is now {$newEmail}.",
+            ], fn ($mail) => $mail->to($oldEmail)->subject('Your Any2Convert email was changed'));
         } catch (Throwable $exception) {
             report($exception);
         }
@@ -325,10 +329,11 @@ class ProfileController extends Controller
 
         $code = (string) random_int(100000, 999999);
         try {
-            Mail::raw(
-                "Your Any2Convert password update code is {$code}. It expires in 10 minutes. If you didn’t request this, you can ignore this email.",
-                fn ($message) => $message->to($user->email)->subject('Confirm your password update')
-            );
+            Mail::send('emails.otp', [
+                'heading' => 'Confirm your password update',
+                'message' => 'Enter this code in your account settings to continue changing your password.',
+                'code' => $code,
+            ], fn ($mail) => $mail->to($user->email)->subject('Your Any2Convert password code'));
             Cache::put('account-password-code:'.$user->getKey(), Hash::make($code), now()->addMinutes(10));
             RateLimiter::hit($rateKey, 600);
         } catch (Throwable $exception) {

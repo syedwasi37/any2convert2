@@ -98,12 +98,15 @@ class AuthController extends Controller
         $cacheKey = 'auth-otp:'.hash('sha256', $email);
 
         try {
-            Mail::raw(
-                "Your Any2Convert sign-in code is {$code}. It expires in 10 minutes. If you didn’t request this, you can ignore this email.",
-                function ($message) use ($email): void {
-                    $message->to($email)->subject('Your Any2Convert sign-in code');
-                }
-            );
+            Mail::send('emails.otp', [
+                'heading' => $mode === 'register' ? 'Finish creating your account' : 'Sign in to your account',
+                'message' => $mode === 'register'
+                    ? 'Enter this code on the sign-up page to verify your email and continue.'
+                    : 'Enter this code on the sign-in page to access your account.',
+                'code' => $code,
+            ], function ($mail) use ($email, $mode): void {
+                $mail->to($email)->subject($mode === 'register' ? 'Your Any2Convert sign-up code' : 'Your Any2Convert sign-in code');
+            });
             Cache::put($cacheKey, Hash::make($code), now()->addMinutes(10));
         } catch (Throwable $exception) {
             report($exception);

@@ -120,7 +120,7 @@
                         @error('category')<span class="field-error">{{ $message }}</span>@enderror
                     </label>
                     @guest
-                        <p id="toolReportLoginNote" class="field-full privacy-note" @if($selectedCategory !== 'tool') hidden @endif>Tool reports are private tracked conversations. <a href="{{ route('login') }}">Sign in</a> before sending a tool report.</p>
+                        <p id="toolReportLoginNote" class="field-full privacy-note" @if($selectedCategory !== 'tool') hidden @endif>You can send a report without an account. <a href="{{ route('login') }}">Sign in</a> if you’d like to keep the conversation in your account and reply here.</p>
                     @endguest
                     <label class="field" id="toolSelectField" @if($selectedCategory !== 'tool') hidden @endif>Which tool is affected? *
                         <select name="tool_slug" id="contactTool" @if($selectedCategory === 'tool') required @endif>
@@ -139,9 +139,9 @@
                         <textarea name="message" minlength="10" maxlength="12000" required>{{ old('message') }}</textarea>
                         @error('message')<span class="field-error">{{ $message }}</span>@enderror
                     </label>
-                    <label class="field field-full" style="display:flex;align-items:flex-start;gap:9px;font-weight:500">
+                    <label class="field field-full consent-field" style="display:flex;align-items:flex-start;gap:9px;font-weight:500">
                         <input type="checkbox" name="email_updates" value="1" @checked(old('email_updates')) @guest required @endguest style="width:17px;height:17px;min-height:17px;margin:2px 0 0;flex:0 0 auto">
-                        <span>I agree to receive email updates about this support conversation. @auth This is optional; replies are always available in your account. @else Required so our team can send its reply to you. @endauth
+                        <span>I’d like email updates about this message. @auth Optional; you can always reply from your account. @else Required so we can send you our reply. @endauth
                             @error('email_updates')<span class="field-error">{{ $message }}</span>@enderror
                         </span>
                     </label>
@@ -156,15 +156,20 @@
         const category = document.getElementById('contactCategory');
         const toolField = document.getElementById('toolSelectField');
         const tool = document.getElementById('contactTool');
+        const subject = document.querySelector('input[name="subject"]');
         const toolReportLoginNote = document.getElementById('toolReportLoginNote');
         const syncToolField = () => {
             const required = category.value === 'tool';
             toolField.hidden = !required;
             tool.required = required;
             if (!required) tool.value = '';
+            if (required && tool.value && (!subject.value.trim() || subject.value.startsWith('Issue with '))) {
+                subject.value = `Issue with ${tool.options[tool.selectedIndex].text}`;
+            }
             if (toolReportLoginNote) toolReportLoginNote.hidden = !required;
         };
         category.addEventListener('change', syncToolField);
+        tool.addEventListener('change', syncToolField);
         syncToolField();
     })();
 </script>

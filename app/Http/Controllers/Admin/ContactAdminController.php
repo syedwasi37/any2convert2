@@ -151,9 +151,12 @@ class ContactAdminController extends Controller
         }
 
         try {
-            Mail::raw($reply->body, function ($mail) use ($contactMessage): void {
-                $mail->to($contactMessage->email)
-                    ->subject('Re: '.$contactMessage->subject);
+            Mail::send('emails.support-reply', [
+                'supportMessage' => $contactMessage,
+                'replyBody' => $reply->body,
+                'conversationUrl' => $contactMessage->user_id ? route('account.messages') : null,
+            ], function ($mail) use ($contactMessage): void {
+                $mail->to($contactMessage->email)->subject('We replied: '.$contactMessage->subject);
                 if (filled(config('contact.email'))) {
                     $mail->replyTo(config('contact.email'), config('mail.from.name'));
                 }

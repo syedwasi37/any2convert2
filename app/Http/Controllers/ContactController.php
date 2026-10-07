@@ -47,10 +47,6 @@ class ContactController extends Controller
             'website' => ['nullable', 'prohibited'],
         ]);
 
-        if ($data['category'] === 'tool' && ! $request->user()) {
-            return back()->withErrors(['category' => 'Sign in to send a trackable tool report and reply to support in the same conversation.'])->withInput();
-        }
-
         $data['name'] = trim($data['name']);
         $data['email'] = Str::lower(trim($data['email']));
         $data['subject'] = trim($data['subject']);
@@ -66,10 +62,10 @@ class ContactController extends Controller
 
         if (filled(config('contact.email')) && ! in_array(config('mail.default'), ['log', 'array'], true)) {
             try {
-                Mail::raw(
-                    "A new website contact message is waiting in the admin inbox.\n\nFrom: {$message->name} <{$message->email}>\nSubject: {$message->subject}\n\nOpen: ".route('admin.contact.show', $message),
-                    fn ($mail) => $mail->to(config('contact.email'))->subject('New Any2Convert contact message')
-                );
+                Mail::send('emails.admin-contact-notice', [
+                    'contactMessage' => $message,
+                    'inboxUrl' => route('admin.contact.show', $message),
+                ], fn ($mail) => $mail->to(config('contact.email'))->subject('New support message: '.$message->subject));
             } catch (Throwable $exception) {
                 report($exception);
             }
