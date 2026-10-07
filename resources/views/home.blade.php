@@ -706,6 +706,10 @@ if ($isToolPage) {
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M20 12H9"/></svg>
                 <span>All tools</span>
             </a>
+            <a id="reportToolIssue" href="{{ route('contact.show', ['category' => 'tool']) }}" class="tool-home-link" aria-label="Report an issue with this tool" title="Report an issue">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4m0 4h.01"/><path d="M10.3 3.9 2.5 17.4A2 2 0 0 0 4.2 20h15.6a2 2 0 0 0 1.7-2.6L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+                <span>Report issue</span>
+            </a>
             <button type="button" onclick="closeToolModal()" class="modal-close" aria-label="Close tool" title="Close">✕</button>
         </div>
 
@@ -921,6 +925,11 @@ function openTool(toolId) {
     modal.classList.add('flex');
     modal.querySelector('.modal-close')?.focus({ preventScroll: true });
     title.textContent = getToolName(toolId);
+    const reportLink = document.getElementById('reportToolIssue');
+    const reportUrl = new URL(@json(route('contact.show')), window.location.origin);
+    reportUrl.searchParams.set('category', 'tool');
+    if (toolSlugMap[toolId]) reportUrl.searchParams.set('tool', toolSlugMap[toolId]);
+    if (reportLink) reportLink.href = reportUrl.pathname + reportUrl.search;
     document.body.style.overflow = 'hidden';
 
     fetch(`{{ route('tools.render') }}?tool=${encodeURIComponent(toolId)}`, { signal: activeToolRequest.signal })

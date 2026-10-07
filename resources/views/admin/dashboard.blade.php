@@ -31,6 +31,12 @@
         <p class="admin-section-description">Read visitor questions, add notes and send replies.</p>
         <span class="admin-section-arrow" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
     </a>
+    <a class="admin-section-card" href="{{ route('community.index') }}">
+        <span class="admin-section-icon messages" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-9.5a7.5 7.5 0 1 1 17 0Z"/><path d="M8 10h8M8 14h5"/><path d="M17 3h4v4"/></svg></span>
+        <h2 class="admin-section-title">Community feedback</h2>
+        <p class="admin-section-description">{{ number_format($communityPosts) }} public conversations · reply and moderate posts.</p>
+        <span class="admin-section-arrow" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+    </a>
 </section>
 
 <section class="admin-panel" aria-labelledby="signupChartTitle" style="margin-bottom:18px">

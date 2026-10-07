@@ -47,6 +47,111 @@ class ProfileController extends Controller
         return view('account.messages', compact('messages'));
     }
 
+    public function replyToSupportMessage(Request $request, ContactMessage $contactMessage): RedirectResponse
+    {
+        abort_unless((int) $contactMessage->user_id === (int) $request->user()->getKey(), 404);
+        abort_unless($contactMessage->status !== 'closed', 409);
+        $data = $request->validate([
+            'body' => ['required', 'string', 'min:2', 'max:12000'],
+            'user_resolved' => ['nullable', 'in:yes,no'],
+        ]);
+
+        $contactMessage->replies()->create([
+            'user_id' => $request->user()->getKey(),
+            'body' => trim($data['body']),
+            'delivery_status' => 'received',
+        ]);
+        if (isset($data['user_resolved'])) {
+            $contactMessage->user_resolved = $data['user_resolved'] === 'yes';
+        }
+        $contactMessage->status = 'new';
+        $contactMessage->last_replied_at = now();
+        $contactMessage->save();
+
+        if (filled(config('contact.email')) && ! in_array(config('mail.default'), ['log', 'array'], true)) {
+            try {
+                Mail::raw(
+                    "A customer replied to a support conversation.\n\nFrom: {$contactMessage->name} <{$contactMessage->email}>\nSubject: {$contactMessage->subject}\n\nOpen: ".route('admin.contact.show', $contactMessage),
+                    fn ($mail) => $mail->to(config('contact.email'))->subject('Customer replied: '.$contactMessage->subject)
+                );
+            } catch (Throwable $exception) {
+                report($exception);
+            }
+        }
+
+        return redirect()->route('account.messages')->with('status', 'Your reply has been added to the conversation.');
+    }
+
+    public function rateSupport(Request $request, ContactMessage $contactMessage): RedirectResponse
+    {
+        abort_unless((int) $contactMessage->user_id === (int) $request->user()->getKey(), 404);
+        abort_unless($contactMessage->status === 'closed', 409, 'The support team must close the conversation before you rate it.');
+        $data = $request->validate([
+            'resolution_rating' => ['required', 'integer', 'between:1,5'],
+            'support_rating' => ['required', 'integer', 'between:1,5'],
+            'support_feedback' => ['nullable', 'string', 'max:3000'],
+        ]);
+        $contactMessage->update($data);
+
+        return redirect()->route('account.messages')->with('status', 'Thanks for rating your support experience.');
+    }
+
+    public function updateSupportEmailConsent(Request $request, ContactMessage $contactMessage): RedirectResponse
+    {
+        abort_unless((int) $contactMessage->user_id === (int) $request->user()->getKey(), 404);
+        $data = $request->validate(['email_updates' => ['required', 'boolean']]);
+        $contactMessage->update(['email_updates' => (bool) $data['email_updates']]);
+
+        return redirect()->route('account.messages')->with('status', $data['email_updates'] ? 'Email updates are on for this conversation.' : 'Email updates are off. You can still read replies here.');
+    }
+
+    public function updateSupportMessage(Request $request, ContactMessage $contactMessage): RedirectResponse
+    {
+        abort_unless((int) $contactMessage->user_id === (int) $request->user()->getKey(), 404);
+        abort_unless($contactMessage->status !== 'closed', 409);
+        $tools = array_values(require app_path('Support/tool_slugs.php'));
+        $data = $request->validate([
+            'subject' => ['required', 'string', 'max:180'],
+            'category' => ['required', 'in:general,tool,account,privacy,feedback,other'],
+            'tool_slug' => ['nullable', 'required_if:category,tool', 'string', \Illuminate\Validation\Rule::in($tools)],
+            'message' => ['required', 'string', 'min:10', 'max:12000'],
+        ]);
+        if ($data['category'] !== 'tool') $data['tool_slug'] = null;
+        $contactMessage->update($data);
+
+        return back()->with('status', 'Your support message has been updated.');
+    }
+
+    public function deleteSupportMessage(Request $request, ContactMessage $contactMessage): RedirectResponse
+    {
+        abort_unless((int) $contactMessage->user_id === (int) $request->user()->getKey(), 404);
+        $contactMessage->replies()->delete();
+        $contactMessage->delete();
+
+        return redirect()->route('account.messages')->with('status', 'Your support conversation and its replies were deleted.');
+    }
+
+    public function updateSupportReply(Request $request, ContactMessage $contactMessage, \App\Models\ContactMessageReply $reply): RedirectResponse
+    {
+        abort_unless((int) $contactMessage->user_id === (int) $request->user()->getKey(), 404);
+        abort_unless((int) $reply->contact_message_id === (int) $contactMessage->getKey() && (int) $reply->user_id === (int) $request->user()->getKey(), 404);
+        abort_unless($contactMessage->status !== 'closed', 409);
+        $data = $request->validate(['body' => ['required', 'string', 'min:2', 'max:12000']]);
+        $reply->update(['body' => trim($data['body'])]);
+
+        return back()->with('status', 'Your reply has been updated.');
+    }
+
+    public function deleteSupportReply(Request $request, ContactMessage $contactMessage, \App\Models\ContactMessageReply $reply): RedirectResponse
+    {
+        abort_unless((int) $contactMessage->user_id === (int) $request->user()->getKey(), 404);
+        abort_unless((int) $reply->contact_message_id === (int) $contactMessage->getKey() && (int) $reply->user_id === (int) $request->user()->getKey(), 404);
+        abort_unless($contactMessage->status !== 'closed', 409);
+        $reply->delete();
+
+        return back()->with('status', 'Your reply was deleted.');
+    }
+
     public function updateProfile(Request $request): RedirectResponse
     {
         $data = $request->validate([

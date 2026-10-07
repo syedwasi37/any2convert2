@@ -9,12 +9,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ContactMessage extends Model
 {
     protected $fillable = [
-        'user_id', 'name', 'email', 'subject', 'category', 'message', 'status', 'internal_note', 'last_replied_at',
+        'user_id', 'name', 'email', 'subject', 'category', 'tool_slug', 'message', 'status', 'internal_note', 'last_replied_at', 'user_resolved', 'resolution_rating', 'support_rating', 'support_feedback', 'email_updates',
     ];
 
     protected function casts(): array
     {
-        return ['last_replied_at' => 'datetime'];
+        return [
+            'last_replied_at' => 'datetime',
+            'user_resolved' => 'boolean',
+            'resolution_rating' => 'integer',
+            'support_rating' => 'integer',
+            'email_updates' => 'boolean',
+        ];
     }
 
     public function user(): BelongsTo

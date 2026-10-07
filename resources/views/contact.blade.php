@@ -15,6 +15,7 @@
     @include('partials.tailwind-assets')
     <style>
         * { box-sizing: border-box; }
+        [hidden] { display: none !important; }
         body { margin: 0; background: #f6f8fb; color: #172033; font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
         a { color: inherit; }
         .contact-wrap { width: min(100% - 32px, 1060px); margin: 0 auto; padding: 24px 0 56px; }
@@ -48,6 +49,14 @@
         .submit-button:hover { background: #1d4ed8; }
         .notice { margin-bottom: 18px; padding: 12px 14px; border: 1px solid #a7f3d0; border-radius: 9px; background: #ecfdf5; color: #047857; font-size: 14px; }
         .honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+        html.dark { color-scheme: dark; }
+        html.dark body.contact-page { background: #111511; color: #edf0e9; }
+        html.dark .panel { background: #1b201b; border-color: #343b33; box-shadow: 0 8px 28px rgba(0,0,0,.16); }
+        html.dark .panel h2, html.dark h1, html.dark .info-value, html.dark .field { color: #edf0e9; }
+        html.dark .intro-copy, html.dark .panel-copy, html.dark .privacy-note, html.dark .form-help, html.dark .info-label { color: #a3ab9e; }
+        html.dark .info-item { background: #171c17; border-color: #343b33; }
+        html.dark .field input, html.dark .field select, html.dark .field textarea { background: #171c17; color: #edf0e9; border-color: #40483f; color-scheme: dark; }
+        html.dark .notice { background: #1b3024; border-color: #315b3d; color: #c7e6c8; }
         @media (max-width: 720px) { .contact-grid { grid-template-columns: 1fr; } .contact-info { order: 2; } }
         @media (max-width: 480px) { .contact-wrap { width: min(100% - 24px, 1060px); padding-top: 14px; } .panel { padding: 18px; } .form-grid { grid-template-columns: 1fr; } .field-full { grid-column: auto; } .form-footer { align-items: stretch; flex-direction: column; } .submit-button { width: 100%; } }
     </style>
@@ -63,7 +72,7 @@
     </section>
 
     @if (session('contact_submitted'))
-        <div class="notice" role="status">Thanks for reaching out. Your message has been received. @auth You can follow the conversation in <a href="{{ route('account.messages') }}">your support messages</a>, and we’ll also email you when we reply. @else We’ll follow up by email. @endauth</div>
+        <div class="notice" role="status">Thanks for reaching out. Your message has been received. @auth You can follow the conversation in <a href="{{ route('account.messages') }}">your support messages</a>. @if(session('email_updates_enabled')) We’ll also email you when we reply. @else Email updates are off; check your support messages for replies. @endif @else We’ll email you when our team replies. @endauth</div>
     @endif
 
     <div class="contact-grid">
@@ -103,27 +112,62 @@
                         @error('email')<span class="field-error">{{ $message }}</span>@enderror
                     </label>
                     <label class="field">What is this about? *
-                        <select name="category" required>
+                        <select name="category" id="contactCategory" required>
                             @foreach (['general' => 'General question', 'tool' => 'A tool is not working', 'account' => 'My account', 'privacy' => 'Privacy', 'feedback' => 'Feedback or idea', 'other' => 'Something else'] as $value => $label)
-                                <option value="{{ $value }}" @selected(old('category', 'general') === $value)>{{ $label }}</option>
+                                <option value="{{ $value }}" @selected($selectedCategory === $value)>{{ $label }}</option>
                             @endforeach
                         </select>
                         @error('category')<span class="field-error">{{ $message }}</span>@enderror
                     </label>
+                    @guest
+                        <p id="toolReportLoginNote" class="field-full privacy-note" @if($selectedCategory !== 'tool') hidden @endif>Tool reports are private tracked conversations. <a href="{{ route('login') }}">Sign in</a> before sending a tool report.</p>
+                    @endguest
+                    <label class="field" id="toolSelectField" @if($selectedCategory !== 'tool') hidden @endif>Which tool is affected? *
+                        <select name="tool_slug" id="contactTool" @if($selectedCategory === 'tool') required @endif>
+                            <option value="">Choose a tool</option>
+                            @foreach ($tools as $slug)
+                                <option value="{{ $slug }}" @selected($selectedTool === $slug)>{{ \Illuminate\Support\Str::headline($slug) }}</option>
+                            @endforeach
+                        </select>
+                        @error('tool_slug')<span class="field-error">{{ $message }}</span>@enderror
+                    </label>
                     <label class="field">Subject *
-                        <input name="subject" value="{{ old('subject') }}" maxlength="180" required>
+                        <input name="subject" value="{{ $subject }}" maxlength="180" required>
                         @error('subject')<span class="field-error">{{ $message }}</span>@enderror
                     </label>
                     <label class="field field-full">Message *
                         <textarea name="message" minlength="10" maxlength="12000" required>{{ old('message') }}</textarea>
                         @error('message')<span class="field-error">{{ $message }}</span>@enderror
                     </label>
+                    <label class="field field-full" style="display:flex;align-items:flex-start;gap:9px;font-weight:500">
+                        <input type="checkbox" name="email_updates" value="1" @checked(old('email_updates')) @guest required @endguest style="width:17px;height:17px;min-height:17px;margin:2px 0 0;flex:0 0 auto">
+                        <span>I agree to receive email updates about this support conversation. @auth This is optional; replies are always available in your account. @else Required so our team can send its reply to you. @endauth
+                            @error('email_updates')<span class="field-error">{{ $message }}</span>@enderror
+                        </span>
+                    </label>
                 </div>
-                <div class="form-footer"><p class="form-help">@auth Replies appear in your account and are also sent by email. @else We’ll reply to the email address you provide. @endauth</p><button class="submit-button" type="submit">Send message</button></div>
+                <div class="form-footer"><p class="form-help">@auth You can change email updates for each conversation in your account. @else You can contact us without an account by opting into email replies. @endauth</p><button class="submit-button" type="submit">Send message</button></div>
             </form>
         </section>
     </div>
 </main>
+<script>
+    (() => {
+        const category = document.getElementById('contactCategory');
+        const toolField = document.getElementById('toolSelectField');
+        const tool = document.getElementById('contactTool');
+        const toolReportLoginNote = document.getElementById('toolReportLoginNote');
+        const syncToolField = () => {
+            const required = category.value === 'tool';
+            toolField.hidden = !required;
+            tool.required = required;
+            if (!required) tool.value = '';
+            if (toolReportLoginNote) toolReportLoginNote.hidden = !required;
+        };
+        category.addEventListener('change', syncToolField);
+        syncToolField();
+    })();
+</script>
 @include('partials.site-footer')
 </body>
 </html>

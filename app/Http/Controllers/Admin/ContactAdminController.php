@@ -28,6 +28,7 @@ class ContactAdminController extends Controller
                     $nested->where('name', 'like', $term)
                         ->orWhere('email', 'like', $term)
                         ->orWhere('subject', 'like', $term)
+                        ->orWhere('tool_slug', 'like', $term)
                         ->orWhere('message', 'like', $term);
                 });
             })
@@ -51,7 +52,11 @@ class ContactAdminController extends Controller
 
         $contactMessage->load(['replies.author', 'user']);
 
-        return view('admin.contact.show', ['message' => $contactMessage, 'statuses' => self::STATUSES]);
+        return view('admin.contact.show', [
+            'message' => $contactMessage,
+            'statuses' => self::STATUSES,
+            'tools' => require app_path('Support/tool_slugs.php'),
+        ]);
     }
 
     public function update(Request $request, ContactMessage $contactMessage): RedirectResponse
@@ -61,9 +66,14 @@ class ContactAdminController extends Controller
             'email' => ['required', 'email:rfc', 'max:255'],
             'subject' => ['required', 'string', 'max:180'],
             'category' => ['required', 'in:general,tool,account,privacy,feedback,other'],
+            'tool_slug' => ['nullable', 'required_if:category,tool', 'string', \Illuminate\Validation\Rule::in(array_values(require app_path('Support/tool_slugs.php')))],
+            'message' => ['required', 'string', 'min:10', 'max:12000'],
             'status' => ['required', 'in:'.implode(',', self::STATUSES)],
             'internal_note' => ['nullable', 'string', 'max:12000'],
         ]);
+        if ($data['category'] !== 'tool') {
+            $data['tool_slug'] = null;
+        }
 
         $contactMessage->update($data);
 
@@ -85,13 +95,38 @@ class ContactAdminController extends Controller
     public function resend(ContactMessage $contactMessage, ContactMessageReply $reply): RedirectResponse
     {
         abort_unless($reply->contact_message_id === $contactMessage->id, 404);
+        abort_unless($reply->author?->isAdmin(), 404);
+        abort_unless($contactMessage->email_updates, 403, 'The customer has not opted into email updates.');
         abort_if($reply->delivery_status === 'sent', 409, 'This reply has already been sent.');
 
         return $this->deliverReply($contactMessage, $reply);
     }
 
+    public function updateReply(Request $request, ContactMessage $contactMessage, ContactMessageReply $reply): RedirectResponse
+    {
+        abort_unless($reply->contact_message_id === $contactMessage->id, 404);
+        $data = $request->validate(['body' => ['required', 'string', 'min:2', 'max:12000']]);
+        $changes = ['body' => trim($data['body'])];
+        if ($reply->author?->isAdmin() && $reply->delivery_status === 'sent') {
+            $changes['delivery_status'] = $contactMessage->email_updates ? 'pending' : 'not_requested';
+            $changes['sent_at'] = null;
+        }
+        $reply->update($changes);
+
+        return back()->with('status', 'Conversation message updated.');
+    }
+
+    public function deleteReply(ContactMessage $contactMessage, ContactMessageReply $reply): RedirectResponse
+    {
+        abort_unless($reply->contact_message_id === $contactMessage->id, 404);
+        $reply->delete();
+
+        return back()->with('status', 'Conversation message deleted.');
+    }
+
     public function destroy(ContactMessage $contactMessage): RedirectResponse
     {
+        $contactMessage->replies()->delete();
         $contactMessage->delete();
 
         return redirect()->route('admin.contact.index')->with('status', 'Message deleted.');
@@ -99,6 +134,14 @@ class ContactAdminController extends Controller
 
     private function deliverReply(ContactMessage $contactMessage, ContactMessageReply $reply): RedirectResponse
     {
+        if (! $contactMessage->email_updates) {
+            $sentAt = now();
+            $reply->update(['delivery_status' => 'not_requested', 'sent_at' => null]);
+            $contactMessage->update(['status' => 'replied', 'last_replied_at' => $sentAt]);
+
+            return back()->with('status', 'Reply saved to the support conversation. The customer did not opt into email updates.');
+        }
+
         // Log and array mailers intentionally do not deliver mail. Keep replies
         // pending so an administrator can resend after configuring a real mailer.
         if (in_array(config('mail.default'), ['log', 'array'], true)) {

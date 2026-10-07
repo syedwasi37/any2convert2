@@ -21,7 +21,7 @@
             <a href="{{ route('admin.contact.show', $message) }}" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px;border:1px solid #e2e8f0;border-radius:9px;text-decoration:none">
                 <div style="min-width:0">
                     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><strong style="overflow-wrap:anywhere">{{ $message->subject }}</strong><span class="admin-status {{ $message->status }}">{{ str_replace('_', ' ', ucfirst($message->status)) }}</span></div>
-                    <div class="admin-muted" style="margin-top:3px">{{ $message->name }} · {{ $message->email }} · {{ ucfirst($message->category) }}</div>
+                    <div class="admin-muted" style="margin-top:3px">{{ $message->name }} · {{ $message->email }} · {{ ucfirst($message->category) }}@if($message->tool_slug) · {{ \Illuminate\Support\Str::headline($message->tool_slug) }}@endif @if(!$message->email_updates) · Email updates off @endif</div>
                     <div class="admin-muted" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:5px">{{ $message->message }}</div>
                 </div>
                 <time class="admin-muted" style="font-size:12px;white-space:nowrap" datetime="{{ $message->created_at?->toIso8601String() ?? '' }}">{{ $message->created_at?->format('M j, Y · g:i a') ?? 'Date unavailable' }}</time>

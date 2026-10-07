@@ -6,6 +6,7 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\Admin\ContactAdminController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminAnalyticsController;
@@ -36,6 +37,17 @@ Route::view('/about', 'page', [
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:3,10')->name('contact.store');
+Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
+Route::get('/community/{communityPost}', [CommunityController::class, 'show'])->whereNumber('communityPost')->name('community.show');
+Route::middleware('auth')->group(function (): void {
+    Route::post('/community', [CommunityController::class, 'store'])->middleware('throttle:5,10')->name('community.store');
+    Route::post('/community/{communityPost}/comments', [CommunityController::class, 'comment'])->middleware('throttle:10,10')->name('community.comment');
+    Route::patch('/community/{communityPost}', [CommunityController::class, 'updatePost'])->name('community.update');
+    Route::delete('/community/{communityPost}', [CommunityController::class, 'deletePost'])->name('community.delete');
+    Route::patch('/community/{communityPost}/comments/{comment}', [CommunityController::class, 'updateComment'])->name('community.comment.update');
+    Route::delete('/community/{communityPost}/comments/{comment}', [CommunityController::class, 'deleteComment'])->name('community.comment.delete');
+});
+Route::patch('/admin/community/{communityPost}', [CommunityController::class, 'moderate'])->middleware(['auth', 'admin'])->name('admin.community.moderate');
 
 Route::view('/privacy', 'page', [
     'title' => 'Privacy Policy | Any2Convert',
@@ -47,7 +59,8 @@ Route::view('/privacy', 'page', [
         <h2>Files and tool inputs</h2>
         <p>Many tools process selected files or text in your browser. Some features make requests to external services or use server processing. When a tool sends information outside your browser, the relevant tool should explain that before you use it. Do not submit information unless you are comfortable with that tool’s processing method.</p>
         <h2>Accounts and support messages</h2>
-        <p>If you create an account, we store account details needed to provide sign-in and account features, including your name, email address, and a protected password credential. We store contact form details, including your name, email, subject, category, and message, so authorized administrators can respond. Replies may be sent through the configured email provider. Messages and replies remain in the site database until an administrator deletes them or a valid deletion request is handled.</p>
+        <p>If you create an account, we store account details needed to provide sign-in and account features, including your name, email address, and a protected password credential. We store contact form details, including your name, email, subject, category, selected tool, and message, so authorized administrators can respond. Signed-in users can view their support conversation in their account. Email updates are sent only when the sender opts in; guests must opt in to receive a reply by email. Messages and replies remain in the site database until deleted.</p>
+        <p>Community posts and replies are public and may be read by anyone. Do not post private account information or sensitive files. Signed-in authors and authorized administrators can edit or remove community content, and administrators may hide content that violates the site rules.</p>
         <h2>Site usage, logs, and cookies</h2>
         <p>The site records public page visits and tool opens in its database using the page path or tool identifier and event time. The hosting provider may also keep standard server and security logs. Google Analytics, Google advertising, and Microsoft Clarity may be loaded on some pages; those providers may use cookies or similar technologies according to their own policies. Essential session and preference data may also be stored by your browser.</p>
         <h2>Third-party services</h2>
@@ -68,6 +81,8 @@ Route::view('/terms', 'page', [
         <p>By using Any2Convert, you agree to these terms. If you do not agree, stop using the site. These terms apply to the website, tools, and account features.</p>
         <h2>Use the tools responsibly</h2>
         <p>You are responsible for the files, text, links, and other material you submit. Use only material you own or are authorized to use. Do not use the site to break the law, infringe another person’s rights, distribute malware, interfere with the service, bypass access controls, or attempt to access another user’s information.</p>
+        <h2>Community participation</h2>
+        <p>Community posts and replies are public. Do not share passwords, private contact details, sensitive files, harassment, spam, or unlawful content. Authors can edit or delete their posts and replies; administrators may edit, remove, or hide content and may restrict accounts that misuse the community.</p>
         <h2>Results and limitations</h2>
         <p>Tools are provided for general convenience. Results may be incomplete, inaccurate, or unsuitable for a particular purpose. Check important outputs before relying on or sharing them. Calculators and informational tools are not professional legal, medical, tax, or financial advice. Keep your own copy of important source files.</p>
         <h2>Availability and changes</h2>
@@ -95,6 +110,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::middleware('auth')->group(function (): void {
     Route::get('/account', [ProfileController::class, 'show'])->name('account.profile');
     Route::get('/account/messages', [ProfileController::class, 'supportMessages'])->name('account.messages');
+    Route::post('/account/messages/{contactMessage}/replies', [ProfileController::class, 'replyToSupportMessage'])->middleware('throttle:6,10')->name('account.messages.reply');
+    Route::patch('/account/messages/{contactMessage}/replies/{reply}', [ProfileController::class, 'updateSupportReply'])->name('account.messages.reply.update');
+    Route::delete('/account/messages/{contactMessage}/replies/{reply}', [ProfileController::class, 'deleteSupportReply'])->name('account.messages.reply.delete');
+    Route::post('/account/messages/{contactMessage}/rating', [ProfileController::class, 'rateSupport'])->middleware('throttle:5,60')->name('account.messages.rating');
+    Route::patch('/account/messages/{contactMessage}/email-updates', [ProfileController::class, 'updateSupportEmailConsent'])->name('account.messages.email-updates');
+    Route::patch('/account/messages/{contactMessage}', [ProfileController::class, 'updateSupportMessage'])->name('account.messages.update');
+    Route::delete('/account/messages/{contactMessage}', [ProfileController::class, 'deleteSupportMessage'])->name('account.messages.delete');
     Route::patch('/account/profile', [ProfileController::class, 'updateProfile'])->name('account.profile.update');
     Route::post('/account/email/code', [ProfileController::class, 'sendEmailChangeCode'])->middleware('throttle:5,1')->name('account.email.code');
     Route::put('/account/email', [ProfileController::class, 'updateEmail'])->middleware('throttle:6,1')->name('account.email.update');
@@ -111,6 +133,8 @@ Route::prefix('admin/contact')->name('admin.contact.')->middleware(['auth', 'adm
     Route::patch('/{contactMessage}', [ContactAdminController::class, 'update'])->name('update');
     Route::post('/{contactMessage}/replies', [ContactAdminController::class, 'reply'])->name('reply');
     Route::post('/{contactMessage}/replies/{reply}/resend', [ContactAdminController::class, 'resend'])->name('resend');
+    Route::patch('/{contactMessage}/replies/{reply}', [ContactAdminController::class, 'updateReply'])->name('reply.update');
+    Route::delete('/{contactMessage}/replies/{reply}', [ContactAdminController::class, 'deleteReply'])->name('reply.delete');
     Route::delete('/{contactMessage}', [ContactAdminController::class, 'destroy'])->name('destroy');
 });
 Route::get('/admin', [AdminDashboardController::class, 'index'])

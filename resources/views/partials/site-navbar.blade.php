@@ -16,6 +16,9 @@
                 @if (!request()->is('admin', 'admin/*'))
                     <a href="/blog" class="nav-pill {{ request()->is('blog') || request()->is('blog/*') ? 'active' : '' }}" @if(request()->is('blog') || request()->is('blog/*')) aria-current="page" @endif>Blog</a>
                 @endif
+                @if (!request()->is('admin', 'admin/*'))
+                    <a href="{{ route('community.index') }}" class="nav-pill {{ request()->routeIs('community.*') ? 'active' : '' }}" @if(request()->routeIs('community.*')) aria-current="page" @endif>Community</a>
+                @endif
 
                 <!-- Dark / Light mode toggle -->
                 <button id="themeToggle" type="button" onclick="toggleDarkMode()" title="Toggle dark mode" aria-label="Toggle dark mode" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;transition:all 0.2s ease;flex-shrink:0;">
@@ -93,6 +96,7 @@
                 <a href="{{ route('admin.status') }}" class="nav-pill {{ request()->routeIs('admin.status') ? 'active' : '' }}" @if(request()->routeIs('admin.status')) aria-current="page" @endif>Site status</a>
                 <a href="{{ route('admin.users.index') }}" class="nav-pill {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" @if(request()->routeIs('admin.users.*')) aria-current="page" @endif>Users</a>
                 <a href="{{ route('admin.contact.index') }}" class="nav-pill {{ request()->routeIs('admin.contact.*') ? 'active' : '' }}" @if(request()->routeIs('admin.contact.*')) aria-current="page" @endif>Contact messages</a>
+                <a href="{{ route('community.index') }}" class="nav-pill {{ request()->routeIs('community.*') ? 'active' : '' }}" @if(request()->routeIs('community.*')) aria-current="page" @endif>Community</a>
             </nav>
         @endif
     </div>

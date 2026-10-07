@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
+use App\Models\CommunityPost;
 use App\Models\User;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Schema;
 
 class AdminDashboardController extends Controller
 {
@@ -32,6 +34,7 @@ class AdminDashboardController extends Controller
 
         return view('admin.dashboard', [
             'newMessages' => ContactMessage::where('status', 'new')->count(),
+            'communityPosts' => Schema::hasTable('community_posts') ? CommunityPost::where('status', 'published')->count() : 0,
             'totalUsers' => User::count(),
             'newUsers' => $signupTrend->sum('total'),
             'signupTrend' => $signupTrend,

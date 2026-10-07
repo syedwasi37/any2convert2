@@ -28,6 +28,7 @@
                 <div style="display:flex;flex-direction:column;gap:9px;">
                     <a href="/about" class="footer-link">About</a>
                     <a href="/contact" class="footer-link">Contact</a>
+                    <a href="{{ route('contact.show', ['category' => 'tool']) }}" class="footer-link">Report a tool issue</a>
                     <a href="/privacy" class="footer-link">Privacy Policy</a>
                     <a href="/terms" class="footer-link">Terms</a>
                     @if (auth()->check() && auth()->user()->isAdmin())
@@ -40,6 +41,7 @@
                 <div style="font-size:0.75rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;">Resources</div>
                 <div style="display:flex;flex-direction:column;gap:9px;">
                     <a href="/blog" class="footer-link">Blog</a>
+                    <a href="{{ route('community.index') }}" class="footer-link">Community feedback</a>
                 </div>
             </div>
         </div>
